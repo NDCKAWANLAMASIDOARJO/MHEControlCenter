@@ -1,0 +1,6 @@
+{
+  "name": "Forklift Battery Monitor",
+  "description": "Dashboard pemantauan performa dan kondisi baterai forklift / reach truck gudang.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
