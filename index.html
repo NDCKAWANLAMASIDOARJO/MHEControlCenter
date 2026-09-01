@@ -1285,6 +1285,285 @@
       }
     }
 
+    /* Asset Summary Section Styles */
+    .asset-period-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 12px;
+      font-weight: 600;
+      background-color: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
+    }
+
+    .asset-kpi-ribbon {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      padding: 14px 20px;
+      background-color: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .asset-mini-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    }
+
+    .asset-mini-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .asset-mini-card-info {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .asset-mini-card-title {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+    }
+
+    .asset-mini-card-value {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .asset-mini-card-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .status-badge-optimal {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #ecfdf5;
+      color: #047857;
+      border: 1px solid #a7f3d0;
+    }
+
+    .status-badge-warning {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #fffbeb;
+      color: #b45309;
+      border: 1px solid #fde68a;
+    }
+
+    .status-badge-critical {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 700;
+      background: #fef2f2;
+      color: #b91c1c;
+      border: 1px solid #fca5a5;
+    }
+
+    /* ========================================================
+       PRIMARY TAB NAVIGATION & VIEW CONTAINERS
+       ======================================================== */
+    .dashboard-nav-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+      padding: 6px 10px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      flex-wrap: wrap;
+    }
+
+    .nav-tabs-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 22px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: transparent;
+      border: 1.5px solid transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+    }
+
+    .nav-tab-btn:hover {
+      color: var(--primary);
+      background: #f8fafc;
+    }
+
+    .nav-tab-btn.active {
+      color: var(--primary);
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.12);
+    }
+
+    .nav-tab-icon {
+      font-size: 17px;
+      display: inline-block;
+    }
+
+    .nav-tab-badge {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: #e2e8f0;
+      color: #475569;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+
+    .nav-tab-btn.active .nav-tab-badge {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .nav-meta-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-right: 6px;
+    }
+
+    .active-view-tag {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--primary);
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .view-container {
+      display: none;
+      animation: fadeInView 0.2s ease-out forwards;
+    }
+
+    .view-container.active {
+      display: block;
+    }
+
+    @keyframes fadeInView {
+      from {
+        opacity: 0;
+        transform: translateY(4px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .summary-filter-bar {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: var(--shadow-sm);
+      flex-wrap: wrap;
+    }
+
+    .summary-filter-inputs {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+
+    .summary-filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .summary-filter-item label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-nav-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .nav-tabs-group {
+        width: 100%;
+      }
+      .nav-tab-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 9px 12px;
+        font-size: 13px;
+      }
+      .summary-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+    }
+
     /* Print styling */
     @media print {
       body {
@@ -1412,6 +1691,20 @@
           <p class="header-subtitle">Dashboard Operasional & Pemantauan Kondisi Baterai Armada Gudang</p>
         </div>
       </div>
+      <div class="header-actions">
+        <button class="btn btn-primary btn-sm" onclick="refreshDashboardData(true)">
+          <span>🔄</span> Refresh Data
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="exportAssetSummaryToCSV()">
+          <span>📊</span> Ekspor Summary Aset
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="exportToCSV()">
+          <span>📥</span> Ekspor Log CSV
+        </button>
+        <button class="btn btn-secondary btn-sm" onclick="window.print()">
+          <span>🖨️</span> Cetak Laporan
+        </button>
+      </div>
       <!-- Kawan Lama Logo on Top Right with Animated Neon Glow Effect -->
       <div class="header-logo-outer" title="Kawan Lama Group">
         <svg class="header-logo-contour-svg" viewBox="0 0 176 46" preserveAspectRatio="none">
@@ -1429,221 +1722,381 @@
       </div>
     </header>
 
-    <!-- Summary KPI Cards -->
-    <section class="summary-grid">
-      <!-- Card 1: Total Unit Aktif -->
-      <div class="summary-card">
-        <div class="summary-top">
-          <span class="summary-label">Total Unit Aktif</span>
-          <div class="summary-icon icon-blue">🚜</div>
-        </div>
-        <div class="summary-value" id="kpiTotalUnits">0</div>
-        <div class="summary-subtext" id="kpiTotalRecords">0 total catatan pemakaian</div>
-      </div>
-
-      <!-- Card 2: Rata-rata Pemakaian Baterai -->
-      <div class="summary-card warning">
-        <div class="summary-top">
-          <span class="summary-label">Rata-rata Pemakaian</span>
-          <div class="summary-icon icon-amber">⚡</div>
-        </div>
-        <div class="summary-value" id="kpiAvgUsage">0%</div>
-        <div class="summary-subtext">Penurunan daya per rit/shift</div>
-      </div>
-
-      <!-- Card 3: Rata-rata Durasi Pemakaian -->
-      <div class="summary-card success">
-        <div class="summary-top">
-          <span class="summary-label">Rata-rata Durasi</span>
-          <div class="summary-icon icon-green">⏱️</div>
-        </div>
-        <div class="summary-value" id="kpiAvgDuration">0j 0m</div>
-        <div class="summary-subtext">Waktu operasional aktif per unit</div>
-      </div>
-
-      <!-- Card 4: Baterai Kritis (< 20%) -->
-      <div class="summary-card danger" id="cardKritis">
-        <div class="summary-top">
-          <span class="summary-label">Baterai Kritis (&lt; 20%)</span>
-          <div class="summary-icon icon-red">⚠️</div>
-        </div>
-        <div class="summary-value" id="kpiCriticalCount" style="color: var(--danger);">0</div>
-        <div class="summary-subtext">Unit perlu segera di-charge</div>
-      </div>
-    </section>
-
-    <!-- Filter Control Panel -->
-    <section class="filter-card">
-      <div class="filter-title-row">
-        <div class="filter-title">
-          <span>🔍</span> Filter & Penyaringan Data
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
-          <span>↺</span> Reset Filter
+    <!-- Main Menu Navigation Tabs (Menu Terpisah: Summary Asset vs Detail Log) -->
+    <nav class="dashboard-nav-bar" id="dashboardNavBar">
+      <div class="nav-tabs-group" role="tablist">
+        <button
+          class="nav-tab-btn active"
+          id="tabBtnSummary"
+          role="tab"
+          aria-selected="true"
+          onclick="switchView('summary')"
+        >
+          <span class="nav-tab-icon">📊</span>
+          <span class="nav-tab-text">Summary Asset</span>
+          <span class="nav-tab-badge" id="tabSummaryBadge">0 Unit</span>
+        </button>
+        <button
+          class="nav-tab-btn"
+          id="tabBtnDetail"
+          role="tab"
+          aria-selected="false"
+          onclick="switchView('detail')"
+        >
+          <span class="nav-tab-icon">📋</span>
+          <span class="nav-tab-text">Detail Log Pemakaian</span>
+          <span class="nav-tab-badge" id="tabDetailBadge">0 Log</span>
         </button>
       </div>
-      <div class="filter-grid">
-        <!-- Date From -->
-        <div class="form-group">
-          <label class="form-label" for="filterDateStart">Dari Tanggal</label>
-          <input type="date" id="filterDateStart" class="form-control" onchange="applyFilters()" />
-        </div>
-
-        <!-- Date To -->
-        <div class="form-group">
-          <label class="form-label" for="filterDateEnd">Sampai Tanggal</label>
-          <input type="date" id="filterDateEnd" class="form-control" onchange="applyFilters()" />
-        </div>
-
-        <!-- Filter Shift -->
-        <div class="form-group">
-          <label class="form-label" for="filterShift">Shift Kerja</label>
-          <select id="filterShift" class="form-control" onchange="applyFilters()">
-            <option value="ALL">Semua Shift</option>
-            <option value="PAGI">PAGI</option>
-            <option value="SORE">SORE</option>
-          </select>
-        </div>
-
-        <!-- Filter Kode Alat -->
-        <div class="form-group">
-          <label class="form-label" for="filterKodeAlat">Kode Alat</label>
-          <select id="filterKodeAlat" class="form-control" onchange="applyFilters()">
-            <option value="ALL">Semua Kode Alat</option>
-          </select>
-        </div>
-
-        <!-- Filter Nama Alat -->
-        <div class="form-group">
-          <label class="form-label" for="filterNamaAlat">Tipe / Nama Alat</label>
-          <select id="filterNamaAlat" class="form-control" onchange="applyFilters()">
-            <option value="ALL">Semua Tipe Alat</option>
-          </select>
-        </div>
-
-        <!-- Filter Status Baterai -->
-        <div class="form-group">
-          <label class="form-label" for="filterStatus">Status Kondisi Cek 1</label>
-          <select id="filterStatus" class="form-control" onchange="applyFilters()">
-            <option value="ALL">Semua Status</option>
-            <option value="CRITICAL">Kritis (&lt; 20%)</option>
-            <option value="WARNING">Waspada (20% - 50%)</option>
-            <option value="GOOD">Aman (&gt; 50%)</option>
-          </select>
-        </div>
+      <div class="nav-meta-info">
+        <span id="activeViewIndicator" class="active-view-tag">📍 Menu Aktif: Summary Asset</span>
       </div>
-    </section>
+    </nav>
 
-    <!-- Visualizations (Chart.js) -->
-    <section class="charts-grid">
-      <!-- Chart 1: Tren Rata-rata Kondisi Baterai (Start vs Cek 1) per Tanggal -->
-      <div class="chart-card">
-        <div class="chart-card-header">
-          <h2 class="chart-card-title">Tren Kondisi Baterai per Tanggal (Start vs Cek 1)</h2>
-          <span class="chart-card-badge">Rata-rata %</span>
+    <!-- ========================================================
+         VIEW 1: SUMMARY ASSET (HANYA DITAMPILKAN PADA MENU SUMMARY ASSET)
+         ======================================================== -->
+    <div id="viewSummaryAsset" class="view-container active">
+      <!-- Filter Bar for Summary Asset -->
+      <section class="summary-filter-bar">
+        <div class="summary-filter-inputs">
+          <div class="summary-filter-item">
+            <label for="summaryFilterDateStart">📅 Dari Tanggal:</label>
+            <input type="date" id="summaryFilterDateStart" class="form-control" style="width: auto;" onchange="syncDateFilter('summary', 'start')" />
+          </div>
+          <div class="summary-filter-item">
+            <label for="summaryFilterDateEnd">📅 S.d Tanggal:</label>
+            <input type="date" id="summaryFilterDateEnd" class="form-control" style="width: auto;" onchange="syncDateFilter('summary', 'end')" />
+          </div>
+          <div class="summary-filter-item" style="flex: 1; min-width: 200px;">
+            <input
+              type="text"
+              id="assetSearchInput"
+              class="form-control"
+              placeholder="🔎 Cari Unit Name / BU..."
+              oninput="renderAssetSummaryTable()"
+            />
+          </div>
         </div>
-        <div class="chart-container">
-          <canvas id="trendChart"></canvas>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <button class="btn btn-secondary btn-sm" onclick="resetFilters()" title="Reset Filter Tanggal">
+            <span>↺</span> Reset
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="exportAssetSummaryToCSV()" title="Ekspor Summary Asset ke CSV">
+            <span>📥</span> Ekspor Summary CSV
+          </button>
         </div>
-      </div>
+      </section>
 
-      <!-- Chart 2: Perbandingan Pemakaian (%) per Kode Alat -->
-      <div class="chart-card">
-        <div class="chart-card-header">
-          <h2 class="chart-card-title">Rata-rata Penurunan Pemakaian (%) per Kode Alat</h2>
-          <span class="chart-card-badge">% Pemakaian</span>
-        </div>
-        <div class="chart-container">
-          <canvas id="usageByCodeChart"></canvas>
-        </div>
-      </div>
+      <!-- KPI Ribbon for Asset Summary from Sheet SUMMARY ASSET -->
+      <section class="asset-kpi-ribbon" id="assetKpiRibbon" style="border-radius: var(--radius); margin-bottom: 24px; border: 1px solid var(--border-color);">
+        <!-- Rendered by JavaScript -->
+      </section>
 
-      <!-- Chart 3: Distribusi Pemakaian per Shift -->
-      <div class="chart-card">
-        <div class="chart-card-header">
-          <h2 class="chart-card-title">Distribusi Pemakaian Baterai per Shift</h2>
-          <span class="chart-card-badge">Total % Pemakaian</span>
+      <!-- Visual Charts for Summary Asset -->
+      <section class="charts-grid" style="margin-bottom: 24px;">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Komposisi Status Kesiapan MHE</h2>
+            <span class="chart-card-badge">Distribusi Total Unit</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="summaryStatusChart"></canvas>
+          </div>
         </div>
-        <div class="chart-container">
-          <canvas id="shiftDistributionChart"></canvas>
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Kesiapan & Utilisasi per Tipe MHE (%)</h2>
+            <span class="chart-card-badge">% MHE Ready & Pakai</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="summaryUtilChart"></canvas>
+          </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Chart 4: Rata-rata Durasi Pemakaian per Nama Alat -->
-      <div class="chart-card">
-        <div class="chart-card-header">
-          <h2 class="chart-card-title">Rata-rata Durasi Pemakaian per Tipe Alat</h2>
-          <span class="chart-card-badge">Jam Operasi</span>
+      <!-- Asset Summary Table directly mirroring sheet SUMMARY ASSET -->
+      <section class="table-card" id="assetSummaryCard">
+        <div class="table-toolbar" style="background: #ffffff;">
+          <div class="table-title-area" style="flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 22px;">📊</span>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h2 class="table-title" style="font-size: 16px; margin: 0;">Tabel Summary Asset</h2>
+                  <span class="source-badge live" style="font-size: 11px; padding: 2px 8px;">📑 Sheet: SUMMARY ASSET</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                  Monitoring ketersediaan unit, utilisasi operasional, unit perbaikan, dan unit rusak
+                </div>
+              </div>
+            </div>
+            <span id="assetFilterPeriodBadge" class="asset-period-badge">📅 Periode: Semua Tanggal</span>
+            <span id="assetSummaryCountBadge" class="badge-count">0 Unit</span>
+          </div>
         </div>
-        <div class="chart-container">
-          <canvas id="durationByNameChart"></canvas>
-        </div>
-      </div>
-    </section>
 
-    <!-- Detail Data Table -->
-    <section class="table-card">
-      <div class="table-toolbar">
-        <div class="table-title-area">
-          <h2 class="table-title">Detail Log Pemakaian Baterai</h2>
-          <span id="tableRecordCount" class="badge-count">0 Data</span>
+        <div class="table-responsive">
+          <table id="assetSummaryTable">
+            <thead>
+              <tr>
+                <th onclick="sortAssetTable('idx')">No ⬍</th>
+                <th onclick="sortAssetTable('tanggal')">Tanggal ⬍</th>
+                <th onclick="sortAssetTable('bu')">BU ⬍</th>
+                <th onclick="sortAssetTable('unitName')">Unit Name ⬍</th>
+                <th onclick="sortAssetTable('totalAsset')" style="text-align: center;">Total Asset ⬍</th>
+                <th onclick="sortAssetTable('tersedia')" style="text-align: center;">Tersedia ⬍</th>
+                <th onclick="sortAssetTable('pakai')" style="text-align: center;">Pakai ⬍</th>
+                <th onclick="sortAssetTable('perbaikan')" style="text-align: center;">Perbaikan ⬍</th>
+                <th onclick="sortAssetTable('rusak')" style="text-align: center;">Rusak ⬍</th>
+                <th onclick="sortAssetTable('availabilityRate')" style="text-align: center;">% Kesiapan ⬍</th>
+                <th onclick="sortAssetTable('utilizationRate')" style="text-align: center;">% Utilisasi ⬍</th>
+                <th onclick="sortAssetTable('operationalStatus')">Status Operasional ⬍</th>
+              </tr>
+            </thead>
+            <tbody id="assetSummaryTableBody">
+              <!-- Rendered dynamically by JavaScript from Sheet SUMMARY ASSET -->
+            </tbody>
+            <tfoot id="assetSummaryTableFoot" style="background: #f8fafc; font-weight: 700; border-top: 2px solid var(--border-color);">
+              <!-- Dynamic totals row -->
+            </tfoot>
+          </table>
         </div>
-        <div class="search-input-wrap">
-          <span class="search-icon">🔎</span>
-          <input
-            type="text"
-            id="tableSearch"
-            class="search-input"
-            placeholder="Cari kode alat, operator, tipe..."
-            oninput="handleTableSearch()"
-          />
+
+        <div class="table-footer" style="background: #fafafa; border-top: 1px solid var(--border-color);">
+          <div id="assetSummaryInfo">Menampilkan 0 aset</div>
+          <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+            <span>💡 <i>Data bersumber langsung dari tab sheet <b>SUMMARY ASSET</b> pada Google Spreadsheet.</i></span>
+          </div>
         </div>
-      </div>
+      </section>
+    </div>
 
-      <div class="table-responsive">
-        <table id="dataTable">
-          <thead>
-            <tr>
-              <th onclick="sortTable('idx')">No ⬍</th>
-              <th onclick="sortTable('tanggal')">Tanggal ⬍</th>
-              <th onclick="sortTable('shift')">Shift ⬍</th>
-              <th onclick="sortTable('bu')">BU ⬍</th>
-              <th onclick="sortTable('namaAlat')">Nama Alat ⬍</th>
-              <th onclick="sortTable('kodeAlat')">Kode Alat ⬍</th>
-              <th onclick="sortTable('baterai')">Baterai ⬍</th>
-              <th onclick="sortTable('startJam')">Start Jam ⬍</th>
-              <th onclick="sortTable('startKondisi')">Kondisi Start ⬍</th>
-              <th onclick="sortTable('cek1Jam')">Cek I Jam ⬍</th>
-              <th onclick="sortTable('cek1Kondisi')">Kondisi Cek I ⬍</th>
-              <th onclick="sortTable('durasiMenit')">Durasi ⬍</th>
-              <th onclick="sortTable('pemakaian')">Pemakaian (%) ⬍</th>
-              <th onclick="sortTable('cek2Jam')">Cek II Jam ⬍</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody id="tableBody">
-            <!-- Rendered by JavaScript -->
-          </tbody>
-        </table>
-      </div>
+    <!-- ========================================================
+         VIEW 2: DETAIL LOG PEMAKAIAN (HANYA DITAMPILKAN PADA MENU DETAIL)
+         ======================================================== -->
+    <div id="viewDetailLog" class="view-container">
+      <!-- Summary KPI Cards for Battery Logs -->
+      <section class="summary-grid">
+        <!-- Card 1: Total Unit Aktif -->
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total Unit Aktif</span>
+            <div class="summary-icon icon-blue">🚜</div>
+          </div>
+          <div class="summary-value" id="kpiTotalUnits">0</div>
+          <div class="summary-subtext" id="kpiTotalRecords">0 total catatan pemakaian</div>
+        </div>
 
-      <div class="table-footer">
-        <div id="tableInfo">Menampilkan 0 dari 0 baris</div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <label style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
-            Tampilkan:
-            <select id="pageSizeSelect" class="form-control" style="width: auto; padding: 4px 8px;" onchange="changePageSize()">
-              <option value="15">15</option>
-              <option value="30" selected>30</option>
-              <option value="50">50</option>
-              <option value="100">100</option>
-              <option value="ALL">Semua</option>
+        <!-- Card 2: Rata-rata Pemakaian Baterai -->
+        <div class="summary-card warning">
+          <div class="summary-top">
+            <span class="summary-label">Rata-rata Pemakaian</span>
+            <div class="summary-icon icon-amber">⚡</div>
+          </div>
+          <div class="summary-value" id="kpiAvgUsage">0%</div>
+          <div class="summary-subtext">Penurunan daya per rit/shift</div>
+        </div>
+
+        <!-- Card 3: Rata-rata Durasi Pemakaian -->
+        <div class="summary-card success">
+          <div class="summary-top">
+            <span class="summary-label">Rata-rata Durasi</span>
+            <div class="summary-icon icon-green">⏱️</div>
+          </div>
+          <div class="summary-value" id="kpiAvgDuration">0j 0m</div>
+          <div class="summary-subtext">Waktu operasional aktif per unit</div>
+        </div>
+
+        <!-- Card 4: Baterai Kritis (< 20%) -->
+        <div class="summary-card danger" id="cardKritis">
+          <div class="summary-top">
+            <span class="summary-label">Baterai Kritis (&lt; 20%)</span>
+            <div class="summary-icon icon-red">⚠️</div>
+          </div>
+          <div class="summary-value" id="kpiCriticalCount" style="color: var(--danger);">0</div>
+          <div class="summary-subtext">Unit perlu segera di-charge</div>
+        </div>
+      </section>
+
+      <!-- Filter Control Panel for Detail Logs -->
+      <section class="filter-card">
+        <div class="filter-title-row">
+          <div class="filter-title">
+            <span>🔍</span> Filter & Penyaringan Detail Log
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+            <span>↺</span> Reset Filter
+          </button>
+        </div>
+        <div class="filter-grid">
+          <!-- Date From -->
+          <div class="form-group">
+            <label class="form-label" for="filterDateStart">Dari Tanggal</label>
+            <input type="date" id="filterDateStart" class="form-control" onchange="syncDateFilter('detail', 'start')" />
+          </div>
+
+          <!-- Date To -->
+          <div class="form-group">
+            <label class="form-label" for="filterDateEnd">Sampai Tanggal</label>
+            <input type="date" id="filterDateEnd" class="form-control" onchange="syncDateFilter('detail', 'end')" />
+          </div>
+
+          <!-- Filter Shift -->
+          <div class="form-group">
+            <label class="form-label" for="filterShift">Shift Kerja</label>
+            <select id="filterShift" class="form-control" onchange="applyFilters()">
+              <option value="ALL">Semua Shift</option>
+              <option value="PAGI">PAGI</option>
+              <option value="SORE">SORE</option>
             </select>
-          </label>
-          <div id="paginationControls" style="display: flex; gap: 6px;"></div>
+          </div>
+
+          <!-- Filter Kode Alat -->
+          <div class="form-group">
+            <label class="form-label" for="filterKodeAlat">Kode Alat</label>
+            <select id="filterKodeAlat" class="form-control" onchange="applyFilters()">
+              <option value="ALL">Semua Kode Alat</option>
+            </select>
+          </div>
+
+          <!-- Filter Nama Alat -->
+          <div class="form-group">
+            <label class="form-label" for="filterNamaAlat">Tipe / Nama Alat</label>
+            <select id="filterNamaAlat" class="form-control" onchange="applyFilters()">
+              <option value="ALL">Semua Tipe Alat</option>
+            </select>
+          </div>
+
+          <!-- Filter Status Baterai -->
+          <div class="form-group">
+            <label class="form-label" for="filterStatus">Status Kondisi Cek 1</label>
+            <select id="filterStatus" class="form-control" onchange="applyFilters()">
+              <option value="ALL">Semua Status</option>
+              <option value="CRITICAL">Kritis (&lt; 20%)</option>
+              <option value="WARNING">Waspada (20% - 50%)</option>
+              <option value="GOOD">Aman (&gt; 50%)</option>
+            </select>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- 4 Detail Charts Grid -->
+      <section class="charts-grid">
+        <!-- Chart 1: Tren Rata-rata Kondisi Baterai (Start vs Cek 1) per Tanggal -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Tren Kondisi Baterai per Tanggal (Start vs Cek 1)</h2>
+            <span class="chart-card-badge">Rata-rata %</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Perbandingan Pemakaian (%) per Kode Alat -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Rata-rata Penurunan Pemakaian (%) per Kode Alat</h2>
+            <span class="chart-card-badge">% Pemakaian</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="usageByCodeChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 3: Distribusi Pemakaian per Shift -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Distribusi Pemakaian Baterai per Shift</h2>
+            <span class="chart-card-badge">Total % Pemakaian</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="shiftDistributionChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 4: Rata-rata Durasi Pemakaian per Nama Alat -->
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Rata-rata Durasi Pemakaian per Tipe Alat</h2>
+            <span class="chart-card-badge">Jam Operasi</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="durationByNameChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Detail Data Table -->
+      <section class="table-card">
+        <div class="table-toolbar">
+          <div class="table-title-area">
+            <h2 class="table-title">Detail Log Pemakaian Baterai</h2>
+            <span id="tableRecordCount" class="badge-count">0 Data</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <div class="search-input-wrap">
+              <span class="search-icon">🔎</span>
+              <input
+                type="text"
+                id="tableSearch"
+                class="search-input"
+                placeholder="Cari kode alat, operator, tipe..."
+                oninput="handleTableSearch()"
+              />
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="exportToCSV()" title="Ekspor Log CSV">
+              <span>📥</span> Ekspor CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table id="dataTable">
+            <thead>
+              <tr>
+                <th onclick="sortTable('idx')">No ⬍</th>
+                <th onclick="sortTable('tanggal')">Tanggal ⬍</th>
+                <th onclick="sortTable('shift')">Shift ⬍</th>
+                <th onclick="sortTable('bu')">BU ⬍</th>
+                <th onclick="sortTable('namaAlat')">Nama Alat ⬍</th>
+                <th onclick="sortTable('kodeAlat')">Kode Alat ⬍</th>
+                <th onclick="sortTable('baterai')">Baterai ⬍</th>
+                <th onclick="sortTable('startJam')">Start Jam ⬍</th>
+                <th onclick="sortTable('startKondisi')">Kondisi Start ⬍</th>
+                <th onclick="sortTable('cek1Jam')">Cek I Jam ⬍</th>
+                <th onclick="sortTable('cek1Kondisi')">Kondisi Cek I ⬍</th>
+                <th onclick="sortTable('durasiMenit')">Durasi ⬍</th>
+                <th onclick="sortTable('pemakaian')">Pemakaian (%) ⬍</th>
+                <th onclick="sortTable('cek2Jam')">Cek II Jam ⬍</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody">
+              <!-- Rendered by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+
+        <div class="table-footer">
+          <div id="tableInfo">Menampilkan 0 dari 0 baris</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 12px;">
+              Tampilkan:
+              <select id="pageSizeSelect" class="form-control" style="width: auto; padding: 4px 8px;" onchange="changePageSize()">
+                <option value="15">15</option>
+                <option value="30" selected>30</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="ALL">Semua</option>
+              </select>
+            </label>
+            <div id="paginationControls" style="display: flex; gap: 6px;"></div>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 
   <!-- Toast Notification -->
@@ -1687,23 +2140,39 @@
 08/29/2026	PAGI	AHI	REACH TRUCK DOUBLE DEEP 12 M	K01		8:11	68%	12:07	37%	3:56	31%	
 08/29/2026	PAGI	AHI	REACH TRUCK DOUBLE DEEP 12 M	K02		8:24	100%	11:55	75%	3:31	25%`;
 
-    /* Public Google Sheet CSV Link */
+    /* Default Data for Sheet "SUMMARY ASSET" */
+    const DEFAULT_SUMMARY_ASSET_DATA = `TANGGAL	BU	UNIT NAME	TOTAL ASSET	TERSEDIA	PAKAI	PERBAIKAN	RUSAK
+09/01/2026	AHI	PALLET MOVER SHORT	16	16	16		
+09/01/2026	AHI	PALLET MOVER LONG	5	4	4	1	
+09/01/2026	AHI	REACH TRUCK 9 M	3	3	3		
+09/01/2026	AHI	REACH TRUCK 12 M	5	1	1	2	2`;
+
+    /* Public Google Sheet CSV Links */
     const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&gid=0";
+    const GOOGLE_SHEETS_SUMMARY_ASSET_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=SUMMARY%20ASSET";
 
     /* ========================================================
        APPLICATION STATE
        ======================================================== */
+    let currentActiveView = 'summary'; // 'summary' or 'detail'
     let rawDataset = [];
     let filteredDataset = [];
+    let rawSummaryAssetDataset = [];
+    let filteredSummaryAssetDataset = [];
     let currentSort = { column: 'idx', direction: 'asc' };
+    let currentAssetSort = { column: 'idx', direction: 'asc' };
     let currentPage = 1;
     let pageSize = 30;
 
-    // Chart instances
+    // Chart instances for Detail View
     let trendChartInstance = null;
     let usageByCodeChartInstance = null;
     let shiftDistChartInstance = null;
     let durationByNameChartInstance = null;
+
+    // Chart instances for Summary Asset View
+    let summaryStatusChartInstance = null;
+    let summaryUtilChartInstance = null;
 
     /* ========================================================
        UTILITY FUNCTIONS
@@ -1855,6 +2324,102 @@
     }
 
     /* ========================================================
+       PARSING SUMMARY ASSET SHEET (TANGGAL, BU, UNIT NAME, TOTAL ASSET, TERSEDIA, PAKAI, PERBAIKAN, RUSAK)
+       ======================================================== */
+    function parseSummaryAssetCSV(text) {
+      if (!text || !text.trim()) return [];
+      const lines = text.trim().split(/\r?\n/);
+      const result = [];
+      let startIdx = 0;
+
+      if (lines.length > 0) {
+        const firstLine = lines[0].toUpperCase();
+        if (firstLine.includes('TANGGAL') || firstLine.includes('UNIT NAME') || firstLine.includes('TOTAL ASSET')) {
+          startIdx = 1;
+        }
+      }
+
+      for (let i = startIdx; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line.trim()) continue;
+
+        let cols = [];
+        if (line.includes('\t')) {
+          cols = line.split('\t');
+        } else if (line.includes('","') || line.startsWith('"')) {
+          const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g;
+          let match;
+          while ((match = regex.exec(line)) !== null && match.index < line.length) {
+            let val = match[1] || '';
+            if (val.startsWith('"') && val.endsWith('"')) {
+              val = val.slice(1, -1).replace(/""/g, '"');
+            }
+            cols.push(val);
+          }
+        } else {
+          cols = line.split(',');
+        }
+
+        const getCol = (idx) => {
+          if (cols[idx] === undefined) return '';
+          let s = String(cols[idx]).replace(/^"|"$/g, '').trim();
+          if (s === '-' || s === 'null' || s === 'undefined') return '';
+          return s;
+        };
+
+        const tanggal = getCol(0);
+        const bu = getCol(1) || 'AHI';
+        const unitName = getCol(2);
+        
+        const cleanNum = (str) => {
+          if (!str) return 0;
+          const n = parseInt(str, 10);
+          return isNaN(n) ? 0 : n;
+        };
+
+        const totalAsset = cleanNum(getCol(3));
+        const tersedia = cleanNum(getCol(4));
+        const pakai = cleanNum(getCol(5));
+        const perbaikan = cleanNum(getCol(6));
+        const rusak = cleanNum(getCol(7));
+
+        if (!unitName && !tanggal && totalAsset === 0) continue;
+
+        const availabilityRate = totalAsset > 0 ? +((tersedia / totalAsset) * 100).toFixed(1) : 0;
+        const utilizationRate = totalAsset > 0 ? +((pakai / totalAsset) * 100).toFixed(1) : 0;
+        const standby = Math.max(0, tersedia - pakai);
+
+        let operationalStatus = 'OPTIMAL';
+        if (rusak > 0) {
+          operationalStatus = 'RUSAK';
+        } else if (perbaikan > 0) {
+          operationalStatus = 'PERBAIKAN';
+        } else if (totalAsset > 0 && tersedia === totalAsset && pakai === totalAsset) {
+          operationalStatus = 'FULL_OPS';
+        }
+
+        result.push({
+          idx: result.length + 1,
+          tanggal: tanggal || '-',
+          tanggalISO: parseDateToISO(tanggal),
+          bu: bu || '-',
+          unitName: unitName || '-',
+          totalAsset,
+          tersedia,
+          pakai,
+          perbaikan,
+          rusak,
+          standby,
+          availabilityRate,
+          utilizationRate,
+          operationalStatus
+        });
+      }
+
+      return result;
+    }
+
+    /* ========================================================
        TOAST HELPER
        ======================================================== */
     function showToast(message) {
@@ -1868,32 +2433,52 @@
     }
 
     /* ========================================================
-       DATA REFRESH ACTION
+       DATA REFRESH ACTION (FETCH LOG SHEET & SUMMARY ASSET SHEET)
        ======================================================== */
     async function refreshDashboardData(showNotice = true) {
-      if (showNotice) showToast('🔄 Menyegarkan data...');
+      if (showNotice) showToast('🔄 Menyegarkan data spreadsheet...');
       try {
-        // Fetch fresh data from source or default spreadsheet
-        let dataText = DEFAULT_SPREADSHEET_DATA;
+        let logDataText = DEFAULT_SPREADSHEET_DATA;
+        let summaryAssetDataText = DEFAULT_SUMMARY_ASSET_DATA;
+
+        // Fetch Main Log Sheet
         try {
           const controller = new AbortController();
-          const timeoutId = setTimeout(() => controller.abort(), 3500);
+          const timeoutId = setTimeout(() => controller.abort(), 4000);
           const resp = await fetch(GOOGLE_SHEETS_CSV_URL, { signal: controller.signal });
           clearTimeout(timeoutId);
           if (resp.ok) {
-            const csvText = await resp.text();
-            if (csvText && csvText.length > 50 && !csvText.includes('<html')) {
-              dataText = csvText;
+            const csv = await resp.text();
+            if (csv && csv.length > 50 && !csv.includes('<html')) {
+              logDataText = csv;
             }
           }
         } catch (e) {
-          // Use default spreadsheet data
+          // fallback default log
         }
 
-        rawDataset = parseCSVOrTSV(dataText);
+        // Fetch Summary Asset Sheet
+        try {
+          const controller2 = new AbortController();
+          const timeoutId2 = setTimeout(() => controller2.abort(), 4000);
+          const resp2 = await fetch(GOOGLE_SHEETS_SUMMARY_ASSET_URL, { signal: controller2.signal });
+          clearTimeout(timeoutId2);
+          if (resp2.ok) {
+            const csv2 = await resp2.text();
+            if (csv2 && csv2.length > 20 && !csv2.includes('<html')) {
+              summaryAssetDataText = csv2;
+            }
+          }
+        } catch (e) {
+          // fallback default summary asset
+        }
+
+        rawDataset = parseCSVOrTSV(logDataText);
+        rawSummaryAssetDataset = parseSummaryAssetCSV(summaryAssetDataText);
+
         populateDropdownOptions();
         applyFilters();
-        if (showNotice) showToast(`✅ Data diperbarui (${rawDataset.length} baris)`);
+        if (showNotice) showToast(`✅ Data diperbarui: ${rawDataset.length} log, ${rawSummaryAssetDataset.length} summary aset`);
       } catch (err) {
         if (showNotice) showToast('⚠️ Gagal menyegarkan data.');
       }
@@ -1910,7 +2495,10 @@
       const currentNama = namaSelect.value;
 
       const uniqueKodes = [...new Set(rawDataset.map(d => d.kodeAlat).filter(k => k && k !== '-'))].sort();
-      const uniqueNamas = [...new Set(rawDataset.map(d => d.namaAlat).filter(n => n && n !== '-'))].sort();
+      const uniqueNamas = [...new Set([
+        ...rawDataset.map(d => d.namaAlat).filter(n => n && n !== '-'),
+        ...rawSummaryAssetDataset.map(d => d.unitName).filter(u => u && u !== '-')
+      ])].sort();
 
       kodeSelect.innerHTML = '<option value="ALL">Semua Kode Alat</option>';
       uniqueKodes.forEach(kode => {
@@ -1931,29 +2519,130 @@
       if (uniqueKodes.includes(currentKode)) kodeSelect.value = currentKode;
       if (uniqueNamas.includes(currentNama)) namaSelect.value = currentNama;
 
-      const datesISO = rawDataset.map(d => d.tanggalISO).filter(Boolean).sort();
-      if (datesISO.length > 0) {
-        document.getElementById('filterDateStart').min = datesISO[0];
-        document.getElementById('filterDateStart').max = datesISO[datesISO.length - 1];
-        document.getElementById('filterDateEnd').min = datesISO[0];
-        document.getElementById('filterDateEnd').max = datesISO[datesISO.length - 1];
+      const allDatesISO = [
+        ...rawDataset.map(d => d.tanggalISO),
+        ...rawSummaryAssetDataset.map(d => d.tanggalISO)
+      ].filter(Boolean).sort();
+
+      if (allDatesISO.length > 0) {
+        const minDate = allDatesISO[0];
+        const maxDate = allDatesISO[allDatesISO.length - 1];
+        
+        ['filterDateStart', 'summaryFilterDateStart'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.min = minDate; el.max = maxDate; }
+        });
+        
+        ['filterDateEnd', 'summaryFilterDateEnd'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) { el.min = minDate; el.max = maxDate; }
+        });
       }
     }
 
+    /* ========================================================
+       TAB SWITCHING / MENU TERPISAH (SUMMARY ASSET VS DETAIL LOG)
+       ======================================================== */
+    function switchView(viewName) {
+      currentActiveView = viewName;
+      const tabSummaryBtn = document.getElementById('tabBtnSummary');
+      const tabDetailBtn = document.getElementById('tabBtnDetail');
+      const viewSummary = document.getElementById('viewSummaryAsset');
+      const viewDetail = document.getElementById('viewDetailLog');
+      const activeIndicator = document.getElementById('activeViewIndicator');
+
+      if (viewName === 'summary') {
+        tabSummaryBtn.classList.add('active');
+        tabSummaryBtn.setAttribute('aria-selected', 'true');
+        tabDetailBtn.classList.remove('active');
+        tabDetailBtn.setAttribute('aria-selected', 'false');
+
+        viewSummary.classList.add('active');
+        viewDetail.classList.remove('active');
+
+        if (activeIndicator) {
+          activeIndicator.innerHTML = '📍 Menu Aktif: <b>Summary Asset</b>';
+          activeIndicator.style.background = '#eff6ff';
+          activeIndicator.style.color = '#1d4ed8';
+          activeIndicator.style.borderColor = '#bfdbfe';
+        }
+
+        // Render summary asset components and charts
+        updateAssetSummary();
+        renderSummaryAssetCharts();
+      } else {
+        tabDetailBtn.classList.add('active');
+        tabDetailBtn.setAttribute('aria-selected', 'true');
+        tabSummaryBtn.classList.remove('active');
+        tabSummaryBtn.setAttribute('aria-selected', 'false');
+
+        viewDetail.classList.add('active');
+        viewSummary.classList.remove('active');
+
+        if (activeIndicator) {
+          activeIndicator.innerHTML = '📍 Menu Aktif: <b>Detail Log Pemakaian</b>';
+          activeIndicator.style.background = '#f0fdf4';
+          activeIndicator.style.color = '#15803d';
+          activeIndicator.style.borderColor = '#bbf7d0';
+        }
+
+        // Trigger chart rendering and resize on visible canvas
+        renderCharts();
+        renderTable();
+      }
+    }
+
+    /* Synchronize date filters between Summary Asset tab and Detail Log tab */
+    function syncDateFilter(source, type) {
+      if (source === 'summary') {
+        if (type === 'start') {
+          const val = document.getElementById('summaryFilterDateStart')?.value || '';
+          const target = document.getElementById('filterDateStart');
+          if (target) target.value = val;
+        } else if (type === 'end') {
+          const val = document.getElementById('summaryFilterDateEnd')?.value || '';
+          const target = document.getElementById('filterDateEnd');
+          if (target) target.value = val;
+        }
+      } else if (source === 'detail') {
+        if (type === 'start') {
+          const val = document.getElementById('filterDateStart')?.value || '';
+          const target = document.getElementById('summaryFilterDateStart');
+          if (target) target.value = val;
+        } else if (type === 'end') {
+          const val = document.getElementById('filterDateEnd')?.value || '';
+          const target = document.getElementById('summaryFilterDateEnd');
+          if (target) target.value = val;
+        }
+      }
+      applyFilters();
+    }
+
     function resetFilters() {
-      document.getElementById('filterDateStart').value = '';
-      document.getElementById('filterDateEnd').value = '';
-      document.getElementById('filterShift').value = 'ALL';
-      document.getElementById('filterKodeAlat').value = 'ALL';
-      document.getElementById('filterNamaAlat').value = 'ALL';
-      document.getElementById('filterStatus').value = 'ALL';
-      document.getElementById('tableSearch').value = '';
+      ['filterDateStart', 'summaryFilterDateStart', 'filterDateEnd', 'summaryFilterDateEnd'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+      });
+
+      const shiftEl = document.getElementById('filterShift');
+      if (shiftEl) shiftEl.value = 'ALL';
+      const kodeEl = document.getElementById('filterKodeAlat');
+      if (kodeEl) kodeEl.value = 'ALL';
+      const namaEl = document.getElementById('filterNamaAlat');
+      if (namaEl) namaEl.value = 'ALL';
+      const statusEl = document.getElementById('filterStatus');
+      if (statusEl) statusEl.value = 'ALL';
+      const tableSearch = document.getElementById('tableSearch');
+      if (tableSearch) tableSearch.value = '';
+      const assetSearch = document.getElementById('assetSearchInput');
+      if (assetSearch) assetSearch.value = '';
+      
       applyFilters();
       showToast('↺ Filter telah di-reset');
     }
 
     /* ========================================================
-       FILTERING LOGIC
+       FILTERING LOGIC (MENGIKUTI FILTER TANGGAL)
        ======================================================== */
     function applyFilters() {
       const dateStart = document.getElementById('filterDateStart').value;
@@ -1964,6 +2653,7 @@
       const status = document.getElementById('filterStatus').value;
       const search = (document.getElementById('tableSearch').value || '').toLowerCase().trim();
 
+      // Filter main logs
       filteredDataset = rawDataset.filter(item => {
         if (dateStart && item.tanggalISO && item.tanggalISO < dateStart) return false;
         if (dateEnd && item.tanggalISO && item.tanggalISO > dateEnd) return false;
@@ -1980,8 +2670,21 @@
         return true;
       });
 
+      // Filter sheet SUMMARY ASSET by date & unit name
+      filteredSummaryAssetDataset = rawSummaryAssetDataset.filter(item => {
+        if (dateStart && item.tanggalISO && item.tanggalISO < dateStart) return false;
+        if (dateEnd && item.tanggalISO && item.tanggalISO > dateEnd) return false;
+        if (nama !== 'ALL') {
+          const nameMatch = item.unitName.toLowerCase().includes(nama.toLowerCase()) || 
+                            nama.toLowerCase().includes(item.unitName.toLowerCase());
+          if (!nameMatch) return false;
+        }
+        return true;
+      });
+
       currentPage = 1;
       updateKPIs();
+      updateAssetSummary();
       renderCharts();
       renderTable();
     }
@@ -1995,36 +2698,49 @@
        ======================================================== */
     function updateKPIs() {
       const totalRecords = filteredDataset.length;
-      document.getElementById('kpiTotalRecords').textContent = `${totalRecords} catatan pemakaian`;
+      const kpiTotalRec = document.getElementById('kpiTotalRecords');
+      if (kpiTotalRec) kpiTotalRec.textContent = `${totalRecords} catatan pemakaian`;
+
+      const detailBadge = document.getElementById('tabDetailBadge');
+      if (detailBadge) detailBadge.textContent = `${totalRecords} Log`;
 
       const uniqueUnits = new Set(filteredDataset.map(d => d.kodeAlat).filter(k => k && k !== '-'));
-      document.getElementById('kpiTotalUnits').textContent = uniqueUnits.size;
+      const kpiTotalUnits = document.getElementById('kpiTotalUnits');
+      if (kpiTotalUnits) kpiTotalUnits.textContent = uniqueUnits.size;
 
       const validUsages = filteredDataset.map(d => d.pemakaian).filter(p => p !== null && !isNaN(p) && p >= 0);
-      if (validUsages.length > 0) {
-        const avgUsage = validUsages.reduce((a, b) => a + b, 0) / validUsages.length;
-        document.getElementById('kpiAvgUsage').textContent = `${avgUsage.toFixed(1)}%`;
-      } else {
-        document.getElementById('kpiAvgUsage').textContent = '0%';
+      const kpiAvgUsage = document.getElementById('kpiAvgUsage');
+      if (kpiAvgUsage) {
+        if (validUsages.length > 0) {
+          const avgUsage = validUsages.reduce((a, b) => a + b, 0) / validUsages.length;
+          kpiAvgUsage.textContent = `${avgUsage.toFixed(1)}%`;
+        } else {
+          kpiAvgUsage.textContent = '0%';
+        }
       }
 
       const validDurations = filteredDataset.map(d => d.durasiMenit).filter(m => m > 0);
-      if (validDurations.length > 0) {
-        const avgMinutes = validDurations.reduce((a, b) => a + b, 0) / validDurations.length;
-        document.getElementById('kpiAvgDuration').textContent = formatMinutesToHours(avgMinutes);
-      } else {
-        document.getElementById('kpiAvgDuration').textContent = '0j 0m';
+      const kpiAvgDuration = document.getElementById('kpiAvgDuration');
+      if (kpiAvgDuration) {
+        if (validDurations.length > 0) {
+          const avgMinutes = validDurations.reduce((a, b) => a + b, 0) / validDurations.length;
+          kpiAvgDuration.textContent = formatMinutesToHours(avgMinutes);
+        } else {
+          kpiAvgDuration.textContent = '0j 0m';
+        }
       }
 
       const criticalCount = filteredDataset.filter(d => d.statusCondition === 'CRITICAL').length;
       const criticalEl = document.getElementById('kpiCriticalCount');
-      criticalEl.textContent = criticalCount;
+      if (criticalEl) criticalEl.textContent = criticalCount;
       
       const cardKritis = document.getElementById('cardKritis');
-      if (criticalCount > 0) {
-        cardKritis.style.backgroundColor = '#fef2f2';
-      } else {
-        cardKritis.style.backgroundColor = 'var(--bg-card)';
+      if (cardKritis) {
+        if (criticalCount > 0) {
+          cardKritis.style.backgroundColor = '#fef2f2';
+        } else {
+          cardKritis.style.backgroundColor = 'var(--bg-card)';
+        }
       }
     }
 
@@ -2490,6 +3206,431 @@
     }
 
     /* ========================================================
+       SUMMARY ASSET (DATA DARI SHEET "SUMMARY ASSET", MENGIKUTI FILTER TANGGAL)
+       ======================================================== */
+    function getActiveDateRangeLabel() {
+      const dateStart = document.getElementById('filterDateStart').value;
+      const dateEnd = document.getElementById('filterDateEnd').value;
+
+      if (dateStart && dateEnd) {
+        if (dateStart === dateEnd) return `📅 Periode: ${dateStart}`;
+        return `📅 Periode: ${dateStart} s/d ${dateEnd}`;
+      } else if (dateStart) {
+        return `📅 Periode: Mulai ${dateStart}`;
+      } else if (dateEnd) {
+        return `📅 Periode: S.d ${dateEnd}`;
+      }
+
+      // Check unique dates from filtered or raw summary asset dataset
+      const dates = [...new Set(filteredSummaryAssetDataset.map(d => d.tanggal).filter(Boolean))];
+      if (dates.length === 1) {
+        return `📅 Periode: ${dates[0]}`;
+      } else if (dates.length > 1) {
+        return `📅 Periode: ${dates[0]} - ${dates[dates.length - 1]} (${dates.length} tanggal)`;
+      }
+      return '📅 Periode: Semua Tanggal';
+    }
+
+    function updateAssetSummary() {
+      const periodLabel = getActiveDateRangeLabel();
+      const periodBadge = document.getElementById('assetFilterPeriodBadge');
+      if (periodBadge) periodBadge.textContent = periodLabel;
+
+      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      const totalUnitsCount = dataset.reduce((acc, curr) => acc + curr.totalAsset, 0);
+
+      const countBadge = document.getElementById('assetSummaryCountBadge');
+      if (countBadge) {
+        countBadge.textContent = `${totalUnitsCount} Unit (${dataset.length} Tipe)`;
+      }
+
+      const tabBadge = document.getElementById('tabSummaryBadge');
+      if (tabBadge) {
+        tabBadge.textContent = `${totalUnitsCount} Unit`;
+      }
+
+      renderAssetSummaryRibbon();
+      renderAssetSummaryTable();
+      renderSummaryAssetCharts();
+    }
+
+    /* ========================================================
+       SUMMARY ASSET CHARTS RENDERING (CHART.JS)
+       ======================================================== */
+    function renderSummaryAssetCharts() {
+      renderSummaryStatusChart();
+      renderSummaryUtilChart();
+    }
+
+    function renderSummaryStatusChart() {
+      const canvas = document.getElementById('summaryStatusChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (summaryStatusChartInstance) summaryStatusChartInstance.destroy();
+
+      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      if (dataset.length === 0) return;
+
+      const grandTersedia = dataset.reduce((acc, curr) => acc + curr.tersedia, 0);
+      const grandPakai = dataset.reduce((acc, curr) => acc + curr.pakai, 0);
+      const grandPerbaikan = dataset.reduce((acc, curr) => acc + curr.perbaikan, 0);
+      const grandRusak = dataset.reduce((acc, curr) => acc + curr.rusak, 0);
+      const grandStandby = Math.max(0, grandTersedia - grandPakai);
+
+      summaryStatusChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: [
+            `Beroperasi: ${grandPakai} Unit`,
+            `Standby Siap: ${grandStandby} Unit`,
+            `Perbaikan: ${grandPerbaikan} Unit`,
+            `Rusak: ${grandRusak} Unit`
+          ],
+          datasets: [{
+            data: [grandPakai, grandStandby, grandPerbaikan, grandRusak],
+            backgroundColor: ['#2563eb', '#10b981', '#f97316', '#ef4444'],
+            hoverOffset: 6,
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 14, font: { family: 'inherit', size: 12 } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.label}`
+              }
+            }
+          },
+          cutout: '60%'
+        }
+      });
+    }
+
+    function renderSummaryUtilChart() {
+      const canvas = document.getElementById('summaryUtilChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (summaryUtilChartInstance) summaryUtilChartInstance.destroy();
+
+      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      if (dataset.length === 0) return;
+
+      const labels = dataset.map(d => d.unitName);
+      const availabilityRates = dataset.map(d => d.availabilityRate);
+      const utilizationRates = dataset.map(d => d.utilizationRate);
+
+      summaryUtilChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Kesiapan MHE (%)',
+              data: availabilityRates,
+              backgroundColor: 'rgba(16, 185, 129, 0.85)',
+              borderColor: '#10b981',
+              borderWidth: 1,
+              borderRadius: 6
+            },
+            {
+              label: 'Tingkat Utilisasi (%)',
+              data: utilizationRates,
+              backgroundColor: 'rgba(37, 99, 235, 0.85)',
+              borderColor: '#2563eb',
+              borderWidth: 1,
+              borderRadius: 6
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'inherit', size: 12 } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}%`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100,
+              ticks: { callback: (v) => v + '%' },
+              grid: { color: '#f1f5f9' }
+            },
+            x: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function renderAssetSummaryRibbon() {
+      const ribbon = document.getElementById('assetKpiRibbon');
+      if (!ribbon) return;
+
+      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+
+      if (dataset.length === 0) {
+        ribbon.innerHTML = `
+          <div style="padding: 12px; color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; text-align: center;">
+            Tidak ada ringkasan aset untuk filter tanggal dan kriteria yang dipilih.
+          </div>
+        `;
+        return;
+      }
+
+      const grandTotalAsset = dataset.reduce((acc, curr) => acc + curr.totalAsset, 0);
+      const grandTersedia = dataset.reduce((acc, curr) => acc + curr.tersedia, 0);
+      const grandPakai = dataset.reduce((acc, curr) => acc + curr.pakai, 0);
+      const grandPerbaikan = dataset.reduce((acc, curr) => acc + curr.perbaikan, 0);
+      const grandRusak = dataset.reduce((acc, curr) => acc + curr.rusak, 0);
+
+      const overallAvailability = grandTotalAsset > 0 ? ((grandTersedia / grandTotalAsset) * 100).toFixed(1) : '0';
+      const overallUtilization = grandTotalAsset > 0 ? ((grandPakai / grandTotalAsset) * 100).toFixed(1) : '0';
+
+      ribbon.innerHTML = `
+        <div class="asset-mini-card">
+          <div class="asset-mini-card-icon" style="background: #eff6ff; color: #2563eb;">🚜</div>
+          <div class="asset-mini-card-info">
+            <span class="asset-mini-card-title">Total Asset MHE</span>
+            <span class="asset-mini-card-value">${grandTotalAsset} Unit</span>
+            <span class="asset-mini-card-sub">${dataset.length} Tipe alat terdata</span>
+          </div>
+        </div>
+
+        <div class="asset-mini-card">
+          <div class="asset-mini-card-icon" style="background: #f0fdf4; color: #16a34a;">✅</div>
+          <div class="asset-mini-card-info">
+            <span class="asset-mini-card-title">Unit Tersedia (Ready)</span>
+            <span class="asset-mini-card-value">${grandTersedia} Unit</span>
+            <span class="asset-mini-card-sub" style="color: #16a34a; font-weight: 700;">${overallAvailability}% Kesiapan MHE</span>
+          </div>
+        </div>
+
+        <div class="asset-mini-card">
+          <div class="asset-mini-card-icon" style="background: #fefce8; color: #ca8a04;">⚡</div>
+          <div class="asset-mini-card-info">
+            <span class="asset-mini-card-title">Unit Beroperasi (Pakai)</span>
+            <span class="asset-mini-card-value">${grandPakai} Unit</span>
+            <span class="asset-mini-card-sub" style="color: #ca8a04; font-weight: 700;">${overallUtilization}% Tingkat utilisasi</span>
+          </div>
+        </div>
+
+        <div class="asset-mini-card">
+          <div class="asset-mini-card-icon" style="background: #fff7ed; color: #ea580c;">🛠️</div>
+          <div class="asset-mini-card-info">
+            <span class="asset-mini-card-title">Dalam Perbaikan</span>
+            <span class="asset-mini-card-value">${grandPerbaikan} Unit</span>
+            <span class="asset-mini-card-sub" style="color: ${grandPerbaikan > 0 ? '#ea580c' : 'var(--text-muted)'}; font-weight: ${grandPerbaikan > 0 ? '700' : 'normal'};">
+              ${grandPerbaikan > 0 ? 'Maintenance berjalan' : 'Nol perbaikan'}
+            </span>
+          </div>
+        </div>
+
+        <div class="asset-mini-card">
+          <div class="asset-mini-card-icon" style="background: #fef2f2; color: #dc2626;">⚠️</div>
+          <div class="asset-mini-card-info">
+            <span class="asset-mini-card-title">Kondisi Rusak</span>
+            <span class="asset-mini-card-value">${grandRusak} Unit</span>
+            <span class="asset-mini-card-sub" style="color: ${grandRusak > 0 ? '#dc2626' : 'var(--text-muted)'}; font-weight: ${grandRusak > 0 ? '700' : 'normal'};">
+              ${grandRusak > 0 ? 'Perlu tindakan perbaikan' : 'Nol unit rusak'}
+            </span>
+          </div>
+        </div>
+      `;
+    }
+
+    function sortAssetTable(column) {
+      if (currentAssetSort.column === column) {
+        currentAssetSort.direction = currentAssetSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentAssetSort.column = column;
+        currentAssetSort.direction = (column === 'unitName' || column === 'bu' || column === 'tanggal') ? 'asc' : 'desc';
+      }
+      renderAssetSummaryTable();
+    }
+
+    function renderAssetSummaryTable() {
+      const tbody = document.getElementById('assetSummaryTableBody');
+      const tfoot = document.getElementById('assetSummaryTableFoot');
+      const infoEl = document.getElementById('assetSummaryInfo');
+      if (!tbody) return;
+
+      const searchTerm = (document.getElementById('assetSearchInput')?.value || '').toLowerCase().trim();
+
+      // If filtered dataset is empty because of a date range that exists in log sheet but not yet in summary sheet, fallback gracefully to raw dataset
+      let baseData = filteredSummaryAssetDataset.length > 0 
+        ? [...filteredSummaryAssetDataset] 
+        : (document.getElementById('filterDateStart').value || document.getElementById('filterDateEnd').value 
+            ? [] 
+            : [...rawSummaryAssetDataset]);
+
+      let displayData = baseData.filter(d => {
+        if (!searchTerm) return true;
+        const targetStr = `${d.tanggal} ${d.bu} ${d.unitName} ${d.operationalStatus}`.toLowerCase();
+        return targetStr.includes(searchTerm);
+      });
+
+      // Sorting
+      displayData.sort((a, b) => {
+        let valA = a[currentAssetSort.column];
+        let valB = b[currentAssetSort.column];
+
+        if (valA === null || valA === undefined) valA = currentAssetSort.direction === 'asc' ? Infinity : -Infinity;
+        if (valB === null || valB === undefined) valB = currentAssetSort.direction === 'asc' ? Infinity : -Infinity;
+
+        if (typeof valA === 'string') {
+          return currentAssetSort.direction === 'asc'
+            ? valA.localeCompare(valB)
+            : valB.localeCompare(valA);
+        }
+
+        return currentAssetSort.direction === 'asc' ? valA - valB : valB - valA;
+      });
+
+      if (displayData.length === 0) {
+        const hasDateFilter = document.getElementById('filterDateStart').value || document.getElementById('filterDateEnd').value;
+        const dateNote = hasDateFilter 
+          ? `<br><small style="color: var(--text-muted); margin-top: 6px; display: inline-block;">(Sheet <b>SUMMARY ASSET</b> memiliki data untuk tanggal <b>09/01/2026</b>. Hapus filter tanggal atau pilih 09/01/2026 untuk melihat data ini)</small>` 
+          : '';
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="12" style="text-align: center; padding: 32px; color: var(--text-muted);">
+              Tidak ada data summary aset yang cocok dengan filter tanggal atau kriteria pencarian.${dateNote}
+            </td>
+          </tr>
+        `;
+        if (tfoot) tfoot.innerHTML = '';
+        if (infoEl) infoEl.textContent = 'Menampilkan 0 aset';
+        return;
+      }
+
+      let rowsHtml = '';
+      displayData.forEach((row, i) => {
+        // Status Badge Logic
+        let statusBadge = '<span class="status-badge-optimal">🟢 100% Siap Penuh</span>';
+        if (row.rusak > 0 && row.perbaikan > 0) {
+          statusBadge = `<span class="status-badge-critical">🔴 ${row.rusak} Rusak, ${row.perbaikan} Perbaikan</span>`;
+        } else if (row.rusak > 0) {
+          statusBadge = `<span class="status-badge-critical">🔴 ${row.rusak} Unit Rusak</span>`;
+        } else if (row.perbaikan > 0) {
+          statusBadge = `<span class="status-badge-warning">🟡 ${row.perbaikan} Unit Perbaikan</span>`;
+        } else if (row.availabilityRate < 100) {
+          statusBadge = `<span class="status-badge-warning">⚡ Kesiapan ${row.availabilityRate}%</span>`;
+        }
+
+        const perbaikanCell = row.perbaikan > 0 
+          ? `<span style="display: inline-block; padding: 2px 8px; border-radius: 9999px; background: #ffedd5; color: #c2410c; font-weight: 800;">${row.perbaikan}</span>` 
+          : `<span style="color: var(--text-light);">-</span>`;
+
+        const rusakCell = row.rusak > 0 
+          ? `<span style="display: inline-block; padding: 2px 8px; border-radius: 9999px; background: #fee2e2; color: #b91c1c; font-weight: 800;">${row.rusak}</span>` 
+          : `<span style="color: var(--text-light);">-</span>`;
+
+        const availabilityColor = row.availabilityRate >= 90 ? '#16a34a' : (row.availabilityRate >= 70 ? '#d97706' : '#dc2626');
+        const utilizationColor = row.utilizationRate >= 80 ? '#2563eb' : (row.utilizationRate >= 50 ? '#d97706' : '#64748b');
+
+        rowsHtml += `
+          <tr>
+            <td style="color: var(--text-light); font-weight: 600;">${i + 1}</td>
+            <td><span class="tag-code" style="font-size: 12px; font-weight: 700;">${row.tanggal}</span></td>
+            <td><span style="font-weight: 700; color: var(--text-muted);">${row.bu}</span></td>
+            <td style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${row.unitName}</td>
+            <td style="font-weight: 800; text-align: center; font-size: 14px; color: var(--primary);">${row.totalAsset}</td>
+            <td style="font-weight: 800; text-align: center; font-size: 14px; color: #16a34a;">${row.tersedia}</td>
+            <td style="font-weight: 800; text-align: center; font-size: 14px; color: #2563eb;">${row.pakai}</td>
+            <td style="text-align: center;">${perbaikanCell}</td>
+            <td style="text-align: center;">${rusakCell}</td>
+            <td style="text-align: center; font-weight: 800; color: ${availabilityColor};">
+              ${row.availabilityRate}%
+            </td>
+            <td style="text-align: center; font-weight: 800; color: ${utilizationColor};">
+              ${row.utilizationRate}%
+            </td>
+            <td>${statusBadge}</td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = rowsHtml;
+
+      // Calculate Grand Totals for Footer
+      const grandTotalAsset = displayData.reduce((a, b) => a + b.totalAsset, 0);
+      const grandTersedia = displayData.reduce((a, b) => a + b.tersedia, 0);
+      const grandPakai = displayData.reduce((a, b) => a + b.pakai, 0);
+      const grandPerbaikan = displayData.reduce((a, b) => a + b.perbaikan, 0);
+      const grandRusak = displayData.reduce((a, b) => a + b.rusak, 0);
+      const avgAvailOverall = grandTotalAsset > 0 ? ((grandTersedia / grandTotalAsset) * 100).toFixed(1) : '0';
+      const avgUtilOverall = grandTotalAsset > 0 ? ((grandPakai / grandTotalAsset) * 100).toFixed(1) : '0';
+
+      if (tfoot) {
+        tfoot.innerHTML = `
+          <tr>
+            <td colspan="4" style="text-align: right; font-weight: 800; color: var(--text-main);">TOTAL SHEET SUMMARY ASSET:</td>
+            <td style="text-align: center; font-weight: 800; font-size: 14px; color: var(--primary);">${grandTotalAsset}</td>
+            <td style="text-align: center; font-weight: 800; font-size: 14px; color: #16a34a;">${grandTersedia}</td>
+            <td style="text-align: center; font-weight: 800; font-size: 14px; color: #2563eb;">${grandPakai}</td>
+            <td style="text-align: center; font-weight: 800; font-size: 14px; color: ${grandPerbaikan > 0 ? '#c2410c' : 'var(--text-muted)'};">${grandPerbaikan > 0 ? grandPerbaikan : '-'}</td>
+            <td style="text-align: center; font-weight: 800; font-size: 14px; color: ${grandRusak > 0 ? '#b91c1c' : 'var(--text-muted)'};">${grandRusak > 0 ? grandRusak : '-'}</td>
+            <td style="text-align: center; font-weight: 800; font-size: 13px; color: #16a34a;">${avgAvailOverall}%</td>
+            <td style="text-align: center; font-weight: 800; font-size: 13px; color: #2563eb;">${avgUtilOverall}%</td>
+            <td style="color: var(--text-muted); font-size: 11px; font-weight: 600;">${displayData.length} Kategori Unit</td>
+          </tr>
+        `;
+      }
+
+      if (infoEl) {
+        infoEl.textContent = `Menampilkan ${displayData.length} tipe unit (${grandTotalAsset} total unit asset dari sheet SUMMARY ASSET)`;
+      }
+    }
+
+    function exportAssetSummaryToCSV() {
+      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      if (dataset.length === 0) {
+        showToast('⚠️ Tidak ada data summary aset untuk diekspor!');
+        return;
+      }
+
+      const headers = [
+        'TANGGAL', 'BU', 'UNIT NAME', 'TOTAL ASSET', 'TERSEDIA', 'PAKAI', 'PERBAIKAN', 'RUSAK', '% KESIAPAN', '% UTILISASI', 'STATUS OPERASIONAL'
+      ];
+
+      const rows = dataset.map(d => [
+        `"${d.tanggal}"`,
+        `"${d.bu}"`,
+        `"${d.unitName}"`,
+        `"${d.totalAsset}"`,
+        `"${d.tersedia}"`,
+        `"${d.pakai}"`,
+        `"${d.perbaikan}"`,
+        `"${d.rusak}"`,
+        `"${d.availabilityRate}%"`,
+        `"${d.utilizationRate}%"`,
+        `"${d.operationalStatus}"`
+      ]);
+
+      const dateStart = document.getElementById('filterDateStart').value || 'all';
+      const dateEnd = document.getElementById('filterDateEnd').value || 'all';
+      const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `summary_asset_sheet_${dateStart}_sd_${dateEnd}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('📥 File Summary Asset CSV berhasil diunduh!');
+    }
+
+    /* ========================================================
        LOADING SCREEN ANIMATION & FETCH CONTROLLER
        ======================================================== */
     const loadingStatusMessages = [
@@ -2574,32 +3715,49 @@
       }, 550);
     }
 
-    /* Attempt Live Google Sheets Fetch with Graceful Fallback */
+    /* Attempt Live Google Sheets Fetch for both Log & Summary Asset sheets with Graceful Fallback */
     async function fetchDataFromSource() {
-      // 1. Check if user already had localStorage override
+      let logDataText = DEFAULT_SPREADSHEET_DATA;
+      let summaryAssetDataText = DEFAULT_SUMMARY_ASSET_DATA;
+
+      // 1. Check if user had localStorage override for logs
       const savedData = localStorage.getItem('forklift_battery_data');
       if (savedData && savedData.trim()) {
-        return savedData;
+        logDataText = savedData;
+      } else {
+        try {
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 2500);
+          const resp = await fetch(GOOGLE_SHEETS_CSV_URL, { signal: controller.signal });
+          clearTimeout(timeoutId);
+          if (resp.ok) {
+            const csvText = await resp.text();
+            if (csvText && csvText.length > 50 && !csvText.includes('<html')) {
+              logDataText = csvText;
+            }
+          }
+        } catch (err) {
+          console.info('Using default log dataset:', err.message);
+        }
       }
 
-      // 2. Try fetching live from Google Sheets public CSV export
+      // 2. Fetch Summary Asset sheet
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2500);
-        const resp = await fetch(GOOGLE_SHEETS_CSV_URL, { signal: controller.signal });
-        clearTimeout(timeoutId);
-        if (resp.ok) {
-          const csvText = await resp.text();
-          if (csvText && csvText.length > 50 && !csvText.includes('<html')) {
-            return csvText;
+        const controller2 = new AbortController();
+        const timeoutId2 = setTimeout(() => controller2.abort(), 2500);
+        const resp2 = await fetch(GOOGLE_SHEETS_SUMMARY_ASSET_URL, { signal: controller2.signal });
+        clearTimeout(timeoutId2);
+        if (resp2.ok) {
+          const csvText2 = await resp2.text();
+          if (csvText2 && csvText2.length > 20 && !csvText2.includes('<html')) {
+            summaryAssetDataText = csvText2;
           }
         }
       } catch (err) {
-        // Network or CORS restriction, fallback to default dataset smoothly
-        console.info('Using pre-bundled dataset:', err.message);
+        console.info('Using default summary asset dataset:', err.message);
       }
 
-      return DEFAULT_SPREADSHEET_DATA;
+      return { logDataText, summaryAssetDataText };
     }
 
     /* ========================================================
@@ -2612,18 +3770,26 @@
         runLoadingAnimation(resolve);
       });
 
-      Promise.all([fetchPromise, animationPromise]).then(([dataText]) => {
-        rawDataset = parseCSVOrTSV(dataText);
+      Promise.all([fetchPromise, animationPromise]).then(([dataResult]) => {
+        rawDataset = parseCSVOrTSV(dataResult.logDataText);
+        rawSummaryAssetDataset = parseSummaryAssetCSV(dataResult.summaryAssetDataText);
+        
         populateDropdownOptions();
         applyFilters();
+
+        // Default to Summary Asset view on launch as requested
+        switchView('summary');
 
         // Dismiss loading screen with smooth fade-out
         dismissLoadingScreen();
       }).catch((err) => {
         console.error('Initialization error:', err);
         rawDataset = parseCSVOrTSV(DEFAULT_SPREADSHEET_DATA);
+        rawSummaryAssetDataset = parseSummaryAssetCSV(DEFAULT_SUMMARY_ASSET_DATA);
+        
         populateDropdownOptions();
         applyFilters();
+        switchView('summary');
         dismissLoadingScreen();
       });
     });
