@@ -2552,9 +2552,9 @@
             <label for="downtimeFilterStatus">Status:</label>
             <select id="downtimeFilterStatus" class="form-control" style="width: auto;" onchange="applyFilters()">
               <option value="ALL">Semua Status</option>
-              <option value="DONE">DONE (Selesai)</option>
-              <option value="PROGRESS">IN PROGRESS (Pengerjaan)</option>
-              <option value="OPEN">OPEN (Menunggu Tindakan)</option>
+              <option value="MASIH PERBAIKAN">🔧 MASIH PERBAIKAN</option>
+              <option value="DONE">✅ DONE (Selesai)</option>
+              <option value="OPEN">🔴 OPEN (Menunggu Tindakan)</option>
             </select>
           </div>
         </div>
@@ -2590,7 +2590,7 @@
 
         <div class="summary-card">
           <div class="summary-top">
-            <span class="summary-label">Dalam Pengerjaan (Active)</span>
+            <span class="summary-label">Masih Perbaikan (Active)</span>
             <div class="summary-icon icon-red">⚙️</div>
           </div>
           <div class="summary-value" id="kpiDowntimeActive" style="color: #dc2626;">0 Unit</div>
@@ -2923,10 +2923,11 @@
 09/01/2026	HCI	STOCK PICKER 9M	2	2	2	0	0`;
 
     /* Default Data for Sheet "DOWNTIME" */
-    const DEFAULT_DOWNTIME_DATA = `NO,BU,DEPARTEMEN,JENIS MHE,ASSET NAME,START,FINISH,AGING DOWNTIME,TARGET PENYELESAIAN,INDIKASI KERUSAKAN,PERBAIKAN,STATUS
-1,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK SINGLE DEEP C03 RM-5725S - 45 (12 METER),21-Aug-2026,9-Sep-2026,19,,ACES 2,SERVICE VENDOR ANDALAN TEHNIK,DONE
-2,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK DOUBLE DEEP C04 RMD-6095S-32 (12 METER),29-Aug-2026,29-Aug-2026,1,,RODA TERKELUPAS,KANIBAL DENGAN,DONE
-3,HCI,STORING,REACH TRUCK 9 M,REACH TRUCK SINGLE DEEP H01 (9 METER),25-Aug-2026,2-Sep-2026,8,,HYDRAULIC HOSE LEAK,GANTI HOSE BARU,DONE`;
+    const DEFAULT_DOWNTIME_DATA = `NO,BU,DEPARTEMEN,JENIS MHE,ASSET NAME,START,FINISH,AGING DOWNTIME,TARGET PENYELESAIAN,INDIKASI KERUSAKAN,PERBAIKAN,STATUS,WAKTU SELESAI
+1,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK SINGLE DEEP C03 RM-5725S - 45 (12 METER),21-Aug-2026,9-Sep-2026,19,,ACES 2,SERVICE VENDOR ANDALAN TEHNIK,DONE,19 Hari
+2,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK DOUBLE DEEP C04 RMD-6095S-32 (12 METER),29-Aug-2026,29-Aug-2026,1,1,RODA TERKELUPAS,KANIBAL DENGAN,DONE,0 Hari
+3,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK DOUBLE DEEP K01 CQD 15 SD (12 METER),27-Aug-2026,,14,30,,TUNGGU SPARE PART SERVICE CENTER,MASIH PERBAIKAN,
+4,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK SINGLE DEEP C03 RM-5725S - 45 (12 METER),10-Sep-2026,,0,,,ACES 2,SERVICE VENDOR ANDALAN TEHNIK,MASIH PERBAIKAN,`;
 
     /* Default Data for Sheet "SPAREPART" */
     const DEFAULT_SPAREPART_DATA = `No.,Nama Part,Normal,Rusak,Total,Satuan,Keterangan,BU
@@ -3344,12 +3345,36 @@
         const targetPenyelesaian = col8;
         const indikasiKerusakan = col9 || '-';
         const perbaikan = col10 || '-';
-        const rawStatus = (col11 || 'DONE').toUpperCase().trim();
+        const rawStatus = (col11 || '').toUpperCase().trim();
         let status = 'DONE';
-        if (rawStatus.includes('PROG') || rawStatus.includes('JALAN') || rawStatus.includes('KERJA')) {
-          status = 'PROGRESS';
-        } else if (rawStatus.includes('OPEN') || rawStatus.includes('TUNGGU') || rawStatus.includes('PENDING')) {
+        if (
+          rawStatus.includes('PERBAIKAN') ||
+          rawStatus.includes('PROG') ||
+          rawStatus.includes('JALAN') ||
+          rawStatus.includes('KERJA') ||
+          rawStatus.includes('PROSES') ||
+          rawStatus.includes('BELUM') ||
+          rawStatus.includes('ACTIVE')
+        ) {
+          status = 'MASIH PERBAIKAN';
+        } else if (
+          rawStatus.includes('OPEN') ||
+          rawStatus.includes('TUNGGU') ||
+          rawStatus.includes('PENDING') ||
+          rawStatus.includes('WAITING')
+        ) {
           status = 'OPEN';
+        } else if (
+          rawStatus.includes('DONE') ||
+          rawStatus.includes('SELESAI') ||
+          rawStatus.includes('CLOSE')
+        ) {
+          status = 'DONE';
+        } else if (!tanggalFinish || tanggalFinish === '-') {
+          // Jika belum ada tanggal finish tercatat, unit masih dalam perbaikan
+          status = 'MASIH PERBAIKAN';
+        } else {
+          status = 'DONE';
         }
 
         if (!assetName && !jenisMhe && indikasiKerusakan === '-') continue;
@@ -3933,10 +3958,19 @@
 
       filteredDowntimeDataset = rawDowntimeDataset.filter(item => {
         if (currentGlobalBU !== 'ALL' && (item.bu || '').toUpperCase().trim() !== currentGlobalBU) return false;
-        if (dateStart && item.tanggalStartISO && item.tanggalStartISO < dateStart) return false;
+        if (dateStart) {
+          const finishOrNow = item.tanggalFinishISO || '9999-12-31';
+          if (finishOrNow < dateStart) return false;
+        }
         if (dateEnd && item.tanggalStartISO && item.tanggalStartISO > dateEnd) return false;
         if (dtJenis !== 'ALL' && item.jenisMhe !== dtJenis) return false;
-        if (dtStatus !== 'ALL' && item.status !== dtStatus) return false;
+        if (dtStatus !== 'ALL') {
+          if (dtStatus === 'MASIH PERBAIKAN') {
+            if (item.status !== 'MASIH PERBAIKAN' && item.status !== 'PROGRESS') return false;
+          } else if (item.status !== dtStatus) {
+            return false;
+          }
+        }
         if (dtSearch) {
           const matchStr = `${item.no} ${item.bu} ${item.departemen} ${item.jenisMhe} ${item.assetName} ${item.indikasiKerusakan} ${item.perbaikan} ${item.status}`.toLowerCase();
           if (!matchStr.includes(dtSearch)) return false;
@@ -5166,11 +5200,11 @@
 
       let rowsHtml = '';
       displayData.forEach((row, i) => {
-        let statusBadge = '<span class="status-badge-optimal">✅ DONE</span>';
-        if (row.status === 'PROGRESS') {
-          statusBadge = '<span class="status-badge-warning">🟡 IN PROGRESS</span>';
+        let statusBadge = '<span class="status-badge-optimal" style="font-weight: 700; white-space: nowrap;">✅ DONE</span>';
+        if (row.status === 'MASIH PERBAIKAN' || row.status === 'PROGRESS') {
+          statusBadge = '<span class="status-badge-warning" style="background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa; font-weight: 700; white-space: nowrap;">🔧 MASIH PERBAIKAN</span>';
         } else if (row.status === 'OPEN') {
-          statusBadge = '<span class="status-badge-critical">🔴 OPEN</span>';
+          statusBadge = '<span class="status-badge-critical" style="background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; font-weight: 700; white-space: nowrap;">🔴 OPEN</span>';
         }
 
         let agingClass = 'aging-badge-low';
@@ -5202,14 +5236,18 @@
       const grandAging = displayData.reduce((a, b) => a + (b.aging || 0), 0);
       const avgAging = displayData.length > 0 ? (grandAging / displayData.length).toFixed(1) : 0;
       const doneCount = displayData.filter(d => d.status === 'DONE').length;
+      const activeCount = displayData.filter(d => d.status !== 'DONE').length;
 
       if (tfoot) {
         tfoot.innerHTML = `
           <tr>
             <td colspan="7" style="text-align: right; font-weight: 800; color: var(--text-main);">TOTAL SHEET DOWNTIME:</td>
             <td style="text-align: center; font-weight: 800; font-size: 13px; color: #d97706;">${grandAging} Hari (Rata-rata: ${avgAging} Hari)</td>
-            <td colspan="3" style="text-align: right; font-weight: 700; color: var(--text-muted);">Selesai Perbaikan:</td>
-            <td style="text-align: center; font-weight: 800; color: #16a34a;">${doneCount} / ${displayData.length} Selesai</td>
+            <td colspan="3" style="text-align: right; font-weight: 700; color: var(--text-muted);">Status Pengerjaan:</td>
+            <td style="text-align: center; font-weight: 800; font-size: 12px; white-space: nowrap;">
+              <span style="color: #16a34a;">${doneCount} Selesai</span>
+              ${activeCount > 0 ? ` / <span style="color: #ea580c;">${activeCount} Masih Perbaikan</span>` : ''}
+            </td>
           </tr>
         `;
       }
