@@ -2127,6 +2127,7 @@
           <div class="topbar-subtitle-row">
             <span id="activeViewIndicator" class="active-view-tag">📍 Menu Aktif: Summary Asset</span>
             <span class="topbar-time-tag" id="lastUpdatedTag">🕒 Sinkronisasi Terkini</span>
+            <span id="activeBUTag" style="font-size: 11.5px; font-weight: 700; padding: 3px 10px; border-radius: 9999px; background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; display: inline-flex; align-items: center; gap: 4px;">🏢 BU: Semua (AHI &amp; HCI)</span>
           </div>
         </div>
         <div class="topbar-actions">
@@ -2146,6 +2147,17 @@
       <!-- Filter Bar for Summary Asset -->
       <section class="summary-filter-bar">
         <div class="summary-filter-inputs">
+          <!-- 1. Filter Business Unit (AHI / HCI) -->
+          <div class="summary-filter-item">
+            <label for="summaryFilterBU" style="font-weight: 700; color: #1e3a8a;">🏢 Filter BU:</label>
+            <select id="summaryFilterBU" class="form-control" style="font-weight: 700; min-width: 155px; border: 1.5px solid #3b82f6; background-color: #f8fafc;" onchange="handleBUFilterChange(this.value)">
+              <option value="ALL">Semua BU (AHI &amp; HCI)</option>
+              <option value="AHI">BU AHI</option>
+              <option value="HCI">BU HCI</option>
+            </select>
+          </div>
+
+          <!-- 2. Filter Tanggal -->
           <div class="summary-filter-item">
             <label for="summaryFilterDateStart">📅 Dari Tanggal:</label>
             <input type="date" id="summaryFilterDateStart" class="form-control" style="width: auto;" onchange="syncDateFilter('summary', 'start')" />
@@ -2154,18 +2166,28 @@
             <label for="summaryFilterDateEnd">📅 S.d Tanggal:</label>
             <input type="date" id="summaryFilterDateEnd" class="form-control" style="width: auto;" onchange="syncDateFilter('summary', 'end')" />
           </div>
-          <div class="summary-filter-item" style="flex: 1; min-width: 200px;">
+
+          <!-- 3. Filter Tipe Unit Name -->
+          <div class="summary-filter-item">
+            <label for="summaryFilterUnitName">🚜 Tipe Unit:</label>
+            <select id="summaryFilterUnitName" class="form-control" style="width: auto; min-width: 170px;" onchange="applyFilters()">
+              <option value="ALL">Semua Tipe Unit</option>
+            </select>
+          </div>
+
+          <!-- 4. Cari Unit / Status -->
+          <div class="summary-filter-item" style="flex: 1; min-width: 170px;">
             <input
               type="text"
               id="assetSearchInput"
               class="form-control"
-              placeholder="🔎 Cari Unit Name / BU..."
+              placeholder="🔎 Cari Unit / Status..."
               oninput="renderAssetSummaryTable()"
             />
           </div>
         </div>
-        <div style="display: flex; gap: 8px; align-items: center;">
-          <button class="btn btn-secondary btn-sm" onclick="resetFilters()" title="Reset Filter Tanggal">
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <button class="btn btn-secondary btn-sm" onclick="resetFilters()" title="Reset Semua Filter">
             <span>↺</span> Reset
           </button>
           <button class="btn btn-primary btn-sm" onclick="exportAssetSummaryToCSV()" title="Ekspor Summary Asset ke CSV">
@@ -2218,6 +2240,7 @@
               </div>
             </div>
             <span id="assetFilterPeriodBadge" class="asset-period-badge">📅 Periode: Semua Tanggal</span>
+            <span id="assetBUBadge" class="asset-period-badge" style="background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; font-weight: 700;">🏢 BU: Semua (AHI &amp; HCI)</span>
             <span id="assetSummaryCountBadge" class="badge-count">0 Unit</span>
           </div>
         </div>
@@ -2326,6 +2349,16 @@
           <div class="form-group">
             <label class="form-label" for="filterDateEnd">Sampai Tanggal</label>
             <input type="date" id="filterDateEnd" class="form-control" onchange="syncDateFilter('detail', 'end')" />
+          </div>
+
+          <!-- Filter BU -->
+          <div class="form-group">
+            <label class="form-label" for="filterDetailBU">🏢 Business Unit (BU)</label>
+            <select id="filterDetailBU" class="form-control" style="font-weight: 700;" onchange="handleBUFilterChange(this.value)">
+              <option value="ALL">Semua BU (AHI &amp; HCI)</option>
+              <option value="AHI">BU AHI</option>
+              <option value="HCI">BU HCI</option>
+            </select>
           </div>
 
           <!-- Filter Shift -->
@@ -2491,6 +2524,14 @@
       <!-- Filter Bar for Downtime -->
       <section class="summary-filter-bar">
         <div class="summary-filter-inputs">
+          <div class="summary-filter-item">
+            <label for="downtimeFilterBU" style="font-weight: 700;">🏢 Filter BU:</label>
+            <select id="downtimeFilterBU" class="form-control" style="font-weight: 700; width: auto;" onchange="handleBUFilterChange(this.value)">
+              <option value="ALL">Semua BU (AHI &amp; HCI)</option>
+              <option value="AHI">BU AHI</option>
+              <option value="HCI">BU HCI</option>
+            </select>
+          </div>
           <div class="summary-filter-item">
             <label for="downtimeFilterDateStart">📅 Dari Tanggal:</label>
             <input type="date" id="downtimeFilterDateStart" class="form-control" style="width: auto;" onchange="syncDateFilter('downtime', 'start')" />
@@ -2667,11 +2708,11 @@
       <section class="summary-filter-bar">
         <div class="summary-filter-inputs">
           <div class="summary-filter-item">
-            <label for="sparepartFilterBU">🏢 Filter BU:</label>
-            <select id="sparepartFilterBU" class="form-control" style="width: auto;" onchange="applyFilters()">
-              <option value="ALL">Semua BU</option>
-              <option value="HCI">HCI</option>
-              <option value="AHI">AHI</option>
+            <label for="sparepartFilterBU" style="font-weight: 700;">🏢 Filter BU:</label>
+            <select id="sparepartFilterBU" class="form-control" style="font-weight: 700; width: auto;" onchange="handleBUFilterChange(this.value)">
+              <option value="ALL">Semua BU (AHI &amp; HCI)</option>
+              <option value="AHI">BU AHI</option>
+              <option value="HCI">BU HCI</option>
               <option value="Corporate">Corporate</option>
             </select>
           </div>
@@ -2869,15 +2910,21 @@
 
     /* Default Data for Sheet "SUMMARY ASSET" */
     const DEFAULT_SUMMARY_ASSET_DATA = `TANGGAL	BU	UNIT NAME	TOTAL ASSET	TERSEDIA	PAKAI	PERBAIKAN	RUSAK
-09/01/2026	AHI	PALLET MOVER SHORT	16	16	16		
-09/01/2026	AHI	PALLET MOVER LONG	5	4	4	1	
-09/01/2026	AHI	REACH TRUCK 9 M	3	3	3		
-09/01/2026	AHI	REACH TRUCK 12 M	5	1	1	2	2`;
+09/01/2026	AHI	PALLET MOVER SHORT	16	14	14	1	1
+09/01/2026	AHI	PALLET MOVER LONG	5	5	5	0	0
+09/01/2026	AHI	REACH TRUCK 9 M	4	2	2	1	1
+09/01/2026	AHI	REACH TRUCK 12 M	4	1	1	1	2
+09/01/2026	HCI	PALLET MOVER SHORT	18	17	17	0	1
+09/01/2026	HCI	PALLET MOVER LONG	3	3	3	0	0
+09/01/2026	HCI	REACH TRUCK 9 M	7	6	6	0	1
+09/01/2026	HCI	REACH TRUCK 12 M	5	4	4	0	1
+09/01/2026	HCI	STOCK PICKER 9M	2	2	2	0	0`;
 
     /* Default Data for Sheet "DOWNTIME" */
     const DEFAULT_DOWNTIME_DATA = `NO,BU,DEPARTEMEN,JENIS MHE,ASSET NAME,START,FINISH,AGING DOWNTIME,TARGET PENYELESAIAN,INDIKASI KERUSAKAN,PERBAIKAN,STATUS
 1,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK SINGLE DEEP C03 RM-5725S - 45 (12 METER),21-Aug-2026,9-Sep-2026,19,,ACES 2,SERVICE VENDOR ANDALAN TEHNIK,DONE
-2,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK DOUBLE DEEP C04 RMD-6095S-32 (12 METER),29-Aug-2026,29-Aug-2026,1,,RODA TERKELUPAS,KANIBAL DENGAN,DONE`;
+2,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK DOUBLE DEEP C04 RMD-6095S-32 (12 METER),29-Aug-2026,29-Aug-2026,1,,RODA TERKELUPAS,KANIBAL DENGAN,DONE
+3,HCI,STORING,REACH TRUCK 9 M,REACH TRUCK SINGLE DEEP H01 (9 METER),25-Aug-2026,2-Sep-2026,8,,HYDRAULIC HOSE LEAK,GANTI HOSE BARU,DONE`;
 
     /* Default Data for Sheet "SPAREPART" */
     const DEFAULT_SPAREPART_DATA = `No.,Nama Part,Normal,Rusak,Total,Satuan,Keterangan,BU
@@ -2918,6 +2965,7 @@
        APPLICATION STATE
        ======================================================== */
     let currentActiveView = 'summary'; // 'summary', 'detail', 'downtime', or 'sparepart'
+    let currentGlobalBU = 'ALL'; // 'ALL', 'AHI', 'HCI'
     let rawDataset = [];
     let filteredDataset = [];
     let rawSummaryAssetDataset = [];
@@ -3505,9 +3553,81 @@
     }
 
     /* ========================================================
-       FILTER DROPDOWNS SETUP
+       GLOBAL BUSINESS UNIT (BU) & FILTER DROPDOWNS SETUP
        ======================================================== */
+    function handleBUFilterChange(selectedBU) {
+      currentGlobalBU = (selectedBU || 'ALL').toUpperCase().trim();
+
+      // Synchronize all BU select elements across all views
+      const buSelectIds = ['summaryFilterBU', 'filterDetailBU', 'downtimeFilterBU', 'sparepartFilterBU'];
+      buSelectIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value !== currentGlobalBU) {
+          el.value = currentGlobalBU;
+        }
+      });
+
+      // Update Topbar Badge
+      const buTag = document.getElementById('activeBUTag');
+      if (buTag) {
+        if (currentGlobalBU === 'ALL') {
+          buTag.textContent = '🏢 BU: Semua (AHI & HCI)';
+          buTag.style.background = '#eff6ff';
+          buTag.style.color = '#1d4ed8';
+          buTag.style.borderColor = '#bfdbfe';
+        } else if (currentGlobalBU === 'AHI') {
+          buTag.textContent = '🏢 BU: AHI';
+          buTag.style.background = '#f0fdf4';
+          buTag.style.color = '#15803d';
+          buTag.style.borderColor = '#bbf7d0';
+        } else if (currentGlobalBU === 'HCI') {
+          buTag.textContent = '🏢 BU: HCI';
+          buTag.style.background = '#faf5ff';
+          buTag.style.color = '#7e22ce';
+          buTag.style.borderColor = '#e9d5ff';
+        }
+      }
+
+      // Re-populate Unit Name dropdown options for Summary Asset and Logbook according to selected BU
+      populateUnitNameOptions();
+
+      // Apply filtering to all datasets and re-render everything
+      applyFilters();
+
+      const label = currentGlobalBU === 'ALL' ? 'Semua BU (AHI & HCI)' : `BU ${currentGlobalBU}`;
+      showToast(`🏢 Filter BU aktif: ${label}`);
+    }
+
+    function populateUnitNameOptions() {
+      const unitSelect = document.getElementById('summaryFilterUnitName');
+      if (!unitSelect) return;
+
+      const currentUnit = unitSelect.value || 'ALL';
+
+      // Find unique unit names in rawSummaryAssetDataset matching currentGlobalBU
+      let relevantItems = rawSummaryAssetDataset;
+      if (currentGlobalBU !== 'ALL') {
+        relevantItems = rawSummaryAssetDataset.filter(d => (d.bu || '').toUpperCase().trim() === currentGlobalBU);
+      }
+      const uniqueUnits = [...new Set(relevantItems.map(d => d.unitName).filter(Boolean))].sort();
+
+      unitSelect.innerHTML = '<option value="ALL">Semua Tipe Unit</option>';
+      uniqueUnits.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u;
+        opt.textContent = u;
+        unitSelect.appendChild(opt);
+      });
+
+      if (uniqueUnits.includes(currentUnit)) {
+        unitSelect.value = currentUnit;
+      } else {
+        unitSelect.value = 'ALL';
+      }
+    }
+
     function populateDropdownOptions() {
+      populateUnitNameOptions();
       const kodeSelect = document.getElementById('filterKodeAlat');
       const namaSelect = document.getElementById('filterNamaAlat');
       const downtimeJenisSelect = document.getElementById('downtimeFilterJenisMhe');
@@ -3714,6 +3834,23 @@
         if (el) el.value = '';
       });
 
+      currentGlobalBU = 'ALL';
+      ['summaryFilterBU', 'filterDetailBU', 'downtimeFilterBU', 'sparepartFilterBU'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = 'ALL';
+      });
+
+      const buTag = document.getElementById('activeBUTag');
+      if (buTag) {
+        buTag.textContent = '🏢 BU: Semua (AHI & HCI)';
+        buTag.style.background = '#eff6ff';
+        buTag.style.color = '#1d4ed8';
+        buTag.style.borderColor = '#bfdbfe';
+      }
+
+      const summaryUnitEl = document.getElementById('summaryFilterUnitName');
+      if (summaryUnitEl) summaryUnitEl.value = 'ALL';
+
       const shiftEl = document.getElementById('filterShift');
       if (shiftEl) shiftEl.value = 'ALL';
       const kodeEl = document.getElementById('filterKodeAlat');
@@ -3732,19 +3869,18 @@
       if (dtStatusEl) dtStatusEl.value = 'ALL';
       const dtSearch = document.getElementById('downtimeSearchInput');
       if (dtSearch) dtSearch.value = '';
-      const spBUEl = document.getElementById('sparepartFilterBU');
-      if (spBUEl) spBUEl.value = 'ALL';
       const spKondisiEl = document.getElementById('sparepartFilterKondisi');
       if (spKondisiEl) spKondisiEl.value = 'ALL';
       const spSearch = document.getElementById('sparepartSearchInput');
       if (spSearch) spSearch.value = '';
       
+      populateUnitNameOptions();
       applyFilters();
-      showToast('↺ Filter telah di-reset');
+      showToast('↺ Semua filter telah di-reset ke Semua BU (AHI & HCI)');
     }
 
     /* ========================================================
-       FILTERING LOGIC (MENGIKUTI FILTER TANGGAL & KONDISI)
+       FILTERING LOGIC (MENGIKUTI FILTER BU, TANGGAL & KONDISI)
        ======================================================== */
     function applyFilters() {
       const dateStart = document.getElementById('filterDateStart')?.value || '';
@@ -3754,9 +3890,11 @@
       const nama = document.getElementById('filterNamaAlat')?.value || 'ALL';
       const status = document.getElementById('filterStatus')?.value || 'ALL';
       const search = (document.getElementById('tableSearch')?.value || '').toLowerCase().trim();
+      const summaryUnitFilter = document.getElementById('summaryFilterUnitName')?.value || 'ALL';
 
-      // Filter main logs
+      // 1. Filter Main Log Dataset
       filteredDataset = rawDataset.filter(item => {
+        if (currentGlobalBU !== 'ALL' && (item.bu || '').toUpperCase().trim() !== currentGlobalBU) return false;
         if (dateStart && item.tanggalISO && item.tanggalISO < dateStart) return false;
         if (dateEnd && item.tanggalISO && item.tanggalISO > dateEnd) return false;
         if (shift !== 'ALL' && item.shift !== shift) return false;
@@ -3772,8 +3910,10 @@
         return true;
       });
 
-      // Filter sheet SUMMARY ASSET by date & unit name
+      // 2. Filter Sheet SUMMARY ASSET by Global BU, Unit Name, & Date
       filteredSummaryAssetDataset = rawSummaryAssetDataset.filter(item => {
+        if (currentGlobalBU !== 'ALL' && (item.bu || '').toUpperCase().trim() !== currentGlobalBU) return false;
+        if (summaryUnitFilter !== 'ALL' && item.unitName !== summaryUnitFilter) return false;
         if (dateStart && item.tanggalISO && item.tanggalISO < dateStart) return false;
         if (dateEnd && item.tanggalISO && item.tanggalISO > dateEnd) return false;
         if (nama !== 'ALL') {
@@ -3784,12 +3924,13 @@
         return true;
       });
 
-      // Filter sheet DOWNTIME
+      // 3. Filter Sheet DOWNTIME by Global BU, Date, Jenis MHE, & Status
       const dtJenis = document.getElementById('downtimeFilterJenisMhe')?.value || 'ALL';
       const dtStatus = document.getElementById('downtimeFilterStatus')?.value || 'ALL';
       const dtSearch = (document.getElementById('downtimeSearchInput')?.value || '').toLowerCase().trim();
 
       filteredDowntimeDataset = rawDowntimeDataset.filter(item => {
+        if (currentGlobalBU !== 'ALL' && (item.bu || '').toUpperCase().trim() !== currentGlobalBU) return false;
         if (dateStart && item.tanggalStartISO && item.tanggalStartISO < dateStart) return false;
         if (dateEnd && item.tanggalStartISO && item.tanggalStartISO > dateEnd) return false;
         if (dtJenis !== 'ALL' && item.jenisMhe !== dtJenis) return false;
@@ -3801,13 +3942,15 @@
         return true;
       });
 
-      // Filter sheet SPAREPART
+      // 4. Filter Sheet SPAREPART by Global BU & Conditions
       const spBU = document.getElementById('sparepartFilterBU')?.value || 'ALL';
       const spKondisi = document.getElementById('sparepartFilterKondisi')?.value || 'ALL';
       const spSearch = (document.getElementById('sparepartSearchInput')?.value || '').toLowerCase().trim();
 
       filteredSparepartDataset = rawSparepartDataset.filter(item => {
-        if (spBU !== 'ALL' && item.bu !== spBU) return false;
+        const itemBU = (item.bu || '').toUpperCase().trim();
+        if (currentGlobalBU !== 'ALL' && itemBU !== currentGlobalBU) return false;
+        if (spBU !== 'ALL' && itemBU !== spBU.toUpperCase().trim()) return false;
         if (spKondisi === 'RUSAK' && item.rusak <= 0) return false;
         if (spKondisi === 'NORMAL' && item.rusak > 0) return false;
         if (spSearch) {
@@ -4373,7 +4516,27 @@
       const periodBadge = document.getElementById('assetFilterPeriodBadge');
       if (periodBadge) periodBadge.textContent = periodLabel;
 
-      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      const buBadge = document.getElementById('assetBUBadge');
+      if (buBadge) {
+        if (currentGlobalBU === 'ALL') {
+          buBadge.textContent = '🏢 BU: Semua (AHI & HCI)';
+          buBadge.style.background = '#eff6ff';
+          buBadge.style.color = '#1d4ed8';
+          buBadge.style.borderColor = '#bfdbfe';
+        } else if (currentGlobalBU === 'AHI') {
+          buBadge.textContent = '🏢 BU: AHI';
+          buBadge.style.background = '#f0fdf4';
+          buBadge.style.color = '#15803d';
+          buBadge.style.borderColor = '#bbf7d0';
+        } else if (currentGlobalBU === 'HCI') {
+          buBadge.textContent = '🏢 BU: HCI';
+          buBadge.style.background = '#faf5ff';
+          buBadge.style.color = '#7e22ce';
+          buBadge.style.borderColor = '#e9d5ff';
+        }
+      }
+
+      const dataset = filteredSummaryAssetDataset;
       const totalUnitsCount = dataset.reduce((acc, curr) => acc + curr.totalAsset, 0);
 
       const countBadge = document.getElementById('assetSummaryCountBadge');
@@ -4405,7 +4568,7 @@
       const ctx = canvas.getContext('2d');
       if (summaryStatusChartInstance) summaryStatusChartInstance.destroy();
 
-      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      const dataset = filteredSummaryAssetDataset;
       if (dataset.length === 0) return;
 
       const grandTersedia = dataset.reduce((acc, curr) => acc + curr.tersedia, 0);
@@ -4413,6 +4576,8 @@
       const grandPerbaikan = dataset.reduce((acc, curr) => acc + curr.perbaikan, 0);
       const grandRusak = dataset.reduce((acc, curr) => acc + curr.rusak, 0);
       const grandStandby = Math.max(0, grandTersedia - grandPakai);
+
+      const buLabel = currentGlobalBU === 'ALL' ? 'Semua BU' : `BU ${currentGlobalBU}`;
 
       summaryStatusChartInstance = new Chart(ctx, {
         type: 'doughnut',
@@ -4435,6 +4600,11 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
+            title: {
+              display: true,
+              text: `Status Kesiapan Armada (${buLabel})`,
+              font: { size: 13, weight: 'bold' }
+            },
             legend: { position: 'bottom', labels: { boxWidth: 14, font: { family: 'inherit', size: 12 } } },
             tooltip: {
               callbacks: {
@@ -4453,12 +4623,32 @@
       const ctx = canvas.getContext('2d');
       if (summaryUtilChartInstance) summaryUtilChartInstance.destroy();
 
-      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      const dataset = filteredSummaryAssetDataset;
       if (dataset.length === 0) return;
 
-      const labels = dataset.map(d => d.unitName);
-      const availabilityRates = dataset.map(d => d.availabilityRate);
-      const utilizationRates = dataset.map(d => d.utilizationRate);
+      // Aggregate by unitName so when ALL BU is selected, rates are aggregated cleanly
+      const unitMap = {};
+      dataset.forEach(d => {
+        const u = d.unitName;
+        if (!unitMap[u]) {
+          unitMap[u] = { totalAsset: 0, tersedia: 0, pakai: 0 };
+        }
+        unitMap[u].totalAsset += d.totalAsset;
+        unitMap[u].tersedia += d.tersedia;
+        unitMap[u].pakai += d.pakai;
+      });
+
+      const labels = Object.keys(unitMap);
+      const availabilityRates = labels.map(u => {
+        const item = unitMap[u];
+        return item.totalAsset > 0 ? +((item.tersedia / item.totalAsset) * 100).toFixed(1) : 0;
+      });
+      const utilizationRates = labels.map(u => {
+        const item = unitMap[u];
+        return item.totalAsset > 0 ? +((item.pakai / item.totalAsset) * 100).toFixed(1) : 0;
+      });
+
+      const buLabel = currentGlobalBU === 'ALL' ? 'Semua BU' : `BU ${currentGlobalBU}`;
 
       summaryUtilChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -4487,6 +4677,11 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
+            title: {
+              display: true,
+              text: `Kesiapan vs Utilisasi per Unit (${buLabel})`,
+              font: { size: 13, weight: 'bold' }
+            },
             legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'inherit', size: 12 } } },
             tooltip: {
               callbacks: {
@@ -4513,12 +4708,12 @@
       const ribbon = document.getElementById('assetKpiRibbon');
       if (!ribbon) return;
 
-      const dataset = filteredSummaryAssetDataset.length > 0 ? filteredSummaryAssetDataset : rawSummaryAssetDataset;
+      const dataset = filteredSummaryAssetDataset;
 
       if (dataset.length === 0) {
         ribbon.innerHTML = `
-          <div style="padding: 12px; color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; text-align: center;">
-            Tidak ada ringkasan aset untuk filter tanggal dan kriteria yang dipilih.
+          <div style="padding: 20px; color: var(--text-muted); font-size: 13px; grid-column: 1 / -1; text-align: center;">
+            Tidak ada ringkasan aset untuk BU ${currentGlobalBU !== 'ALL' ? currentGlobalBU : 'yang dipilih'} dan filter yang aktif saat ini.
           </div>
         `;
         return;
@@ -4532,12 +4727,13 @@
 
       const overallAvailability = grandTotalAsset > 0 ? ((grandTersedia / grandTotalAsset) * 100).toFixed(1) : '0';
       const overallUtilization = grandTotalAsset > 0 ? ((grandPakai / grandTotalAsset) * 100).toFixed(1) : '0';
+      const buLabel = currentGlobalBU === 'ALL' ? 'Semua BU (AHI & HCI)' : `BU ${currentGlobalBU}`;
 
       ribbon.innerHTML = `
         <div class="asset-mini-card">
           <div class="asset-mini-card-icon" style="background: #eff6ff; color: #2563eb;">🚜</div>
           <div class="asset-mini-card-info">
-            <span class="asset-mini-card-title">Total Asset MHE</span>
+            <span class="asset-mini-card-title">Total Asset MHE (${buLabel})</span>
             <span class="asset-mini-card-value">${grandTotalAsset} Unit</span>
             <span class="asset-mini-card-sub">${dataset.length} Tipe alat terdata</span>
           </div>
@@ -4603,12 +4799,8 @@
 
       const searchTerm = (document.getElementById('assetSearchInput')?.value || '').toLowerCase().trim();
 
-      // If filtered dataset is empty because of a date range that exists in log sheet but not yet in summary sheet, fallback gracefully to raw dataset
-      let baseData = filteredSummaryAssetDataset.length > 0 
-        ? [...filteredSummaryAssetDataset] 
-        : (document.getElementById('filterDateStart').value || document.getElementById('filterDateEnd').value 
-            ? [] 
-            : [...rawSummaryAssetDataset]);
+      // Use filteredSummaryAssetDataset directly so BU and unit filters are strictly obeyed
+      let baseData = [...filteredSummaryAssetDataset];
 
       let displayData = baseData.filter(d => {
         if (!searchTerm) return true;
@@ -4641,7 +4833,7 @@
         tbody.innerHTML = `
           <tr>
             <td colspan="12" style="text-align: center; padding: 32px; color: var(--text-muted);">
-              Tidak ada data summary aset yang cocok dengan filter tanggal atau kriteria pencarian.${dateNote}
+              Tidak ada data summary aset yang cocok dengan filter BU (${currentGlobalBU}), tanggal, atau kata kunci.${dateNote}
             </td>
           </tr>
         `;
@@ -4679,7 +4871,7 @@
           <tr>
             <td style="color: var(--text-light); font-weight: 600;">${i + 1}</td>
             <td><span class="tag-code" style="font-size: 12px; font-weight: 700;">${row.tanggal}</span></td>
-            <td><span style="font-weight: 700; color: var(--text-muted);">${row.bu}</span></td>
+            <td><span style="font-weight: 800; color: ${row.bu === 'AHI' ? '#15803d' : '#7e22ce'}; background: ${row.bu === 'AHI' ? '#f0fdf4' : '#faf5ff'}; padding: 2px 8px; border-radius: 4px; border: 1px solid ${row.bu === 'AHI' ? '#bbf7d0' : '#e9d5ff'};">${row.bu}</span></td>
             <td style="font-weight: 700; color: var(--text-main); font-size: 13.5px;">${row.unitName}</td>
             <td style="font-weight: 800; text-align: center; font-size: 14px; color: var(--primary);">${row.totalAsset}</td>
             <td style="font-weight: 800; text-align: center; font-size: 14px; color: #16a34a;">${row.tersedia}</td>
@@ -4707,11 +4899,12 @@
       const grandRusak = displayData.reduce((a, b) => a + b.rusak, 0);
       const avgAvailOverall = grandTotalAsset > 0 ? ((grandTersedia / grandTotalAsset) * 100).toFixed(1) : '0';
       const avgUtilOverall = grandTotalAsset > 0 ? ((grandPakai / grandTotalAsset) * 100).toFixed(1) : '0';
+      const buSummaryLabel = currentGlobalBU === 'ALL' ? 'SEMUA BU (AHI & HCI)' : `BU ${currentGlobalBU}`;
 
       if (tfoot) {
         tfoot.innerHTML = `
           <tr>
-            <td colspan="4" style="text-align: right; font-weight: 800; color: var(--text-main);">TOTAL SHEET SUMMARY ASSET:</td>
+            <td colspan="4" style="text-align: right; font-weight: 800; color: var(--text-main);">TOTAL ASSET (${buSummaryLabel}):</td>
             <td style="text-align: center; font-weight: 800; font-size: 14px; color: var(--primary);">${grandTotalAsset}</td>
             <td style="text-align: center; font-weight: 800; font-size: 14px; color: #16a34a;">${grandTersedia}</td>
             <td style="text-align: center; font-weight: 800; font-size: 14px; color: #2563eb;">${grandPakai}</td>
@@ -4725,7 +4918,7 @@
       }
 
       if (infoEl) {
-        infoEl.textContent = `Menampilkan ${displayData.length} tipe unit (${grandTotalAsset} total unit asset dari sheet SUMMARY ASSET)`;
+        infoEl.textContent = `Menampilkan ${displayData.length} tipe unit (${grandTotalAsset} total unit asset - ${buSummaryLabel})`;
       }
     }
 
