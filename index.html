@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Forklift Battery Monitor — Dashboard Performa Baterai Gudang</title>
-  <meta name="description" content="Dashboard pemantauan performa dan kondisi baterai forklift / reach truck gudang." />
-  <meta property="og:title" content="Forklift Battery Monitor" />
-  <meta property="og:description" content="Dashboard pemantauan performa dan kondisi baterai forklift / reach truck gudang." />
+  <title>Dashboard Operasional MHE</title>
+  <meta name="description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, dan spare part." />
+  <meta property="og:title" content="Dashboard Operasional MHE" />
+  <meta property="og:description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, dan spare part." />
   <meta property="og:type" content="website" />
   
   <!-- Chart.js via CDN -->
@@ -1398,20 +1398,321 @@
     }
 
     /* ========================================================
-       PRIMARY TAB NAVIGATION & VIEW CONTAINERS
+       SIDEBAR & APPLICATION WORKSPACE LAYOUT
        ======================================================== */
-    .dashboard-nav-bar {
+    .app-layout {
       display: flex;
+      flex-direction: row;
+      min-height: 100vh;
+      background-color: var(--bg-main);
+      width: 100%;
+    }
+
+    .app-sidebar {
+      width: 260px;
+      min-width: 260px;
+      max-width: 260px;
+      background: #ffffff;
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 50;
+      box-shadow: 2px 0 16px rgba(0, 0, 0, 0.03);
+      flex-shrink: 0;
+    }
+
+    .sidebar-header {
+      padding: 22px 18px 18px 18px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    }
+
+    .sidebar-brand-text {
+      text-align: center;
+    }
+
+    .sidebar-brand-title {
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+
+    .sidebar-brand-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .sidebar-nav-section-title {
+      padding: 18px 20px 8px 20px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--text-light);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .sidebar-nav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 0 12px;
+      flex: 1;
+    }
+
+    .sidebar-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      border-radius: 12px;
+      background: transparent;
+      border: 1.5px solid transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: left;
+      width: 100%;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      user-select: none;
+      position: relative;
+    }
+
+    .sidebar-nav-item:hover {
+      background: #f8fafc;
+      color: var(--primary);
+    }
+
+    .sidebar-nav-item.active {
+      background: #eff6ff;
+      border-color: #bfdbfe;
+      color: var(--primary);
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
+    }
+
+    .sidebar-nav-item.active::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 10px;
+      bottom: 10px;
+      width: 4px;
+      background: var(--primary);
+      border-radius: 0 4px 4px 0;
+    }
+
+    .nav-item-icon-box {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .sidebar-nav-item.active .nav-item-icon-box {
+      background: #ffffff;
+      border-color: #93c5fd;
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.16);
+    }
+
+    .nav-item-text-wrap {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .nav-item-label {
+      font-size: 13.5px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: inherit;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .nav-item-caption {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .sidebar-counter-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-green { background: #dcfce7; color: #15803d; }
+    .badge-amber { background: #ffedd5; color: #c2410c; }
+    .badge-purple { background: #f3e8ff; color: #7e22ce; }
+
+    .sidebar-footer {
+      padding: 16px 14px;
+      border-top: 1px solid var(--border-color);
+      background: #fafafa;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .sidebar-sync-card {
+      padding: 10px 12px;
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sync-status-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #16a34a;
+    }
+
+    .sync-live-dot {
+      width: 7px;
+      height: 7px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.25);
+      animation: pulseDot 2s infinite;
+    }
+
+    .sync-desc {
+      font-size: 10px;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .app-main-area {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      padding: 22px 28px 48px 28px;
+      overflow-y: auto;
+      background: var(--bg-main);
+    }
+
+    .main-topbar {
+      display: flex;
+      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
       margin-bottom: 22px;
-      padding: 6px 10px;
       background: #ffffff;
+      padding: 16px 20px;
+      border-radius: var(--radius);
       border: 1px solid var(--border-color);
-      border-radius: 14px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .topbar-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+
+    .topbar-subtitle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
       flex-wrap: wrap;
+    }
+
+    .topbar-time-tag {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    /* Responsive styling - keeping sidebar strictly on the left and vertical */
+    @media (max-width: 1024px) {
+      .app-sidebar {
+        width: 250px;
+        min-width: 250px;
+        max-width: 250px;
+      }
+      .app-main-area {
+        padding: 18px 20px 36px 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .app-sidebar {
+        width: 220px;
+        min-width: 220px;
+        max-width: 220px;
+      }
+      .sidebar-nav-item {
+        padding: 10px 10px;
+        gap: 8px;
+      }
+      .nav-item-icon-box {
+        width: 32px;
+        height: 32px;
+        font-size: 16px;
+      }
+      .nav-item-label {
+        font-size: 12.5px;
+      }
+      .nav-item-caption {
+        font-size: 10px;
+      }
+      .sidebar-counter-badge {
+        font-size: 10px;
+        padding: 2px 6px;
+      }
+      .app-main-area {
+        padding: 14px 14px 32px 14px;
+      }
+    }
+
+    /* Primary Tab Navigation Backward Compatibility */
+    .dashboard-nav-bar {
+      display: none;
     }
 
     .nav-tabs-group {
@@ -1564,6 +1865,29 @@
       }
     }
 
+    .aging-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 9999px;
+      font-weight: 800;
+      font-size: 12px;
+    }
+    .aging-badge-low {
+      background: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #bbf7d0;
+    }
+    .aging-badge-med {
+      background: #fffbeb;
+      color: #d97706;
+      border: 1px solid #fde68a;
+    }
+    .aging-badge-high {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+
     /* Print styling */
     @media print {
       body {
@@ -1679,79 +2003,141 @@
   </div>
 
   <!-- ========================================================
-       MAIN APPLICATION DASHBOARD
+       MAIN APPLICATION DASHBOARD (SIDEBAR + MAIN WORKSPACE)
        ======================================================== -->
-  <div class="container">
-    <!-- Header -->
-    <header class="header">
-      <div class="header-info">
-        <div class="header-icon">🔋</div>
-        <div>
-          <h1 class="header-title">Monitoring Performa Baterai Reach Truck / Forklift</h1>
-          <p class="header-subtitle">Dashboard Operasional & Pemantauan Kondisi Baterai Armada Gudang</p>
+  <div class="app-layout">
+    <!-- ========================================================
+         SIDEBAR NAVIGATION (DI SEBELAH KIRI, SUSUNAN DARI ATAS KE BAWAH)
+         ======================================================== -->
+    <aside class="app-sidebar" id="appSidebar">
+      <!-- Sidebar Header with Animated Glowing Kawan Lama Logo -->
+      <div class="sidebar-header">
+        <div class="header-logo-outer" title="Kawan Lama Group">
+          <svg class="header-logo-contour-svg" viewBox="0 0 176 46" preserveAspectRatio="none">
+            <rect class="header-logo-contour-rect" x="1" y="1" width="174" height="44" rx="10" ry="10" />
+          </svg>
+          <div class="header-logo-wrap">
+            <img
+              src="https://www.nicepng.com/png/full/424-4247353_kawan-lama-logo.png"
+              alt="Kawan Lama Group"
+              class="header-logo-img"
+              referrerpolicy="no-referrer"
+              loading="eager"
+            />
+          </div>
+        </div>
+        <div class="sidebar-brand-text">
+          <div class="sidebar-brand-title">MHE Support</div>
+          <div class="sidebar-brand-subtitle">Operational NDC Sidoarjo</div>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="btn btn-primary btn-sm" onclick="refreshDashboardData(true)">
-          <span>🔄</span> Refresh Data
-        </button>
-        <button class="btn btn-secondary btn-sm" onclick="exportAssetSummaryToCSV()">
-          <span>📊</span> Ekspor Summary Aset
-        </button>
-        <button class="btn btn-secondary btn-sm" onclick="exportToCSV()">
-          <span>📥</span> Ekspor Log CSV
-        </button>
-        <button class="btn btn-secondary btn-sm" onclick="window.print()">
-          <span>🖨️</span> Cetak Laporan
-        </button>
-      </div>
-      <!-- Kawan Lama Logo on Top Right with Animated Neon Glow Effect -->
-      <div class="header-logo-outer" title="Kawan Lama Group">
-        <svg class="header-logo-contour-svg" viewBox="0 0 176 46" preserveAspectRatio="none">
-          <rect class="header-logo-contour-rect" x="1" y="1" width="174" height="44" rx="10" ry="10" />
-        </svg>
-        <div class="header-logo-wrap">
-          <img
-            src="https://www.nicepng.com/png/full/424-4247353_kawan-lama-logo.png"
-            alt="Kawan Lama Group"
-            class="header-logo-img"
-            referrerpolicy="no-referrer"
-            loading="eager"
-          />
-        </div>
-      </div>
-    </header>
 
-    <!-- Main Menu Navigation Tabs (Menu Terpisah: Summary Asset vs Detail Log) -->
-    <nav class="dashboard-nav-bar" id="dashboardNavBar">
-      <div class="nav-tabs-group" role="tablist">
+      <div class="sidebar-nav-section-title">MENU UTAMA</div>
+
+      <!-- Vertical Menu List (Susunan Dari Atas ke Bawah) -->
+      <nav class="sidebar-nav-list" role="tablist" aria-label="Menu Utama Dashboard">
+        <!-- 1. SUMMARY ASSET -->
         <button
-          class="nav-tab-btn active"
+          class="sidebar-nav-item active"
           id="tabBtnSummary"
           role="tab"
           aria-selected="true"
           onclick="switchView('summary')"
         >
-          <span class="nav-tab-icon">📊</span>
-          <span class="nav-tab-text">Summary Asset</span>
-          <span class="nav-tab-badge" id="tabSummaryBadge">0 Unit</span>
+          <div class="nav-item-icon-box">📊</div>
+          <div class="nav-item-text-wrap">
+            <div class="nav-item-label">Summary Asset</div>
+            <div class="nav-item-caption">Status unit armada & perbaikan</div>
+          </div>
+          <span class="sidebar-counter-badge badge-blue" id="tabSummaryBadge">0 Unit</span>
         </button>
+
+        <!-- 2. DETAIL LOG PEMAKAIAN -->
         <button
-          class="nav-tab-btn"
+          class="sidebar-nav-item"
           id="tabBtnDetail"
           role="tab"
           aria-selected="false"
           onclick="switchView('detail')"
         >
-          <span class="nav-tab-icon">📋</span>
-          <span class="nav-tab-text">Detail Log Pemakaian</span>
-          <span class="nav-tab-badge" id="tabDetailBadge">0 Log</span>
+          <div class="nav-item-icon-box">📋</div>
+          <div class="nav-item-text-wrap">
+            <div class="nav-item-label">Detail Log Pemakaian</div>
+            <div class="nav-item-caption">Logbook shift, durasi & baterai</div>
+          </div>
+          <span class="sidebar-counter-badge badge-green" id="tabDetailBadge">0 Log</span>
+        </button>
+
+        <!-- 3. DOWNTIME -->
+        <button
+          class="sidebar-nav-item"
+          id="tabBtnDowntime"
+          role="tab"
+          aria-selected="false"
+          onclick="switchView('downtime')"
+        >
+          <div class="nav-item-icon-box">🛠️</div>
+          <div class="nav-item-text-wrap">
+            <div class="nav-item-label">Downtime MHE</div>
+            <div class="nav-item-caption">Aging & histori breakdown unit</div>
+          </div>
+          <span class="sidebar-counter-badge badge-amber" id="tabDowntimeBadge">0 Kasus</span>
+        </button>
+
+        <!-- 4. SPARE PART (BARU) -->
+        <button
+          class="sidebar-nav-item"
+          id="tabBtnSparepart"
+          role="tab"
+          aria-selected="false"
+          onclick="switchView('sparepart')"
+        >
+          <div class="nav-item-icon-box">⚙️</div>
+          <div class="nav-item-text-wrap">
+            <div class="nav-item-label">Spare Part</div>
+            <div class="nav-item-caption">Stok, normal & butuh vulkanisir</div>
+          </div>
+          <span class="sidebar-counter-badge badge-purple" id="tabSparepartBadge">0 Part</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Bottom Info & Quick Refresh -->
+      <div class="sidebar-footer">
+        <div class="sidebar-sync-card">
+          <div class="sync-status-row">
+            <span class="sync-live-dot"></span>
+            <span>Live Sheets Connected</span>
+          </div>
+          <div class="sync-desc">SUMMARY ASSET, LOGBOOK, DOWNTIME, SPAREPART</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="refreshDashboardData(true)" style="width: 100%; justify-content: center;">
+          <span>🔄</span> Refresh Semua Data
         </button>
       </div>
-      <div class="nav-meta-info">
-        <span id="activeViewIndicator" class="active-view-tag">📍 Menu Aktif: Summary Asset</span>
-      </div>
-    </nav>
+    </aside>
+
+    <!-- ========================================================
+         MAIN APPLICATION WORKSPACE (SEBELAH KANAN)
+         ======================================================== -->
+    <main class="app-main-area">
+      <!-- Main Topbar Header -->
+      <header class="main-topbar">
+        <div>
+          <h1 class="topbar-title">Dashboard Operasional MHE</h1>
+          <div class="topbar-subtitle-row">
+            <span id="activeViewIndicator" class="active-view-tag">📍 Menu Aktif: Summary Asset</span>
+            <span class="topbar-time-tag" id="lastUpdatedTag">🕒 Sinkronisasi Terkini</span>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary btn-sm" onclick="exportCurrentActiveViewCSV()">
+            <span>📥</span> Ekspor CSV Menu Aktif
+          </button>
+          <button class="btn btn-secondary btn-sm" onclick="window.print()">
+            <span>🖨️</span> Cetak Laporan
+          </button>
+        </div>
+      </header>
 
     <!-- ========================================================
          VIEW 1: SUMMARY ASSET (HANYA DITAMPILKAN PADA MENU SUMMARY ASSET)
@@ -2097,6 +2483,347 @@
         </div>
       </section>
     </div>
+
+    <!-- ========================================================
+         VIEW 3: DOWNTIME (HANYA DITAMPILKAN PADA MENU DOWNTIME)
+         ======================================================== -->
+    <div id="viewDowntime" class="view-container">
+      <!-- Filter Bar for Downtime -->
+      <section class="summary-filter-bar">
+        <div class="summary-filter-inputs">
+          <div class="summary-filter-item">
+            <label for="downtimeFilterDateStart">📅 Dari Tanggal:</label>
+            <input type="date" id="downtimeFilterDateStart" class="form-control" style="width: auto;" onchange="syncDateFilter('downtime', 'start')" />
+          </div>
+          <div class="summary-filter-item">
+            <label for="downtimeFilterDateEnd">S.d Tanggal:</label>
+            <input type="date" id="downtimeFilterDateEnd" class="form-control" style="width: auto;" onchange="syncDateFilter('downtime', 'end')" />
+          </div>
+          <div class="summary-filter-item">
+            <label for="downtimeFilterJenisMhe">Jenis MHE:</label>
+            <select id="downtimeFilterJenisMhe" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Jenis MHE</option>
+            </select>
+          </div>
+          <div class="summary-filter-item">
+            <label for="downtimeFilterStatus">Status:</label>
+            <select id="downtimeFilterStatus" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Status</option>
+              <option value="DONE">DONE (Selesai)</option>
+              <option value="PROGRESS">IN PROGRESS (Pengerjaan)</option>
+              <option value="OPEN">OPEN (Menunggu Tindakan)</option>
+            </select>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="btn btn-secondary btn-sm" onclick="resetFilters()" title="Reset Semua Filter">
+            ↺ Reset Filter
+          </button>
+          <button class="btn btn-primary btn-sm" onclick="exportDowntimeToCSV()" title="Ekspor Data Downtime CSV">
+            📥 Ekspor CSV
+          </button>
+        </div>
+      </section>
+
+      <!-- Downtime KPI Ribbon Cards -->
+      <section class="summary-grid" style="margin-bottom: 24px;">
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total Kasus Downtime</span>
+            <div class="summary-icon icon-amber">🛠️</div>
+          </div>
+          <div class="summary-value" id="kpiTotalDowntime">0 Kasus</div>
+          <div class="summary-subtext" id="kpiTotalDowntimeSub">Unit MHE breakdown tercatat</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Perbaikan Selesai (DONE)</span>
+            <div class="summary-icon icon-green">✅</div>
+          </div>
+          <div class="summary-value" id="kpiDowntimeDone" style="color: #16a34a;">0 Unit</div>
+          <div class="summary-subtext" id="kpiDowntimeDoneSub">100% Masalah tertangani</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Dalam Pengerjaan (Active)</span>
+            <div class="summary-icon icon-red">⚙️</div>
+          </div>
+          <div class="summary-value" id="kpiDowntimeActive" style="color: #dc2626;">0 Unit</div>
+          <div class="summary-subtext" id="kpiDowntimeActiveSub">Sedang proses perbaikan/kanibal</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Rata-Rata Aging Downtime</span>
+            <div class="summary-icon icon-blue">⏱️</div>
+          </div>
+          <div class="summary-value" id="kpiDowntimeAvgAging">0 Hari</div>
+          <div class="summary-subtext" id="kpiDowntimeAvgAgingSub">Total durasi: 0 Hari</div>
+        </div>
+      </section>
+
+      <!-- Charts for Downtime -->
+      <section class="charts-grid" style="margin-bottom: 24px;">
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Distribusi Indikasi Kerusakan MHE</h2>
+            <span class="chart-card-badge">Klasifikasi Masalah</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="downtimeIndikasiChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-card-header">
+            <h2 class="chart-card-title">Aging Downtime per Unit MHE (Hari)</h2>
+            <span class="chart-card-badge">Durasi Breakdown</span>
+          </div>
+          <div class="chart-container">
+            <canvas id="downtimeAgingChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Downtime Table -->
+      <section class="table-card" id="downtimeCard">
+        <div class="table-toolbar" style="background: #ffffff;">
+          <div class="table-title-area" style="flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <span style="font-size: 22px;">🛠️</span>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h2 class="table-title" style="font-size: 16px; margin: 0;">Log Data Downtime & Riwayat Perbaikan MHE</h2>
+                  <span class="source-badge live" style="font-size: 11px; padding: 2px 8px;">📑 Sheet: DOWNTIME</span>
+                </div>
+                <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+                  Monitoring tanggal breakdown, aging downtime (hari), indikasi kerusakan, vendor / tindakan perbaikan, dan status penyelesaian
+                </div>
+              </div>
+            </div>
+            <span id="downtimeFilterPeriodBadge" class="asset-period-badge">📅 Periode: Semua Tanggal</span>
+            <span id="downtimeCountBadge" class="badge-count" style="background: #ffedd5; color: #c2410c;">0 Kasus</span>
+          </div>
+          <div class="table-actions">
+            <div class="search-wrap">
+              <span class="search-icon">🔎</span>
+              <input
+                type="text"
+                id="downtimeSearchInput"
+                class="search-input"
+                placeholder="Cari unit, kerusakan, vendor..."
+                oninput="renderDowntimeTable()"
+              />
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="exportDowntimeToCSV()" title="Ekspor Data Downtime CSV">
+              <span>📥</span> Ekspor CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table id="downtimeTable">
+            <thead>
+              <tr>
+                <th onclick="sortDowntimeTable('no')">No ⬍</th>
+                <th onclick="sortDowntimeTable('bu')">BU ⬍</th>
+                <th onclick="sortDowntimeTable('departemen')">Departemen ⬍</th>
+                <th onclick="sortDowntimeTable('jenisMhe')">Jenis MHE ⬍</th>
+                <th onclick="sortDowntimeTable('assetName')">Asset Name ⬍</th>
+                <th onclick="sortDowntimeTable('tanggalStart')">Tgl Start ⬍</th>
+                <th onclick="sortDowntimeTable('tanggalFinish')">Tgl Finish ⬍</th>
+                <th onclick="sortDowntimeTable('aging')" style="text-align: center;">Aging Downtime ⬍</th>
+                <th onclick="sortDowntimeTable('targetPenyelesaian')">Target Penyelesaian ⬍</th>
+                <th onclick="sortDowntimeTable('indikasiKerusakan')">Indikasi Kerusakan ⬍</th>
+                <th onclick="sortDowntimeTable('perbaikan')">Perbaikan ⬍</th>
+                <th onclick="sortDowntimeTable('status')" style="text-align: center;">Status ⬍</th>
+              </tr>
+            </thead>
+            <tbody id="downtimeTableBody">
+              <!-- Rendered dynamically by JavaScript from Sheet DOWNTIME -->
+            </tbody>
+            <tfoot id="downtimeTableFoot" style="background: #f8fafc; font-weight: 700; border-top: 2px solid var(--border-color);">
+              <!-- Dynamic totals row -->
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="table-footer" style="background: #fafafa; border-top: 1px solid var(--border-color);">
+          <div id="downtimeInfo">Menampilkan 0 kasus downtime</div>
+          <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+            <span>💡 <i>Data bersumber langsung dari tab sheet <b>DOWNTIME</b> pada Google Spreadsheet.</i></span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ========================================================
+         VIEW 4: SPARE PART (DATA DARI SHEET "SPAREPART")
+         ======================================================== -->
+    <div id="viewSparePart" class="view-container">
+      <!-- Filter Bar for Spare Part -->
+      <section class="summary-filter-bar">
+        <div class="summary-filter-inputs">
+          <div class="summary-filter-item">
+            <label for="sparepartFilterBU">🏢 Filter BU:</label>
+            <select id="sparepartFilterBU" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua BU</option>
+              <option value="HCI">HCI</option>
+              <option value="AHI">AHI</option>
+              <option value="Corporate">Corporate</option>
+            </select>
+          </div>
+
+          <div class="summary-filter-item">
+            <label for="sparepartFilterKondisi">⚙️ Kondisi Stok:</label>
+            <select id="sparepartFilterKondisi" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Kondisi</option>
+              <option value="RUSAK">⚠️ Ada Rusak / Butuh Vulkanisir</option>
+              <option value="NORMAL">✅ Normal / Siap Pakai Saja</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+            <span>↺</span> Reset Filter
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <span class="asset-period-badge" style="background: #f5f3ff; color: #7e22ce; border-color: #ddd6fe;">⚙️ Tab Sheet: SPAREPART</span>
+          <button class="btn btn-primary btn-sm" onclick="exportSparepartToCSV()">
+            <span>📥</span> Ekspor CSV Spare Part
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Cards for Spare Part -->
+      <section class="summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));">
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total Jenis Part</span>
+            <div class="summary-icon icon-blue">🔩</div>
+          </div>
+          <div class="summary-value" id="kpiTotalSparepartTypes">0 Item</div>
+          <div class="summary-subtext" id="kpiTotalSparepartTypesSub">Katalog spare part terdaftar</div>
+        </div>
+
+        <div class="summary-card success">
+          <div class="summary-top">
+            <span class="summary-label">Stok Normal (Ready)</span>
+            <div class="summary-icon icon-green">✅</div>
+          </div>
+          <div class="summary-value" id="kpiTotalSparepartNormal" style="color: #15803d;">0 Unit</div>
+          <div class="summary-subtext" id="kpiTotalSparepartNormalSub">Kondisi baik & siap pasang</div>
+        </div>
+
+        <div class="summary-card danger">
+          <div class="summary-top">
+            <span class="summary-label">Rusak / Butuh Vulkanisir</span>
+            <div class="summary-icon icon-red">⚠️</div>
+          </div>
+          <div class="summary-value" id="kpiTotalSparepartRusak" style="color: #b91c1c;">0 Unit</div>
+          <div class="summary-subtext" id="kpiTotalSparepartRusakSub">Perlu vulkanisir / perbaikan</div>
+        </div>
+
+        <div class="summary-card warning">
+          <div class="summary-top">
+            <span class="summary-label">Total Akumulasi Stok</span>
+            <div class="summary-icon icon-amber">📦</div>
+          </div>
+          <div class="summary-value" id="kpiTotalSparepartFisik">0 Unit</div>
+          <div class="summary-subtext" id="kpiTotalSparepartFisikSub">Total fisik di gudang</div>
+        </div>
+      </section>
+
+      <!-- Charts for Spare Part -->
+      <section class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>🍩</span> Proporsi Kondisi Spare Part (Normal vs Rusak)
+            </div>
+          </div>
+          <div class="chart-container" style="position: relative; height: 290px;">
+            <canvas id="sparepartStatusChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>📊</span> Top Spare Part Rusak / Butuh Vulkanisir
+            </div>
+          </div>
+          <div class="chart-container" style="position: relative; height: 290px;">
+            <canvas id="sparepartRusakChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spare Part Table Section -->
+      <section class="table-section">
+        <div class="table-header">
+          <div class="table-header-left">
+            <div class="table-icon-wrap" style="background: #f5f3ff; color: #7e22ce;">⚙️</div>
+            <div>
+              <div class="table-title">Daftar Inventaris Spare Part & Status Vulkanisir</div>
+              <div class="table-subtitle">
+                Data kuantitas kondisi normal, rusak/vulkanisir, total stok, satuan, keterangan teknis, dan Business Unit (BU)
+              </div>
+            </div>
+          </div>
+          <div class="table-actions">
+            <div class="search-wrap">
+              <span class="search-icon">🔎</span>
+              <input
+                type="text"
+                id="sparepartSearchInput"
+                class="search-input"
+                placeholder="Cari nama part, keterangan, BU..."
+                oninput="renderSparepartTable()"
+              />
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="exportSparepartToCSV()" title="Ekspor Data Spare Part CSV">
+              <span>📥</span> Ekspor CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table id="sparepartTable">
+            <thead>
+              <tr>
+                <th onclick="sortSparepartTable('no')">No ⬍</th>
+                <th onclick="sortSparepartTable('bu')">BU ⬍</th>
+                <th onclick="sortSparepartTable('namaPart')">Nama Part ⬍</th>
+                <th onclick="sortSparepartTable('normal')" style="text-align: center;">Normal ⬍</th>
+                <th onclick="sortSparepartTable('rusak')" style="text-align: center;">Rusak ⬍</th>
+                <th onclick="sortSparepartTable('total')" style="text-align: center;">Total ⬍</th>
+                <th onclick="sortSparepartTable('satuan')" style="text-align: center;">Satuan ⬍</th>
+                <th onclick="sortSparepartTable('keterangan')">Keterangan ⬍</th>
+                <th style="text-align: center;">Status Kondisi</th>
+              </tr>
+            </thead>
+            <tbody id="sparepartTableBody">
+              <!-- Rendered dynamically by JavaScript from Sheet SPAREPART -->
+            </tbody>
+            <tfoot id="sparepartTableFoot" style="background: #f8fafc; font-weight: 700; border-top: 2px solid var(--border-color);">
+              <!-- Dynamic totals row -->
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="table-footer" style="background: #fafafa; border-top: 1px solid var(--border-color);">
+          <div id="sparepartInfo">Menampilkan 0 jenis spare part</div>
+          <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+            <span>💡 <i>Data bersumber langsung dari tab sheet <b>SPAREPART</b> pada Google Spreadsheet.</i></span>
+          </div>
+        </div>
+      </section>
+    </div>
+    </main>
   </div>
 
   <!-- Toast Notification -->
@@ -2147,20 +2874,63 @@
 09/01/2026	AHI	REACH TRUCK 9 M	3	3	3		
 09/01/2026	AHI	REACH TRUCK 12 M	5	1	1	2	2`;
 
+    /* Default Data for Sheet "DOWNTIME" */
+    const DEFAULT_DOWNTIME_DATA = `NO,BU,DEPARTEMEN,JENIS MHE,ASSET NAME,START,FINISH,AGING DOWNTIME,TARGET PENYELESAIAN,INDIKASI KERUSAKAN,PERBAIKAN,STATUS
+1,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK SINGLE DEEP C03 RM-5725S - 45 (12 METER),21-Aug-2026,9-Sep-2026,19,,ACES 2,SERVICE VENDOR ANDALAN TEHNIK,DONE
+2,AHI,STORING,REACH TRUCK 12 M,REACH TRUCK DOUBLE DEEP C04 RMD-6095S-32 (12 METER),29-Aug-2026,29-Aug-2026,1,,RODA TERKELUPAS,KANIBAL DENGAN,DONE`;
+
+    /* Default Data for Sheet "SPAREPART" */
+    const DEFAULT_SPAREPART_DATA = `No.,Nama Part,Normal,Rusak,Total,Satuan,Keterangan,BU
+1,ROD END CYLINDER SHIFTING REACH TRUCK,1,0,1,PCS,,HCI
+2,FORK EXTENSION SE-1412,0,1,1,PCS,PERLU VULKANISIR,HCI
+3,TYRE CASTOR TOYOTA 7FBRE16-1,3,1,4,PCS,PERLU VULKANISIR,HCI
+4,TYRE DRIVE TOYOTA 7FBRE16-1,0,1,1,PCS,PERLU VULKANISIR,HCI
+5,TYRE LOAD TOYOTA 7FBRE16-1,1,1,2,PCS,PERLU VULKANISIR,HCI
+6,TYRE CASTOR TOYOTA 8FBN25,1,1,2,PCS,PERLU VULKANISIR,HCI
+7,TYRE DRIVE TOYOTA 8FBN25,1,0,1,PCS,,HCI
+8,TYRE LOAD TOYOTA 8FBN25,0,2,2,PCS,PERLU VULKANISIR,HCI
+9,TYRE DRIVE NICHIYU FB25PN-75B-300AF,1,1,2,PCS,PERLU VULKANISIR,HCI
+10,TYRE CASTOR NICHIYU FBRF14-75B-450CS,1,1,2,PCS,PERLU VULKANISIR,HCI
+11,TYRE LOAD NICHIYU FBRF14-75B-450CS,2,2,4,PCS,PERLU VULKANISIR,HCI
+12,TYRE DRIVE NICHIYU FBRF14-75B-450CS,0,1,1,PCS,PERLU VULKANISIR,HCI
+13,TYRE DRIVE JUNGHEINRICH ETV 216,1,0,1,PCS,,HCI
+14,TYRE CASTOR JUNGHEINRICH ETV 216,1,0,1,PCS,,HCI
+15,TYRE DRIVE CATERPILLAR NR16N2H,0,1,1,PCS,PERLU VULKANISIR,HCI
+16,TYRE CASTOR CATERPILLAR NR16N2H,1,0,1,PCS,,HCI
+17,TYRE LOAD CATERPILLAR NR16N2H,0,2,2,PCS,PERLU VULKANISIR,HCI
+18,TYRE DRIVE NOBLIFT RT20 PRO,0,1,1,PCS,PERLU VULKANISIR,HCI
+19,TYRE LOAD NOBLIFT RT20 PRO,0,2,2,PCS,PERLU VULKANISIR,HCI
+20,TYRE CASTOR NOBLIFT RT20 PRO,1,0,1,PCS,,HCI
+21,TYRE DRIVE SUMITOMO 61-FBR15SE,0,1,1,PCS,PERLU VULKANISIR,HCI
+22,TYRE LOAD SUMITOMO 61-FBR15SE,0,2,2,PCS,PERLU VULKANISIR,HCI
+23,TYRE CASTOR SUMITOMO 61-FBR15SE,1,0,1,PCS,,HCI
+24,TYRE DRIVE HELI CQD20-GB2S,0,1,1,PCS,PERLU VULKANISIR,HCI
+25,TYRE LOAD HELI CQD20-GB2S,0,2,2,PCS,PERLU VULKANISIR,HCI
+26,TYRE CASTOR HELI CQD20-GB2S,1,0,1,PCS,,HCI`;
+
     /* Public Google Sheet CSV Links */
     const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&gid=0";
     const GOOGLE_SHEETS_SUMMARY_ASSET_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=SUMMARY%20ASSET";
+    const GOOGLE_SHEETS_DOWNTIME_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=DOWNTIME";
+    const GOOGLE_SHEETS_SPAREPART_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=SPAREPART";
 
     /* ========================================================
        APPLICATION STATE
        ======================================================== */
-    let currentActiveView = 'summary'; // 'summary' or 'detail'
+    let currentActiveView = 'summary'; // 'summary', 'detail', 'downtime', or 'sparepart'
     let rawDataset = [];
     let filteredDataset = [];
     let rawSummaryAssetDataset = [];
     let filteredSummaryAssetDataset = [];
+    let rawDowntimeDataset = [];
+    let filteredDowntimeDataset = [];
+    let rawSparepartDataset = [];
+    let filteredSparepartDataset = [];
+
     let currentSort = { column: 'idx', direction: 'asc' };
     let currentAssetSort = { column: 'idx', direction: 'asc' };
+    let currentDowntimeSort = { column: 'no', direction: 'asc' };
+    let currentSparepartSort = { column: 'no', direction: 'asc' };
     let currentPage = 1;
     let pageSize = 30;
 
@@ -2173,6 +2943,14 @@
     // Chart instances for Summary Asset View
     let summaryStatusChartInstance = null;
     let summaryUtilChartInstance = null;
+
+    // Chart instances for Downtime View
+    let downtimeIndikasiChartInstance = null;
+    let downtimeAgingChartInstance = null;
+
+    // Chart instances for Spare Part View
+    let sparepartStatusChartInstance = null;
+    let sparepartRusakChartInstance = null;
 
     /* ========================================================
        UTILITY FUNCTIONS
@@ -2208,6 +2986,23 @@
     function parseDateToISO(dateStr) {
       if (!dateStr) return '';
       const clean = dateStr.trim();
+      const monthMap = {
+        jan: '01', feb: '02', mar: '03', apr: '04', may: '05', mei: '05',
+        jun: '06', jul: '07', aug: '08', agu: '08', ags: '08', sep: '09',
+        oct: '10', okt: '10', nov: '11', dec: '12', des: '12'
+      };
+
+      // Match format like "21-Aug-2026" or "21-Aug-26" or "9-Sep-2026"
+      const alphaMatch = clean.match(/^(\d{1,2})[-/ ]([a-zA-Z]{3,4})[-/ ](\d{2,4})$/);
+      if (alphaMatch) {
+        const day = alphaMatch[1].padStart(2, '0');
+        const monthStr = alphaMatch[2].toLowerCase().slice(0, 3);
+        let year = alphaMatch[3];
+        if (year.length === 2) year = '20' + year;
+        const monthNum = monthMap[monthStr] || '01';
+        return `${year}-${monthNum}-${day}`;
+      }
+
       if (clean.includes('/')) {
         const parts = clean.split('/');
         if (parts.length === 3) {
@@ -2224,7 +3019,7 @@
       } else if (clean.includes('-')) {
         const parts = clean.split('-');
         if (parts[0].length === 4) return clean;
-        if (parts[2].length === 4) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+        if (parts[2] && parts[2].length === 4) return `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
       }
       return clean;
     }
@@ -2420,6 +3215,195 @@
     }
 
     /* ========================================================
+       DOWNTIME DATA PARSING (Sheet "DOWNTIME")
+       ======================================================== */
+    function parseDowntimeCSV(text) {
+      if (!text || !text.trim()) return [];
+      const lines = text.trim().split(/\r?\n/);
+      const result = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line.trim()) continue;
+
+        let cols = [];
+        if (line.includes('\t')) {
+          cols = line.split('\t');
+        } else if (line.includes('"')) {
+          const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g;
+          let match;
+          while ((match = regex.exec(line)) !== null && match.index < line.length) {
+            let val = match[1] || '';
+            if (val.startsWith('"') && val.endsWith('"')) {
+              val = val.slice(1, -1).replace(/""/g, '"');
+            }
+            cols.push(val);
+          }
+        } else {
+          cols = line.split(',');
+        }
+
+        const getCol = (idx) => {
+          if (cols[idx] === undefined) return '';
+          let s = String(cols[idx]).replace(/^"|"$/g, '').trim();
+          if (s === '-' || s === 'null' || s === 'undefined') return '';
+          return s;
+        };
+
+        const col0 = getCol(0);
+        const col1 = getCol(1);
+        const col2 = getCol(2);
+        const col3 = getCol(3);
+        const col4 = getCol(4);
+        const col5 = getCol(5);
+        const col6 = getCol(6);
+        const col7 = getCol(7);
+        const col8 = getCol(8);
+        const col9 = getCol(9);
+        const col10 = getCol(10);
+        const col11 = getCol(11);
+
+        // Header detection: skip header lines
+        const lineUpper = line.toUpperCase();
+        if (lineUpper.includes('TANGGAL DOWNTIME') || lineUpper.includes('ASSET NAME') || lineUpper.includes('INDIKASI KERUSAKAN') || (lineUpper.includes('START') && lineUpper.includes('FINISH'))) {
+          continue;
+        }
+        if (col0.toUpperCase() === 'NO' || col4.toUpperCase() === 'ASSET NAME') continue;
+
+        const assetName = col4 || col3;
+        const jenisMhe = col3;
+        const bu = col1 || 'AHI';
+        const departemen = col2 || 'STORING';
+        const tanggalStart = col5;
+        const tanggalFinish = col6;
+        
+        let aging = parseInt(col7, 10);
+        if (isNaN(aging)) {
+          const sIso = parseDateToISO(tanggalStart);
+          const fIso = parseDateToISO(tanggalFinish);
+          if (sIso && fIso) {
+            const d1 = new Date(sIso);
+            const d2 = new Date(fIso);
+            const diffDays = Math.round(Math.abs((d2 - d1) / (1000 * 60 * 60 * 24)));
+            aging = isNaN(diffDays) ? 0 : diffDays;
+          } else {
+            aging = 0;
+          }
+        }
+
+        const targetPenyelesaian = col8;
+        const indikasiKerusakan = col9 || '-';
+        const perbaikan = col10 || '-';
+        const rawStatus = (col11 || 'DONE').toUpperCase().trim();
+        let status = 'DONE';
+        if (rawStatus.includes('PROG') || rawStatus.includes('JALAN') || rawStatus.includes('KERJA')) {
+          status = 'PROGRESS';
+        } else if (rawStatus.includes('OPEN') || rawStatus.includes('TUNGGU') || rawStatus.includes('PENDING')) {
+          status = 'OPEN';
+        }
+
+        if (!assetName && !jenisMhe && indikasiKerusakan === '-') continue;
+
+        result.push({
+          idx: result.length + 1,
+          no: parseInt(col0, 10) || (result.length + 1),
+          bu,
+          departemen,
+          jenisMhe,
+          assetName,
+          tanggalStart: tanggalStart || '-',
+          tanggalStartISO: parseDateToISO(tanggalStart),
+          tanggalFinish: tanggalFinish || '-',
+          tanggalFinishISO: parseDateToISO(tanggalFinish),
+          aging,
+          targetPenyelesaian: targetPenyelesaian || '-',
+          indikasiKerusakan,
+          perbaikan,
+          status
+        });
+      }
+
+      return result;
+    }
+
+    /* Parse CSV / TSV from sheet "SPAREPART" */
+    function parseSparepartCSV(text) {
+      if (!text || typeof text !== 'string') return [];
+      const lines = text.trim().split(/\r?\n/);
+      if (lines.length === 0) return [];
+
+      const result = [];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+
+        let cols = [];
+        if (line.includes('\t')) {
+          cols = line.split('\t');
+        } else if (line.includes('"')) {
+          const regex = /(?:,|\n|^)("(?:(?:"")*[^"]*)*"|[^",\n]*|(?:\n|$))/g;
+          let match;
+          while ((match = regex.exec(line)) !== null && match.index < line.length) {
+            let val = match[1] || '';
+            if (val.startsWith('"') && val.endsWith('"')) {
+              val = val.slice(1, -1).replace(/""/g, '"');
+            }
+            cols.push(val);
+          }
+        } else {
+          cols = line.split(',');
+        }
+
+        const getCol = (idx) => {
+          if (cols[idx] === undefined) return '';
+          let s = String(cols[idx]).replace(/^"|"$/g, '').trim();
+          if (s === '-' || s === 'null' || s === 'undefined') return '';
+          return s;
+        };
+
+        const col0 = getCol(0); // No.
+        const col1 = getCol(1); // Nama Part
+        const col2 = getCol(2); // Normal
+        const col3 = getCol(3); // Rusak
+        const col4 = getCol(4); // Total
+        const col5 = getCol(5); // Satuan
+        const col6 = getCol(6); // Keterangan
+        const col7 = getCol(7); // BU
+
+        // Header detection: skip header lines
+        const lineUpper = line.toUpperCase();
+        if (lineUpper.includes('NAMA PART') || (lineUpper.includes('VULKANISIR') && lineUpper.includes('TOTAL')) || col0.toUpperCase() === 'NO' || col0.toUpperCase() === 'NO.') {
+          continue;
+        }
+
+        const namaPart = col1;
+        if (!namaPart) continue;
+
+        const normal = parseInt(col2, 10) || 0;
+        const rusak = parseInt(col3, 10) || 0;
+        let total = parseInt(col4, 10);
+        if (isNaN(total)) total = normal + rusak;
+        const satuan = col5 || 'PCS';
+        const keterangan = col6 || (rusak > 0 ? 'PERLU VULKANISIR' : '-');
+        const bu = col7 || 'HCI';
+
+        result.push({
+          idx: result.length + 1,
+          no: parseInt(col0, 10) || (result.length + 1),
+          namaPart,
+          normal,
+          rusak,
+          total,
+          satuan,
+          keterangan,
+          bu
+        });
+      }
+
+      return result;
+    }
+
+    /* ========================================================
        TOAST HELPER
        ======================================================== */
     function showToast(message) {
@@ -2433,13 +3417,15 @@
     }
 
     /* ========================================================
-       DATA REFRESH ACTION (FETCH LOG SHEET & SUMMARY ASSET SHEET)
+       DATA REFRESH ACTION (FETCH LOG, SUMMARY ASSET, DOWNTIME, & SPAREPART)
        ======================================================== */
     async function refreshDashboardData(showNotice = true) {
       if (showNotice) showToast('🔄 Menyegarkan data spreadsheet...');
       try {
         let logDataText = DEFAULT_SPREADSHEET_DATA;
         let summaryAssetDataText = DEFAULT_SUMMARY_ASSET_DATA;
+        let downtimeDataText = DEFAULT_DOWNTIME_DATA;
+        let sparepartDataText = DEFAULT_SPAREPART_DATA;
 
         // Fetch Main Log Sheet
         try {
@@ -2473,12 +3459,46 @@
           // fallback default summary asset
         }
 
+        // Fetch Downtime Sheet
+        try {
+          const controller3 = new AbortController();
+          const timeoutId3 = setTimeout(() => controller3.abort(), 4000);
+          const resp3 = await fetch(GOOGLE_SHEETS_DOWNTIME_URL, { signal: controller3.signal });
+          clearTimeout(timeoutId3);
+          if (resp3.ok) {
+            const csv3 = await resp3.text();
+            if (csv3 && csv3.length > 20 && !csv3.includes('<html')) {
+              downtimeDataText = csv3;
+            }
+          }
+        } catch (e) {
+          // fallback default downtime
+        }
+
+        // Fetch Sparepart Sheet
+        try {
+          const controller4 = new AbortController();
+          const timeoutId4 = setTimeout(() => controller4.abort(), 4000);
+          const resp4 = await fetch(GOOGLE_SHEETS_SPAREPART_URL, { signal: controller4.signal });
+          clearTimeout(timeoutId4);
+          if (resp4.ok) {
+            const csv4 = await resp4.text();
+            if (csv4 && csv4.length > 20 && !csv4.includes('<html')) {
+              sparepartDataText = csv4;
+            }
+          }
+        } catch (e) {
+          // fallback default sparepart
+        }
+
         rawDataset = parseCSVOrTSV(logDataText);
         rawSummaryAssetDataset = parseSummaryAssetCSV(summaryAssetDataText);
+        rawDowntimeDataset = parseDowntimeCSV(downtimeDataText);
+        rawSparepartDataset = parseSparepartCSV(sparepartDataText);
 
         populateDropdownOptions();
         applyFilters();
-        if (showNotice) showToast(`✅ Data diperbarui: ${rawDataset.length} log, ${rawSummaryAssetDataset.length} summary aset`);
+        if (showNotice) showToast(`✅ Data diperbarui: ${rawDataset.length} log, ${rawSummaryAssetDataset.length} summary aset, ${rawDowntimeDataset.length} downtime, ${rawSparepartDataset.length} spare part`);
       } catch (err) {
         if (showNotice) showToast('⚠️ Gagal menyegarkan data.');
       }
@@ -2490,9 +3510,11 @@
     function populateDropdownOptions() {
       const kodeSelect = document.getElementById('filterKodeAlat');
       const namaSelect = document.getElementById('filterNamaAlat');
+      const downtimeJenisSelect = document.getElementById('downtimeFilterJenisMhe');
 
-      const currentKode = kodeSelect.value;
-      const currentNama = namaSelect.value;
+      const currentKode = kodeSelect ? kodeSelect.value : 'ALL';
+      const currentNama = namaSelect ? namaSelect.value : 'ALL';
+      const currentDtJenis = downtimeJenisSelect ? downtimeJenisSelect.value : 'ALL';
 
       const uniqueKodes = [...new Set(rawDataset.map(d => d.kodeAlat).filter(k => k && k !== '-'))].sort();
       const uniqueNamas = [...new Set([
@@ -2500,40 +3522,56 @@
         ...rawSummaryAssetDataset.map(d => d.unitName).filter(u => u && u !== '-')
       ])].sort();
 
-      kodeSelect.innerHTML = '<option value="ALL">Semua Kode Alat</option>';
-      uniqueKodes.forEach(kode => {
-        const opt = document.createElement('option');
-        opt.value = kode;
-        opt.textContent = kode;
-        kodeSelect.appendChild(opt);
-      });
+      if (kodeSelect) {
+        kodeSelect.innerHTML = '<option value="ALL">Semua Kode Alat</option>';
+        uniqueKodes.forEach(kode => {
+          const opt = document.createElement('option');
+          opt.value = kode;
+          opt.textContent = kode;
+          kodeSelect.appendChild(opt);
+        });
+        if (uniqueKodes.includes(currentKode)) kodeSelect.value = currentKode;
+      }
 
-      namaSelect.innerHTML = '<option value="ALL">Semua Tipe Alat</option>';
-      uniqueNamas.forEach(nama => {
-        const opt = document.createElement('option');
-        opt.value = nama;
-        opt.textContent = nama;
-        namaSelect.appendChild(opt);
-      });
+      if (namaSelect) {
+        namaSelect.innerHTML = '<option value="ALL">Semua Tipe Alat</option>';
+        uniqueNamas.forEach(nama => {
+          const opt = document.createElement('option');
+          opt.value = nama;
+          opt.textContent = nama;
+          namaSelect.appendChild(opt);
+        });
+        if (uniqueNamas.includes(currentNama)) namaSelect.value = currentNama;
+      }
 
-      if (uniqueKodes.includes(currentKode)) kodeSelect.value = currentKode;
-      if (uniqueNamas.includes(currentNama)) namaSelect.value = currentNama;
+      if (downtimeJenisSelect) {
+        const uniqueDtJenis = [...new Set(rawDowntimeDataset.map(d => d.jenisMhe).filter(Boolean))].sort();
+        downtimeJenisSelect.innerHTML = '<option value="ALL">Semua Jenis MHE</option>';
+        uniqueDtJenis.forEach(j => {
+          const opt = document.createElement('option');
+          opt.value = j;
+          opt.textContent = j;
+          downtimeJenisSelect.appendChild(opt);
+        });
+        if (uniqueDtJenis.includes(currentDtJenis)) downtimeJenisSelect.value = currentDtJenis;
+      }
 
       const allDatesISO = [
         ...rawDataset.map(d => d.tanggalISO),
-        ...rawSummaryAssetDataset.map(d => d.tanggalISO)
+        ...rawSummaryAssetDataset.map(d => d.tanggalISO),
+        ...rawDowntimeDataset.map(d => d.tanggalStartISO)
       ].filter(Boolean).sort();
 
       if (allDatesISO.length > 0) {
         const minDate = allDatesISO[0];
         const maxDate = allDatesISO[allDatesISO.length - 1];
         
-        ['filterDateStart', 'summaryFilterDateStart'].forEach(id => {
+        ['filterDateStart', 'summaryFilterDateStart', 'downtimeFilterDateStart'].forEach(id => {
           const el = document.getElementById(id);
           if (el) { el.min = minDate; el.max = maxDate; }
         });
         
-        ['filterDateEnd', 'summaryFilterDateEnd'].forEach(id => {
+        ['filterDateEnd', 'summaryFilterDateEnd', 'downtimeFilterDateEnd'].forEach(id => {
           const el = document.getElementById(id);
           if (el) { el.min = minDate; el.max = maxDate; }
         });
@@ -2541,24 +3579,36 @@
     }
 
     /* ========================================================
-       TAB SWITCHING / MENU TERPISAH (SUMMARY ASSET VS DETAIL LOG)
+       TAB SWITCHING / MENU TERPISAH (SUMMARY ASSET VS DETAIL LOG VS DOWNTIME VS SPAREPART)
        ======================================================== */
     function switchView(viewName) {
       currentActiveView = viewName;
       const tabSummaryBtn = document.getElementById('tabBtnSummary');
       const tabDetailBtn = document.getElementById('tabBtnDetail');
+      const tabDowntimeBtn = document.getElementById('tabBtnDowntime');
+      const tabSparepartBtn = document.getElementById('tabBtnSparepart');
       const viewSummary = document.getElementById('viewSummaryAsset');
       const viewDetail = document.getElementById('viewDetailLog');
+      const viewDowntime = document.getElementById('viewDowntime');
+      const viewSparePart = document.getElementById('viewSparePart');
       const activeIndicator = document.getElementById('activeViewIndicator');
 
-      if (viewName === 'summary') {
-        tabSummaryBtn.classList.add('active');
-        tabSummaryBtn.setAttribute('aria-selected', 'true');
-        tabDetailBtn.classList.remove('active');
-        tabDetailBtn.setAttribute('aria-selected', 'false');
+      [tabSummaryBtn, tabDetailBtn, tabDowntimeBtn, tabSparepartBtn].forEach(btn => {
+        if (btn) {
+          btn.classList.remove('active');
+          btn.setAttribute('aria-selected', 'false');
+        }
+      });
+      [viewSummary, viewDetail, viewDowntime, viewSparePart].forEach(view => {
+        if (view) view.classList.remove('active');
+      });
 
-        viewSummary.classList.add('active');
-        viewDetail.classList.remove('active');
+      if (viewName === 'summary') {
+        if (tabSummaryBtn) {
+          tabSummaryBtn.classList.add('active');
+          tabSummaryBtn.setAttribute('aria-selected', 'true');
+        }
+        if (viewSummary) viewSummary.classList.add('active');
 
         if (activeIndicator) {
           activeIndicator.innerHTML = '📍 Menu Aktif: <b>Summary Asset</b>';
@@ -2567,17 +3617,14 @@
           activeIndicator.style.borderColor = '#bfdbfe';
         }
 
-        // Render summary asset components and charts
         updateAssetSummary();
         renderSummaryAssetCharts();
-      } else {
-        tabDetailBtn.classList.add('active');
-        tabDetailBtn.setAttribute('aria-selected', 'true');
-        tabSummaryBtn.classList.remove('active');
-        tabSummaryBtn.setAttribute('aria-selected', 'false');
-
-        viewDetail.classList.add('active');
-        viewSummary.classList.remove('active');
+      } else if (viewName === 'detail') {
+        if (tabDetailBtn) {
+          tabDetailBtn.classList.add('active');
+          tabDetailBtn.setAttribute('aria-selected', 'true');
+        }
+        if (viewDetail) viewDetail.classList.add('active');
 
         if (activeIndicator) {
           activeIndicator.innerHTML = '📍 Menu Aktif: <b>Detail Log Pemakaian</b>';
@@ -2586,40 +3633,83 @@
           activeIndicator.style.borderColor = '#bbf7d0';
         }
 
-        // Trigger chart rendering and resize on visible canvas
         renderCharts();
         renderTable();
+      } else if (viewName === 'downtime') {
+        if (tabDowntimeBtn) {
+          tabDowntimeBtn.classList.add('active');
+          tabDowntimeBtn.setAttribute('aria-selected', 'true');
+        }
+        if (viewDowntime) viewDowntime.classList.add('active');
+
+        if (activeIndicator) {
+          activeIndicator.innerHTML = '📍 Menu Aktif: <b>Downtime MHE</b>';
+          activeIndicator.style.background = '#fff7ed';
+          activeIndicator.style.color = '#c2410c';
+          activeIndicator.style.borderColor = '#ffedd5';
+        }
+
+        updateDowntimeView();
+        renderDowntimeCharts();
+      } else if (viewName === 'sparepart') {
+        if (tabSparepartBtn) {
+          tabSparepartBtn.classList.add('active');
+          tabSparepartBtn.setAttribute('aria-selected', 'true');
+        }
+        if (viewSparePart) viewSparePart.classList.add('active');
+
+        if (activeIndicator) {
+          activeIndicator.innerHTML = '📍 Menu Aktif: <b>Spare Part</b>';
+          activeIndicator.style.background = '#f5f3ff';
+          activeIndicator.style.color = '#7e22ce';
+          activeIndicator.style.borderColor = '#ddd6fe';
+        }
+
+        updateSparepartView();
+        renderSparepartCharts();
       }
     }
 
-    /* Synchronize date filters between Summary Asset tab and Detail Log tab */
-    function syncDateFilter(source, type) {
-      if (source === 'summary') {
-        if (type === 'start') {
-          const val = document.getElementById('summaryFilterDateStart')?.value || '';
-          const target = document.getElementById('filterDateStart');
-          if (target) target.value = val;
-        } else if (type === 'end') {
-          const val = document.getElementById('summaryFilterDateEnd')?.value || '';
-          const target = document.getElementById('filterDateEnd');
-          if (target) target.value = val;
-        }
-      } else if (source === 'detail') {
-        if (type === 'start') {
-          const val = document.getElementById('filterDateStart')?.value || '';
-          const target = document.getElementById('summaryFilterDateStart');
-          if (target) target.value = val;
-        } else if (type === 'end') {
-          const val = document.getElementById('filterDateEnd')?.value || '';
-          const target = document.getElementById('summaryFilterDateEnd');
-          if (target) target.value = val;
-        }
+    /* Global Export Active View handler for Topbar */
+    function exportCurrentActiveViewCSV() {
+      if (currentActiveView === 'summary') {
+        exportAssetSummaryToCSV();
+      } else if (currentActiveView === 'detail') {
+        exportToCSV();
+      } else if (currentActiveView === 'downtime') {
+        exportDowntimeToCSV();
+      } else if (currentActiveView === 'sparepart') {
+        exportSparepartToCSV();
+      } else {
+        exportAssetSummaryToCSV();
       }
+    }
+
+    /* Synchronize date filters between Summary Asset, Detail Log, and Downtime */
+    function syncDateFilter(source, type) {
+      let selectedVal = '';
+      if (source === 'summary') {
+        selectedVal = type === 'start' ? document.getElementById('summaryFilterDateStart')?.value : document.getElementById('summaryFilterDateEnd')?.value;
+      } else if (source === 'detail') {
+        selectedVal = type === 'start' ? document.getElementById('filterDateStart')?.value : document.getElementById('filterDateEnd')?.value;
+      } else if (source === 'downtime') {
+        selectedVal = type === 'start' ? document.getElementById('downtimeFilterDateStart')?.value : document.getElementById('downtimeFilterDateEnd')?.value;
+      }
+
+      const targetIds = type === 'start'
+        ? ['filterDateStart', 'summaryFilterDateStart', 'downtimeFilterDateStart']
+        : ['filterDateEnd', 'summaryFilterDateEnd', 'downtimeFilterDateEnd'];
+
+      targetIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.value !== selectedVal) el.value = selectedVal || '';
+      });
+
       applyFilters();
     }
 
     function resetFilters() {
-      ['filterDateStart', 'summaryFilterDateStart', 'filterDateEnd', 'summaryFilterDateEnd'].forEach(id => {
+      ['filterDateStart', 'summaryFilterDateStart', 'filterDateEnd', 'summaryFilterDateEnd', 'downtimeFilterDateStart', 'downtimeFilterDateEnd'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
       });
@@ -2636,22 +3726,34 @@
       if (tableSearch) tableSearch.value = '';
       const assetSearch = document.getElementById('assetSearchInput');
       if (assetSearch) assetSearch.value = '';
+      const dtJenisEl = document.getElementById('downtimeFilterJenisMhe');
+      if (dtJenisEl) dtJenisEl.value = 'ALL';
+      const dtStatusEl = document.getElementById('downtimeFilterStatus');
+      if (dtStatusEl) dtStatusEl.value = 'ALL';
+      const dtSearch = document.getElementById('downtimeSearchInput');
+      if (dtSearch) dtSearch.value = '';
+      const spBUEl = document.getElementById('sparepartFilterBU');
+      if (spBUEl) spBUEl.value = 'ALL';
+      const spKondisiEl = document.getElementById('sparepartFilterKondisi');
+      if (spKondisiEl) spKondisiEl.value = 'ALL';
+      const spSearch = document.getElementById('sparepartSearchInput');
+      if (spSearch) spSearch.value = '';
       
       applyFilters();
       showToast('↺ Filter telah di-reset');
     }
 
     /* ========================================================
-       FILTERING LOGIC (MENGIKUTI FILTER TANGGAL)
+       FILTERING LOGIC (MENGIKUTI FILTER TANGGAL & KONDISI)
        ======================================================== */
     function applyFilters() {
-      const dateStart = document.getElementById('filterDateStart').value;
-      const dateEnd = document.getElementById('filterDateEnd').value;
-      const shift = document.getElementById('filterShift').value;
-      const kode = document.getElementById('filterKodeAlat').value;
-      const nama = document.getElementById('filterNamaAlat').value;
-      const status = document.getElementById('filterStatus').value;
-      const search = (document.getElementById('tableSearch').value || '').toLowerCase().trim();
+      const dateStart = document.getElementById('filterDateStart')?.value || '';
+      const dateEnd = document.getElementById('filterDateEnd')?.value || '';
+      const shift = document.getElementById('filterShift')?.value || 'ALL';
+      const kode = document.getElementById('filterKodeAlat')?.value || 'ALL';
+      const nama = document.getElementById('filterNamaAlat')?.value || 'ALL';
+      const status = document.getElementById('filterStatus')?.value || 'ALL';
+      const search = (document.getElementById('tableSearch')?.value || '').toLowerCase().trim();
 
       // Filter main logs
       filteredDataset = rawDataset.filter(item => {
@@ -2682,9 +3784,44 @@
         return true;
       });
 
+      // Filter sheet DOWNTIME
+      const dtJenis = document.getElementById('downtimeFilterJenisMhe')?.value || 'ALL';
+      const dtStatus = document.getElementById('downtimeFilterStatus')?.value || 'ALL';
+      const dtSearch = (document.getElementById('downtimeSearchInput')?.value || '').toLowerCase().trim();
+
+      filteredDowntimeDataset = rawDowntimeDataset.filter(item => {
+        if (dateStart && item.tanggalStartISO && item.tanggalStartISO < dateStart) return false;
+        if (dateEnd && item.tanggalStartISO && item.tanggalStartISO > dateEnd) return false;
+        if (dtJenis !== 'ALL' && item.jenisMhe !== dtJenis) return false;
+        if (dtStatus !== 'ALL' && item.status !== dtStatus) return false;
+        if (dtSearch) {
+          const matchStr = `${item.no} ${item.bu} ${item.departemen} ${item.jenisMhe} ${item.assetName} ${item.indikasiKerusakan} ${item.perbaikan} ${item.status}`.toLowerCase();
+          if (!matchStr.includes(dtSearch)) return false;
+        }
+        return true;
+      });
+
+      // Filter sheet SPAREPART
+      const spBU = document.getElementById('sparepartFilterBU')?.value || 'ALL';
+      const spKondisi = document.getElementById('sparepartFilterKondisi')?.value || 'ALL';
+      const spSearch = (document.getElementById('sparepartSearchInput')?.value || '').toLowerCase().trim();
+
+      filteredSparepartDataset = rawSparepartDataset.filter(item => {
+        if (spBU !== 'ALL' && item.bu !== spBU) return false;
+        if (spKondisi === 'RUSAK' && item.rusak <= 0) return false;
+        if (spKondisi === 'NORMAL' && item.rusak > 0) return false;
+        if (spSearch) {
+          const matchStr = `${item.no} ${item.namaPart} ${item.bu} ${item.satuan} ${item.keterangan}`.toLowerCase();
+          if (!matchStr.includes(spSearch)) return false;
+        }
+        return true;
+      });
+
       currentPage = 1;
       updateKPIs();
       updateAssetSummary();
+      updateDowntimeView();
+      updateSparepartView();
       renderCharts();
       renderTable();
     }
@@ -3631,6 +4768,578 @@
     }
 
     /* ========================================================
+       DOWNTIME VIEW FUNCTIONS (DATA DARI SHEET "DOWNTIME")
+       ======================================================== */
+    function updateDowntimeView() {
+      const periodLabel = getActiveDateRangeLabel();
+      const periodBadge = document.getElementById('downtimeFilterPeriodBadge');
+      if (periodBadge) periodBadge.textContent = periodLabel;
+
+      const dataset = filteredDowntimeDataset.length > 0 ? filteredDowntimeDataset : rawDowntimeDataset;
+      const totalCases = dataset.length;
+
+      const countBadge = document.getElementById('downtimeCountBadge');
+      if (countBadge) {
+        countBadge.textContent = `${totalCases} Kasus`;
+      }
+
+      const tabBadge = document.getElementById('tabDowntimeBadge');
+      if (tabBadge) {
+        tabBadge.textContent = `${totalCases} Kasus`;
+      }
+
+      // KPIs
+      const doneCount = dataset.filter(d => d.status === 'DONE').length;
+      const activeCount = dataset.filter(d => d.status !== 'DONE').length;
+      const totalAging = dataset.reduce((acc, curr) => acc + (curr.aging || 0), 0);
+      const avgAging = totalCases > 0 ? (totalAging / totalCases).toFixed(1) : '0';
+
+      const kpiTotalEl = document.getElementById('kpiTotalDowntime');
+      if (kpiTotalEl) kpiTotalEl.textContent = `${totalCases} Kasus`;
+
+      const kpiDoneEl = document.getElementById('kpiDowntimeDone');
+      if (kpiDoneEl) kpiDoneEl.textContent = `${doneCount} Unit`;
+      const kpiDoneSub = document.getElementById('kpiDowntimeDoneSub');
+      if (kpiDoneSub) {
+        const pctDone = totalCases > 0 ? Math.round((doneCount / totalCases) * 100) : 100;
+        kpiDoneSub.textContent = `${pctDone}% Masalah tertangani`;
+      }
+
+      const kpiActiveEl = document.getElementById('kpiDowntimeActive');
+      if (kpiActiveEl) kpiActiveEl.textContent = `${activeCount} Unit`;
+
+      const kpiAvgAgingEl = document.getElementById('kpiDowntimeAvgAging');
+      if (kpiAvgAgingEl) kpiAvgAgingEl.textContent = `${avgAging} Hari`;
+      const kpiAvgAgingSub = document.getElementById('kpiDowntimeAvgAgingSub');
+      if (kpiAvgAgingSub) kpiAvgAgingSub.textContent = `Total durasi: ${totalAging} Hari`;
+
+      renderDowntimeCharts();
+      renderDowntimeTable();
+    }
+
+    function renderDowntimeCharts() {
+      const indikasiCanvas = document.getElementById('downtimeIndikasiChart');
+      const agingCanvas = document.getElementById('downtimeAgingChart');
+      if (!indikasiCanvas || !agingCanvas) return;
+
+      const dataset = filteredDowntimeDataset.length > 0 ? filteredDowntimeDataset : rawDowntimeDataset;
+
+      // 1. Indikasi Kerusakan Distribution Chart
+      const ctxIndikasi = indikasiCanvas.getContext('2d');
+      if (downtimeIndikasiChartInstance) downtimeIndikasiChartInstance.destroy();
+
+      const countsByIndikasi = {};
+      dataset.forEach(d => {
+        const key = d.indikasiKerusakan || 'Lainnya';
+        countsByIndikasi[key] = (countsByIndikasi[key] || 0) + 1;
+      });
+
+      const indikasiLabels = Object.keys(countsByIndikasi);
+      const indikasiValues = Object.values(countsByIndikasi);
+      const colorPalette = ['#ef4444', '#f97316', '#eab308', '#3b82f6', '#8b5cf6', '#06b6d4', '#10b981', '#64748b'];
+
+      downtimeIndikasiChartInstance = new Chart(ctxIndikasi, {
+        type: 'doughnut',
+        data: {
+          labels: indikasiLabels.map((lbl, idx) => `${lbl} (${indikasiValues[idx]})`),
+          datasets: [{
+            data: indikasiValues,
+            backgroundColor: colorPalette.slice(0, indikasiLabels.length),
+            hoverOffset: 6,
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 14, font: { family: 'inherit', size: 12 } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` Kasus: ${ctx.raw}`
+              }
+            }
+          },
+          cutout: '55%'
+        }
+      });
+
+      // 2. Aging Downtime per Unit Chart
+      const ctxAging = agingCanvas.getContext('2d');
+      if (downtimeAgingChartInstance) downtimeAgingChartInstance.destroy();
+
+      const sortedByAging = [...dataset].sort((a, b) => b.aging - a.aging).slice(0, 10);
+      const unitNames = sortedByAging.map(d => {
+        const name = d.assetName || d.jenisMhe || 'Unit';
+        return name.length > 25 ? name.substring(0, 25) + '...' : name;
+      });
+      const agings = sortedByAging.map(d => d.aging);
+
+      downtimeAgingChartInstance = new Chart(ctxAging, {
+        type: 'bar',
+        data: {
+          labels: unitNames,
+          datasets: [{
+            label: 'Aging Downtime (Hari)',
+            data: agings,
+            backgroundColor: agings.map(a => a >= 10 ? '#ef4444' : (a >= 3 ? '#f97316' : '#10b981')),
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          indexAxis: 'y',
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: (ctx) => sortedByAging[ctx[0].dataIndex]?.assetName,
+                label: (ctx) => `Aging: ${ctx.raw} Hari | Masalah: ${sortedByAging[ctx.dataIndex]?.indikasiKerusakan}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { callback: (v) => v + ' hari' },
+              grid: { color: '#f1f5f9' }
+            },
+            y: {
+              grid: { display: false }
+            }
+          }
+        }
+      });
+    }
+
+    function sortDowntimeTable(column) {
+      if (currentDowntimeSort.column === column) {
+        currentDowntimeSort.direction = currentDowntimeSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentDowntimeSort.column = column;
+        currentDowntimeSort.direction = 'asc';
+      }
+      renderDowntimeTable();
+    }
+
+    function renderDowntimeTable() {
+      const tbody = document.getElementById('downtimeTableBody');
+      const tfoot = document.getElementById('downtimeTableFoot');
+      const infoEl = document.getElementById('downtimeInfo');
+      if (!tbody) return;
+
+      const searchInput = (document.getElementById('downtimeSearchInput')?.value || '').toLowerCase().trim();
+      let displayData = filteredDowntimeDataset.length > 0 ? [...filteredDowntimeDataset] : [...rawDowntimeDataset];
+
+      if (searchInput) {
+        displayData = displayData.filter(d => {
+          const matchStr = `${d.no} ${d.bu} ${d.departemen} ${d.jenisMhe} ${d.assetName} ${d.indikasiKerusakan} ${d.perbaikan} ${d.status}`.toLowerCase();
+          return matchStr.includes(searchInput);
+        });
+      }
+
+      displayData.sort((a, b) => {
+        let valA = a[currentDowntimeSort.column];
+        let valB = b[currentDowntimeSort.column];
+
+        if (valA === null || valA === undefined) valA = currentDowntimeSort.direction === 'asc' ? Infinity : -Infinity;
+        if (valB === null || valB === undefined) valB = currentDowntimeSort.direction === 'asc' ? Infinity : -Infinity;
+
+        if (typeof valA === 'string') {
+          return currentDowntimeSort.direction === 'asc'
+            ? valA.localeCompare(valB)
+            : valB.localeCompare(valA);
+        }
+
+        return currentDowntimeSort.direction === 'asc' ? valA - valB : valB - valA;
+      });
+
+      if (displayData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="12" style="text-align: center; padding: 32px; color: var(--text-muted);">
+              Tidak ada data downtime yang cocok dengan filter atau kriteria pencarian.
+            </td>
+          </tr>
+        `;
+        if (tfoot) tfoot.innerHTML = '';
+        if (infoEl) infoEl.textContent = 'Menampilkan 0 kasus downtime';
+        return;
+      }
+
+      let rowsHtml = '';
+      displayData.forEach((row, i) => {
+        let statusBadge = '<span class="status-badge-optimal">✅ DONE</span>';
+        if (row.status === 'PROGRESS') {
+          statusBadge = '<span class="status-badge-warning">🟡 IN PROGRESS</span>';
+        } else if (row.status === 'OPEN') {
+          statusBadge = '<span class="status-badge-critical">🔴 OPEN</span>';
+        }
+
+        let agingClass = 'aging-badge-low';
+        if (row.aging >= 10) agingClass = 'aging-badge-high';
+        else if (row.aging >= 3) agingClass = 'aging-badge-med';
+
+        rowsHtml += `
+          <tr>
+            <td style="color: var(--text-light); font-weight: 600;">${row.no || (i + 1)}</td>
+            <td><span style="font-weight: 700; color: var(--text-muted);">${row.bu}</span></td>
+            <td><span style="font-size: 12px; font-weight: 600;">${row.departemen}</span></td>
+            <td style="font-weight: 700; color: var(--primary); font-size: 13px;">${row.jenisMhe}</td>
+            <td style="font-weight: 600; color: var(--text-main); font-size: 13px; max-width: 260px;">${row.assetName}</td>
+            <td><span class="tag-code" style="font-size: 12px;">${row.tanggalStart}</span></td>
+            <td><span class="tag-code" style="font-size: 12px;">${row.tanggalFinish}</span></td>
+            <td style="text-align: center;">
+              <span class="aging-badge ${agingClass}">${row.aging} Hari</span>
+            </td>
+            <td style="font-size: 12px; color: var(--text-muted);">${row.targetPenyelesaian || '-'}</td>
+            <td style="font-weight: 600; color: #b91c1c;">${row.indikasiKerusakan}</td>
+            <td style="font-size: 12.5px; color: var(--text-main);">${row.perbaikan}</td>
+            <td style="text-align: center;">${statusBadge}</td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = rowsHtml;
+
+      const grandAging = displayData.reduce((a, b) => a + (b.aging || 0), 0);
+      const avgAging = displayData.length > 0 ? (grandAging / displayData.length).toFixed(1) : 0;
+      const doneCount = displayData.filter(d => d.status === 'DONE').length;
+
+      if (tfoot) {
+        tfoot.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: right; font-weight: 800; color: var(--text-main);">TOTAL SHEET DOWNTIME:</td>
+            <td style="text-align: center; font-weight: 800; font-size: 13px; color: #d97706;">${grandAging} Hari (Rata-rata: ${avgAging} Hari)</td>
+            <td colspan="3" style="text-align: right; font-weight: 700; color: var(--text-muted);">Selesai Perbaikan:</td>
+            <td style="text-align: center; font-weight: 800; color: #16a34a;">${doneCount} / ${displayData.length} Selesai</td>
+          </tr>
+        `;
+      }
+
+      if (infoEl) {
+        infoEl.textContent = `Menampilkan ${displayData.length} kasus downtime dari sheet DOWNTIME`;
+      }
+    }
+
+    function exportDowntimeToCSV() {
+      const dataset = filteredDowntimeDataset.length > 0 ? filteredDowntimeDataset : rawDowntimeDataset;
+      if (dataset.length === 0) {
+        showToast('⚠️ Tidak ada data downtime untuk diekspor!');
+        return;
+      }
+
+      const headers = [
+        'NO', 'BU', 'DEPARTEMEN', 'JENIS MHE', 'ASSET NAME', 'START', 'FINISH', 'AGING DOWNTIME (HARI)', 'TARGET PENYELESAIAN', 'INDIKASI KERUSAKAN', 'PERBAIKAN', 'STATUS'
+      ];
+
+      const rows = dataset.map(d => [
+        `"${d.no}"`,
+        `"${d.bu}"`,
+        `"${d.departemen}"`,
+        `"${d.jenisMhe}"`,
+        `"${d.assetName}"`,
+        `"${d.tanggalStart}"`,
+        `"${d.tanggalFinish}"`,
+        `"${d.aging}"`,
+        `"${d.targetPenyelesaian}"`,
+        `"${d.indikasiKerusakan}"`,
+        `"${d.perbaikan}"`,
+        `"${d.status}"`
+      ]);
+
+      const dateStart = document.getElementById('filterDateStart')?.value || 'all';
+      const dateEnd = document.getElementById('filterDateEnd')?.value || 'all';
+      const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `downtime_mhe_sheet_${dateStart}_sd_${dateEnd}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('📥 File Downtime CSV berhasil diunduh!');
+    }
+
+    /* ========================================================
+       SPARE PART VIEW LOGIC (DATA DARI SHEET "SPAREPART")
+       ======================================================== */
+    function updateSparepartView() {
+      const data = filteredSparepartDataset.length > 0 ? filteredSparepartDataset : rawSparepartDataset;
+
+      const totalTypes = data.length;
+      const totalNormal = data.reduce((sum, item) => sum + (item.normal || 0), 0);
+      const totalRusak = data.reduce((sum, item) => sum + (item.rusak || 0), 0);
+      const totalFisik = data.reduce((sum, item) => sum + (item.total || 0), 0);
+
+      const kpiTypes = document.getElementById('kpiTotalSparepartTypes');
+      if (kpiTypes) kpiTypes.textContent = `${totalTypes} Item`;
+
+      const kpiNormal = document.getElementById('kpiTotalSparepartNormal');
+      if (kpiNormal) kpiNormal.textContent = `${totalNormal} Unit`;
+
+      const kpiRusak = document.getElementById('kpiTotalSparepartRusak');
+      if (kpiRusak) kpiRusak.textContent = `${totalRusak} Unit`;
+
+      const kpiFisik = document.getElementById('kpiTotalSparepartFisik');
+      if (kpiFisik) kpiFisik.textContent = `${totalFisik} Unit`;
+
+      const badge = document.getElementById('tabSparepartBadge');
+      if (badge) badge.textContent = `${totalTypes} Part`;
+
+      renderSparepartTable();
+    }
+
+    function renderSparepartCharts() {
+      const ctxStatus = document.getElementById('sparepartStatusChart')?.getContext('2d');
+      const ctxRusak = document.getElementById('sparepartRusakChart')?.getContext('2d');
+      if (!ctxStatus || !ctxRusak) return;
+
+      const data = filteredSparepartDataset.length > 0 ? filteredSparepartDataset : rawSparepartDataset;
+
+      const totalNormal = data.reduce((sum, item) => sum + (item.normal || 0), 0);
+      const totalRusak = data.reduce((sum, item) => sum + (item.rusak || 0), 0);
+
+      // 1. Doughnut: Proporsi Kondisi (Normal vs Rusak)
+      if (sparepartStatusChartInstance) sparepartStatusChartInstance.destroy();
+      sparepartStatusChartInstance = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+          labels: ['Stok Normal (Ready)', 'Rusak / Perlu Vulkanisir'],
+          datasets: [{
+            data: [totalNormal, totalRusak],
+            backgroundColor: ['#22c55e', '#ef4444'],
+            hoverBackgroundColor: ['#16a34a', '#dc2626'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'bottom', labels: { boxWidth: 14, font: { weight: '600' } } },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => {
+                  const val = ctx.raw;
+                  const total = totalNormal + totalRusak;
+                  const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                  return ` ${ctx.label}: ${val} Unit (${pct}%)`;
+                }
+              }
+            }
+          },
+          cutout: '62%'
+        }
+      });
+
+      // 2. Bar Chart: Top Spare Part Rusak / Butuh Vulkanisir
+      const rusakParts = data.filter(d => (d.rusak || 0) > 0)
+        .sort((a, b) => (b.rusak || 0) - (a.rusak || 0))
+        .slice(0, 10);
+
+      const labels = rusakParts.map(d => {
+        const name = d.namaPart || '';
+        return name.length > 25 ? name.substring(0, 25) + '...' : name;
+      });
+      const values = rusakParts.map(d => d.rusak || 0);
+
+      if (sparepartRusakChartInstance) sparepartRusakChartInstance.destroy();
+      sparepartRusakChartInstance = new Chart(ctxRusak, {
+        type: 'bar',
+        data: {
+          labels: labels.length > 0 ? labels : ['Semua Spare Part Normal'],
+          datasets: [{
+            label: 'Jumlah Rusak (Unit)',
+            data: values.length > 0 ? values : [0],
+            backgroundColor: values.length > 0 ? '#f97316' : '#94a3b8',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: (ctx) => rusakParts[ctx[0].dataIndex]?.namaPart || ctx[0].label,
+                label: (ctx) => {
+                  const item = rusakParts[ctx.dataIndex];
+                  return item ? ` Rusak: ${item.rusak} ${item.satuan} (${item.keterangan || 'Perlu Vulkanisir'})` : ' Tidak ada rusak';
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { precision: 0 },
+              grid: { color: '#f1f5f9' }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { font: { size: 11, weight: '500' } }
+            }
+          }
+        }
+      });
+    }
+
+    function sortSparepartTable(column) {
+      if (currentSparepartSort.column === column) {
+        currentSparepartSort.direction = currentSparepartSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentSparepartSort.column = column;
+        currentSparepartSort.direction = 'asc';
+      }
+      renderSparepartTable();
+    }
+
+    function renderSparepartTable() {
+      const tbody = document.getElementById('sparepartTableBody');
+      const tfoot = document.getElementById('sparepartTableFoot');
+      const infoEl = document.getElementById('sparepartInfo');
+      if (!tbody) return;
+
+      const searchInput = (document.getElementById('sparepartSearchInput')?.value || '').toLowerCase().trim();
+      let displayData = filteredSparepartDataset.length > 0 ? [...filteredSparepartDataset] : [...rawSparepartDataset];
+
+      if (searchInput) {
+        displayData = displayData.filter(d => {
+          const matchStr = `${d.no} ${d.namaPart} ${d.bu} ${d.satuan} ${d.keterangan}`.toLowerCase();
+          return matchStr.includes(searchInput);
+        });
+      }
+
+      displayData.sort((a, b) => {
+        let valA = a[currentSparepartSort.column];
+        let valB = b[currentSparepartSort.column];
+
+        if (valA === null || valA === undefined) valA = currentSparepartSort.direction === 'asc' ? Infinity : -Infinity;
+        if (valB === null || valB === undefined) valB = currentSparepartSort.direction === 'asc' ? Infinity : -Infinity;
+
+        if (typeof valA === 'string') {
+          return currentSparepartSort.direction === 'asc'
+            ? valA.localeCompare(valB)
+            : valB.localeCompare(valA);
+        }
+
+        return currentSparepartSort.direction === 'asc' ? valA - valB : valB - valA;
+      });
+
+      if (displayData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="9" style="text-align: center; padding: 32px; color: var(--text-muted);">
+              Tidak ada data spare part yang cocok dengan filter atau kriteria pencarian.
+            </td>
+          </tr>
+        `;
+        if (tfoot) tfoot.innerHTML = '';
+        if (infoEl) infoEl.textContent = 'Menampilkan 0 jenis spare part';
+        return;
+      }
+
+      let rowsHtml = '';
+      displayData.forEach((row, i) => {
+        const isDamaged = (row.rusak || 0) > 0;
+        const statusBadge = isDamaged
+          ? `<span class="status-badge-critical" style="background:#fee2e2; color:#991b1b; font-weight:700;">⚠️ PERLU VULKANISIR</span>`
+          : `<span class="status-badge-optimal" style="background:#dcfce7; color:#166534; font-weight:700;">✅ NORMAL (READY)</span>`;
+
+        const normalBadge = row.normal > 0
+          ? `<span style="display:inline-block; padding: 2px 8px; border-radius: 9999px; background:#f0fdf4; color:#16a34a; font-weight:700;">${row.normal}</span>`
+          : `<span style="color:var(--text-light);">-</span>`;
+
+        const rusakBadge = row.rusak > 0
+          ? `<span style="display:inline-block; padding: 2px 8px; border-radius: 9999px; background:#fef2f2; color:#dc2626; font-weight:700;">${row.rusak}</span>`
+          : `<span style="color:var(--text-light);">-</span>`;
+
+        const ketText = row.keterangan && row.keterangan !== '-' 
+          ? `<span style="font-weight:600; color:#b91c1c;">${row.keterangan}</span>` 
+          : `<span style="color:var(--text-muted);">-</span>`;
+
+        rowsHtml += `
+          <tr>
+            <td style="color: var(--text-light); font-weight: 600;">${row.no || (i + 1)}</td>
+            <td><span style="font-weight: 700; color: #4338ca; background: #e0e7ff; padding: 2px 8px; border-radius: 4px; font-size: 12px;">${row.bu || 'HCI'}</span></td>
+            <td style="font-weight: 600; color: var(--text-main); font-size: 13.5px;">${row.namaPart}</td>
+            <td style="text-align: center;">${normalBadge}</td>
+            <td style="text-align: center;">${rusakBadge}</td>
+            <td style="text-align: center; font-weight: 800; font-size: 13.5px; color: var(--text-main);">${row.total}</td>
+            <td style="text-align: center; font-size: 12px; color: var(--text-muted);">${row.satuan}</td>
+            <td style="font-size: 12.5px;">${ketText}</td>
+            <td style="text-align: center;">${statusBadge}</td>
+          </tr>
+        `;
+      });
+
+      tbody.innerHTML = rowsHtml;
+
+      const grandNormal = displayData.reduce((a, b) => a + (b.normal || 0), 0);
+      const grandRusak = displayData.reduce((a, b) => a + (b.rusak || 0), 0);
+      const grandTotal = displayData.reduce((a, b) => a + (b.total || 0), 0);
+
+      if (tfoot) {
+        tfoot.innerHTML = `
+          <tr>
+            <td colspan="3" style="text-align: right; font-weight: 800; color: var(--text-main);">TOTAL AKUMULASI:</td>
+            <td style="text-align: center; font-weight: 800; color: #16a34a; font-size: 14px;">${grandNormal} Normal</td>
+            <td style="text-align: center; font-weight: 800; color: #dc2626; font-size: 14px;">${grandRusak} Rusak</td>
+            <td style="text-align: center; font-weight: 800; font-size: 14px; color: var(--primary);">${grandTotal} Unit</td>
+            <td style="text-align: center; font-size: 12px; color: var(--text-muted);">PCS</td>
+            <td colspan="2" style="font-size: 12.5px; color: var(--text-muted); font-weight: 600;">
+              ${grandRusak > 0 ? `⚠️ Terdapat ${grandRusak} unit ban/part butuh proses vulkanisir` : '✅ Seluruh unit dalam kondisi normal'}
+            </td>
+          </tr>
+        `;
+      }
+
+      if (infoEl) {
+        infoEl.textContent = `Menampilkan ${displayData.length} jenis spare part dari tab sheet SPAREPART`;
+      }
+    }
+
+    function exportSparepartToCSV() {
+      const dataset = filteredSparepartDataset.length > 0 ? filteredSparepartDataset : rawSparepartDataset;
+      if (dataset.length === 0) {
+        showToast('⚠️ Tidak ada data spare part untuk diekspor!');
+        return;
+      }
+
+      const headers = [
+        'No.', 'BU', 'Nama Part', 'Normal', 'Rusak', 'Total', 'Satuan', 'Keterangan', 'Status Kondisi'
+      ];
+
+      const rows = dataset.map(d => [
+        `"${d.no}"`,
+        `"${d.bu}"`,
+        `"${d.namaPart}"`,
+        `"${d.normal}"`,
+        `"${d.rusak}"`,
+        `"${d.total}"`,
+        `"${d.satuan}"`,
+        `"${d.keterangan}"`,
+        `"${(d.rusak || 0) > 0 ? 'PERLU VULKANISIR' : 'NORMAL'}"`
+      ]);
+
+      const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement('a');
+      link.setAttribute('href', encodedUri);
+      link.setAttribute('download', `inventaris_sparepart_sheet.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast('📥 File Spare Part CSV berhasil diunduh!');
+    }
+
+    /* ========================================================
        LOADING SCREEN ANIMATION & FETCH CONTROLLER
        ======================================================== */
     const loadingStatusMessages = [
@@ -3715,10 +5424,12 @@
       }, 550);
     }
 
-    /* Attempt Live Google Sheets Fetch for both Log & Summary Asset sheets with Graceful Fallback */
+    /* Attempt Live Google Sheets Fetch for Log, Summary Asset, Downtime, & Sparepart sheets with Graceful Fallback */
     async function fetchDataFromSource() {
       let logDataText = DEFAULT_SPREADSHEET_DATA;
       let summaryAssetDataText = DEFAULT_SUMMARY_ASSET_DATA;
+      let downtimeDataText = DEFAULT_DOWNTIME_DATA;
+      let sparepartDataText = DEFAULT_SPAREPART_DATA;
 
       // 1. Check if user had localStorage override for logs
       const savedData = localStorage.getItem('forklift_battery_data');
@@ -3757,7 +5468,39 @@
         console.info('Using default summary asset dataset:', err.message);
       }
 
-      return { logDataText, summaryAssetDataText };
+      // 3. Fetch Downtime sheet
+      try {
+        const controller3 = new AbortController();
+        const timeoutId3 = setTimeout(() => controller3.abort(), 2500);
+        const resp3 = await fetch(GOOGLE_SHEETS_DOWNTIME_URL, { signal: controller3.signal });
+        clearTimeout(timeoutId3);
+        if (resp3.ok) {
+          const csvText3 = await resp3.text();
+          if (csvText3 && csvText3.length > 20 && !csvText3.includes('<html')) {
+            downtimeDataText = csvText3;
+          }
+        }
+      } catch (err) {
+        console.info('Using default downtime dataset:', err.message);
+      }
+
+      // 4. Fetch Sparepart sheet
+      try {
+        const controller4 = new AbortController();
+        const timeoutId4 = setTimeout(() => controller4.abort(), 2500);
+        const resp4 = await fetch(GOOGLE_SHEETS_SPAREPART_URL, { signal: controller4.signal });
+        clearTimeout(timeoutId4);
+        if (resp4.ok) {
+          const csvText4 = await resp4.text();
+          if (csvText4 && csvText4.length > 20 && !csvText4.includes('<html')) {
+            sparepartDataText = csvText4;
+          }
+        }
+      } catch (err) {
+        console.info('Using default sparepart dataset:', err.message);
+      }
+
+      return { logDataText, summaryAssetDataText, downtimeDataText, sparepartDataText };
     }
 
     /* ========================================================
@@ -3773,6 +5516,8 @@
       Promise.all([fetchPromise, animationPromise]).then(([dataResult]) => {
         rawDataset = parseCSVOrTSV(dataResult.logDataText);
         rawSummaryAssetDataset = parseSummaryAssetCSV(dataResult.summaryAssetDataText);
+        rawDowntimeDataset = parseDowntimeCSV(dataResult.downtimeDataText);
+        rawSparepartDataset = parseSparepartCSV(dataResult.sparepartDataText);
         
         populateDropdownOptions();
         applyFilters();
@@ -3786,6 +5531,8 @@
         console.error('Initialization error:', err);
         rawDataset = parseCSVOrTSV(DEFAULT_SPREADSHEET_DATA);
         rawSummaryAssetDataset = parseSummaryAssetCSV(DEFAULT_SUMMARY_ASSET_DATA);
+        rawDowntimeDataset = parseDowntimeCSV(DEFAULT_DOWNTIME_DATA);
+        rawSparepartDataset = parseSparepartCSV(DEFAULT_SPAREPART_DATA);
         
         populateDropdownOptions();
         applyFilters();
