@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Operasional MHE</title>
-  <meta name="description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, dan spare part." />
+  <meta name="description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, spare part, dan driver MHE." />
   <meta property="og:title" content="Dashboard Operasional MHE" />
-  <meta property="og:description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, dan spare part." />
+  <meta property="og:description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, spare part, dan driver MHE." />
   <meta property="og:type" content="website" />
   
   <!-- Chart.js via CDN -->
@@ -2108,6 +2108,22 @@
           </div>
           <span class="sidebar-counter-badge badge-purple" id="tabSparepartBadge">0 Part</span>
         </button>
+
+        <!-- 5. DRIVER MHE (DATA SHEET DRIVER MHE) -->
+        <button
+          class="sidebar-nav-item"
+          id="tabBtnDriver"
+          role="tab"
+          aria-selected="false"
+          onclick="switchView('driver')"
+        >
+          <div class="nav-item-icon-box" style="background: #e0f2fe; color: #0284c7;">🪪</div>
+          <div class="nav-item-text-wrap">
+            <div class="nav-item-label">Driver MHE</div>
+            <div class="nav-item-caption">PIC & dedicated driver unit</div>
+          </div>
+          <span class="sidebar-counter-badge" id="tabDriverBadge" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">0 Unit</span>
+        </button>
       </nav>
 
       <!-- Sidebar Bottom Info & Quick Refresh -->
@@ -2117,7 +2133,7 @@
             <span class="sync-live-dot"></span>
             <span>Live Sheets Connected</span>
           </div>
-          <div class="sync-desc">SUMMARY ASSET, LOGBOOK, DOWNTIME, SPAREPART</div>
+          <div class="sync-desc">SUMMARY ASSET, LOGBOOK, DOWNTIME, SPAREPART, DRIVER MHE</div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="refreshDashboardData(true)" style="width: 100%; justify-content: center;">
           <span>🔄</span> Refresh Semua Data
@@ -2874,6 +2890,213 @@
         </div>
       </section>
     </div>
+
+    <!-- ========================================================
+         VIEW 5: DRIVER MHE (DATA DARI SHEET "DRIVER MHE")
+         ======================================================== -->
+    <div id="viewDriverMHE" class="view-container">
+      <!-- Filter Bar for Driver MHE -->
+      <section class="summary-filter-bar">
+        <div class="summary-filter-inputs">
+          <div class="summary-filter-item">
+            <label for="driverFilterDept" style="font-weight: 700;">🏢 Departemen:</label>
+            <select id="driverFilterDept" class="form-control" style="font-weight: 700; width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Departemen</option>
+              <option value="INBOUND">INBOUND</option>
+              <option value="OUTBOUND">OUTBOUND</option>
+              <option value="STORING">STORING</option>
+            </select>
+          </div>
+          <div class="summary-filter-item">
+            <label for="driverFilterType">🚜 Tipe MHE:</label>
+            <select id="driverFilterType" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Tipe</option>
+              <option value="PALLET MOVER SHORT">PALLET MOVER SHORT</option>
+              <option value="PALLET MOVER LONG">PALLET MOVER LONG</option>
+              <option value="PALLET MOVER">PALLET MOVER</option>
+              <option value="REACH TRUCK 9 M SD">REACH TRUCK 9 M SD</option>
+              <option value="REACH TRUCK 12 M SD">REACH TRUCK 12 M SD</option>
+              <option value="REACH TRUCK 9 M DD">REACH TRUCK 9 M DD</option>
+              <option value="REACH TRUCK 12 M DD">REACH TRUCK 12 M DD</option>
+            </select>
+          </div>
+          <div class="summary-filter-item">
+            <label for="driverFilterMerk">🏷️ Merk:</label>
+            <select id="driverFilterMerk" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Merk</option>
+              <option value="KRISBOW">KRISBOW</option>
+              <option value="CROWN">CROWN</option>
+            </select>
+          </div>
+          <div class="summary-filter-item">
+            <label for="driverFilterArea">📍 Area:</label>
+            <select id="driverFilterArea" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Area</option>
+              <option value="INBOUND">INBOUND</option>
+              <option value="OUTBOUND">OUTBOUND</option>
+              <option value="1">Area 1</option>
+              <option value="2">Area 2</option>
+              <option value="3">Area 3</option>
+            </select>
+          </div>
+          <div class="summary-filter-item">
+            <label for="driverFilterStatus">👥 Status Driver:</label>
+            <select id="driverFilterStatus" class="form-control" style="width: auto;" onchange="applyFilters()">
+              <option value="ALL">Semua Status</option>
+              <option value="LENGKAP">✅ Lengkap (3 Driver)</option>
+              <option value="SEBAGIAN">🔹 Terisi Sebagian (1-2 Driver)</option>
+              <option value="TERISI">👥 Terisi Driver (≥1)</option>
+              <option value="KOSONG">⚠️ Belum Ada Driver</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="resetFilters()">
+            <span>↺</span> Reset Filter
+          </button>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <span class="asset-period-badge" style="background: #e0f2fe; color: #0284c7; border-color: #bae6fd;">🪪 Tab Sheet: DRIVER MHE</span>
+          <button class="btn btn-primary btn-sm" onclick="exportDriverMHEToCSV()">
+            <span>📥</span> Ekspor CSV Driver MHE
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Cards for Driver MHE -->
+      <section class="summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total Unit Terdaftar</span>
+            <div class="summary-icon icon-blue">🚜</div>
+          </div>
+          <div class="summary-value" id="kpiTotalDriverUnits">0 Unit</div>
+          <div class="summary-subtext">Total armada Pallet Mover &amp; Reach Truck</div>
+        </div>
+        <div class="summary-card success">
+          <div class="summary-top">
+            <span class="summary-label">Unit Terisi Driver</span>
+            <div class="summary-icon icon-green">✅</div>
+          </div>
+          <div class="summary-value" id="kpiUnitsWithDriver" style="color: #15803d;">0 Unit</div>
+          <div class="summary-subtext">Unit dengan dedicated driver</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total Penugasan Driver</span>
+            <div class="summary-icon" style="background: #e0f2fe; color: #0284c7;">🪪</div>
+          </div>
+          <div class="summary-value" id="kpiTotalDriversAssigned" style="color: #0284c7;">0 Driver</div>
+          <div class="summary-subtext">Total Driver 1, 2 &amp; 3 terdaftar</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total PIC Unit</span>
+            <div class="summary-icon" style="background: #f3e8ff; color: #7e22ce;">👤</div>
+          </div>
+          <div class="summary-value" id="kpiTotalPics" style="color: #7e22ce;">0 PIC</div>
+          <div class="summary-subtext">Penanggung jawab unit terdaftar</div>
+        </div>
+        <div class="summary-card danger">
+          <div class="summary-top">
+            <span class="summary-label">Unit Belum Ada Driver</span>
+            <div class="summary-icon icon-red">⚠️</div>
+          </div>
+          <div class="summary-value" id="kpiUnitsWithoutDriver" style="color: #b91c1c;">0 Unit</div>
+          <div class="summary-subtext">Unit kosong / RT non-dedicated</div>
+        </div>
+      </section>
+
+      <!-- Charts for Driver MHE -->
+      <section class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>📊</span> Distribusi Penugasan Driver per Departemen &amp; Area
+            </div>
+          </div>
+          <div class="chart-container" style="position: relative; height: 290px;">
+            <canvas id="driverDeptChart"></canvas>
+          </div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>🍩</span> Komposisi Kelengkapan Dedicated Driver
+            </div>
+          </div>
+          <div class="chart-container" style="position: relative; height: 290px;">
+            <canvas id="driverStatusChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- Driver MHE Table Section (Strictly matching headers from user's sheet) -->
+      <section class="table-section">
+        <div class="table-header">
+          <div class="table-header-left">
+            <div class="table-icon-wrap" style="background: #e0f2fe; color: #0284c7;">🪪</div>
+            <div>
+              <div class="table-title">Daftar Dedicated Driver MHE &amp; PIC Unit</div>
+              <div class="table-subtitle">
+                Struktur penugasan driver (Driver 1, Driver 2, Driver 3) dan PIC per unit armada
+              </div>
+            </div>
+          </div>
+          <div class="table-actions">
+            <div class="search-wrap">
+              <span class="search-icon">🔎</span>
+              <input
+                type="text"
+                id="driverSearchInput"
+                class="search-input"
+                placeholder="Cari asset, PIC, nama / NIK driver..."
+                oninput="renderDriverTable()"
+              />
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="exportDriverMHEToCSV()" title="Ekspor Data Driver MHE CSV">
+              <span>📥</span> Ekspor CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table id="driverTable">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <th rowspan="2" onclick="sortDriverTable('no')" style="vertical-align: middle; cursor: pointer; text-align: center; width: 45px;">NO ⬍</th>
+                <th rowspan="2" onclick="sortDriverTable('departement')" style="vertical-align: middle; cursor: pointer;">DEPARTEMENT ⬍</th>
+                <th rowspan="2" onclick="sortDriverTable('assetName')" style="vertical-align: middle; cursor: pointer;">ASSET NAME ⬍</th>
+                <th rowspan="2" onclick="sortDriverTable('type')" style="vertical-align: middle; cursor: pointer;">TYPE ⬍</th>
+                <th rowspan="2" onclick="sortDriverTable('merk')" style="vertical-align: middle; cursor: pointer;">MERK ⬍</th>
+                <th rowspan="2" onclick="sortDriverTable('area')" style="vertical-align: middle; cursor: pointer; text-align: center;">AREA ⬍</th>
+                <th rowspan="2" onclick="sortDriverTable('pic')" style="vertical-align: middle; cursor: pointer;">PIC ⬍</th>
+                <th colspan="3" style="text-align: center; background: #e0f2fe; color: #0369a1; font-weight: 800; border-bottom: 2px solid #38bdf8; letter-spacing: 0.5px;">
+                  DRIVER DEDICATE
+                </th>
+                <th rowspan="2" onclick="sortDriverTable('status')" style="vertical-align: middle; cursor: pointer; text-align: center;">STATUS DEDICATE ⬍</th>
+              </tr>
+              <tr>
+                <th onclick="sortDriverTable('driver1')" style="background: #f0f9ff; color: #0284c7; cursor: pointer; border-left: 1px solid #bae6fd; font-weight: 700;">DRIVER 1 ⬍</th>
+                <th onclick="sortDriverTable('driver2')" style="background: #f0f9ff; color: #0284c7; cursor: pointer; border-left: 1px solid #bae6fd; font-weight: 700;">DRIVER 2 ⬍</th>
+                <th onclick="sortDriverTable('driver3')" style="background: #f0f9ff; color: #0284c7; cursor: pointer; border-left: 1px solid #bae6fd; font-weight: 700;">DRIVER 3 ⬍</th>
+              </tr>
+            </thead>
+            <tbody id="driverTableBody">
+              <!-- Rendered dynamically by JavaScript from Sheet DRIVER MHE -->
+            </tbody>
+            <tfoot id="driverTableFoot" style="background: #f8fafc; font-weight: 700; border-top: 2px solid var(--border-color);">
+              <!-- Dynamic totals row -->
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="table-footer" style="background: #fafafa; border-top: 1px solid var(--border-color);">
+          <div id="driverInfo">Menampilkan 0 unit MHE</div>
+          <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+            <span>💡 <i>Data bersumber langsung dari tab sheet <b>DRIVER MHE</b> pada Google Spreadsheet.</i></span>
+          </div>
+        </div>
+      </section>
+    </div>
     </main>
   </div>
 
@@ -2973,7 +3196,46 @@
     const GOOGLE_SHEETS_CSV_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&gid=0";
     const GOOGLE_SHEETS_SUMMARY_ASSET_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=SUMMARY%20ASSET";
     const GOOGLE_SHEETS_DOWNTIME_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=DOWNTIME";
+    /* Default Data for Sheet "DRIVER MHE" */
+    const DEFAULT_DRIVER_MHE_DATA = `"NO ","DEPARTEMENT ","JENIS MHE ","ASSET NAME ","TYPE ","MERK ","AREA ","PIC ","DRIVER DEDICATE DRIVER 1","DRIVER 2","DRIVER 3"
+"1","INBOUND","PALLET MOVER","PALLET MOVER SHORT S01","PALLET MOVER SHORT","KRISBOW","","107862 PIRMAN NASUTION","181520 M. RIZKY MAHENDRA SULISTYA","188200 RIFANDI TRISNA ARGANATA","193657 MOH PUTRA TRIO PRADANA"
+"2","INBOUND","PALLET MOVER","PALLET MOVER SHORT S02","PALLET MOVER SHORT","KRISBOW","","98579 APIH","181519 M. RYAN KHABILAH PRATAMA","189666 RAHFI DWI RAHMANTO","190914 MUHAMMAD RISKI EFFENDI"
+"3","OUTBOUND","PALLET MOVER","PALLET MOVER SHORT S03","PALLET MOVER SHORT","KRISBOW","","95870 SULIS SEJATI SETIAWAN","165722 AMIRUL IQBAL HABIBI ","",""
+"4","OUTBOUND","PALLET MOVER","PALLET MOVER SHORT S04","PALLET MOVER SHORT","KRISBOW","","95453 KUSWANTO","179286 PURNOMO ","",""
+"5","OUTBOUND","PALLET MOVER","PALLET MOVER SHORT S05","PALLET MOVER SHORT","KRISBOW","","95453 KUSWANTO","179380 MUHAMMAD VIKO PUTRA PRADANA","",""
+"6","OUTBOUND","PALLET MOVER","PALLET MOVER SHORT S06","PALLET MOVER SHORT","KRISBOW","","","191719 MUCHAMAD DANANG YULIANTO PUTRA","",""
+"7","OUTBOUND","PALLET MOVER","PALLET MOVER SHORT S07","PALLET MOVER SHORT","KRISBOW","","182239 RUDI FIRMANSYAH","186601 RIZAL WIDIYATMOKO ","",""
+"8","STORING","PALLET MOVER","PALLET MOVER SHORT S10","PALLET MOVER SHORT","KRISBOW","1","165800 ZAINAL ABIDIN","190913 MUHAMMAD AMIRUDDIN AQ","192969 MOCHAMAAD SYAHRIL ANAM",""
+"9","STORING","PALLET MOVER","PALLET MOVER SHORT S12","PALLET MOVER SHORT","KRISBOW","1","182012 HILDAN RANGGA WIRAYUDA","191471 NICO PUTRA WIJAYA","190909 ALVIAN MEIDYANTO","186098 MUHAMMAD HARIS QUSAINI"
+"10","STORING","PALLET MOVER","PALLET MOVER SHORT S13","PALLET MOVER SHORT","KRISBOW","1","160960 AHMAD  ALAN PRAMUDIANSAH","195138 MUCHAMAD FADIL DWI KURNIAWAN","194618 ANTHONIO DION PURWOADI",""
+"11","STORING","PALLET MOVER","PALLET MOVER SHORT S14","PALLET MOVER LONG","KRISBOW","1","182012 HILDAN RANGGA WIRAYUDA","182795 MOKH. BAHTIAR","193458 EKO BAGUS SETYAWAN",""
+"12","STORING","PALLET MOVER","PALLET MOVER SHORT S15","PALLET MOVER SHORT","KRISBOW","2","153880 IBNU ATHOILAH","191753 M BAGUS FIRLIANSYAH ALFIN","181997 NAZIAT DWI PRASTYO","193460 NARUNIA ADI "
+"13","STORING","PALLET MOVER","PALLET MOVER SHORT S16","PALLET MOVER SHORT","KRISBOW","2","187780 ARAFATUR RAHMAN WICAKSONO","194617 Moch Ircham Fadli","194880 IVAN SAPUTRA","195308 DIDIN ALAWI"
+"14","STORING","PALLET MOVER","PALLET MOVER SHORT S17","PALLET MOVER SHORT","KRISBOW","3","182000 DEVIN ARDIANSYAH","190912 MOH BACHRUL ULUM","192525 ACHMAD MASKUR ROZI","197584 MOCH RAFLY PUTRA MAHENDRA"
+"15","STORING","PALLET MOVER","PALLET MOVER SHORT S18","PALLET MOVER SHORT","KRISBOW","3","182000 DEVIN ARDIANSYAH","187786 PRADATAMA JAYA","192609 MUH. FAHRIL MA'RUF","196933 MOCHAMMAD ALWI NUR RIZKI"
+"16","STORING","PALLET MOVER","PALLET MOVER SHORT S19","PALLET MOVER SHORT","KRISBOW","3","185285 FANICO KURNIA SHANDY","195751 MUHAMMAD RAFI DWI SAPUTRA","189240 ACHMAD ROISSUDIN ",""
+"17","INBOUND","PALLET MOVER","PALLET MOVER LONG L04","PALLET MOVER LONG","KRISBOW","","95454 WAHYU PRIYO PRASTIYANTO","160964 ALFIDO FICKI DIAN PRATAMA","171682 AGIL ANANDA PUTRA SRIWANDARU","184334 SATRIA NUGROHO ADHI W"
+"18","STORING","PALLET MOVER","PALLET MOVER LONG L10","PALLET MOVER LONG","KRISBOW","3","182269 ANAS HAFILUDIN","193461 SITANGSU KRESNA MALINDI ARDI","186328 AGUNG MARDI TRISNO","196032 M. GILANG RAMNDANI"
+"19","STORING","PALLET MOVER","PALLET MOVER LONG L19","PALLET MOVER","KRISBOW","1","165800 ZAINAL ABIDIN","194611 Hariyo Aji Wibowo","192375 AFFI FIRMANSYAH","181896 FIKI ADI WIJAYA"
+"20","STORING","PALLET MOVER","PALLET MOVER LONG L21","PALLET MOVER","KRISBOW","2","117623 AGUS IMAN SETIAWAN","194615 MUKHAMMAD ALFIN AFIANDRI","190302 DIKI SATRIA",""
+"21","STORING","PALLET MOVER","PALLET MOVER LONG L22","PALLET MOVER","KRISBOW","2","117623 AGUS IMAN SETIAWAN","192526 DIO ARIF PRATAMA","196033 MUHAMMAD SHOLIHUDIN","19635 MUHAMAD KUKUH ARZAKKI"
+"22","STORING","REACH TRUCK","REACH TRUCK SINGLE DEEP C02
+RR-5725S - 45 (9 METER)","REACH TRUCK 9 M SD","CROWN","","","","",""
+"23","STORING","REACH TRUCK","REACH TRUCK SINGLE DEEP C03
+RM-5725S - 45 (12 METER)","REACH TRUCK 12 M SD","CROWN","","","","",""
+"24","STORING","REACH TRUCK","REACH TRUCK DOUBLE DEEP C04 RMD-6095S-32 (12 METER)","REACH TRUCK 12 M DD","CROWN","","","","",""
+"25","STORING","REACH TRUCK","REACH TRUCK DOUBLE DEEP C06
+RD-5725 - 32 (9 METER)","REACH TRUCK 9 M DD","CROWN","","","","",""
+"26","STORING","REACH TRUCK","REACH TRUCK DOUBLE DEEP C07
+RD-5725 - 32 (9 METER)","REACH TRUCK 9 M DD","CROWN","","","","",""
+"27","STORING","REACH TRUCK","REACH TRUCK DOUBLE DEEP C08         RD-5725S - 32 (9 METER)","REACH TRUCK 9 M DD","CROWN","","","","",""
+"28","STORING","REACH TRUCK","REACH TRUCK DOUBLE DEEP K01
+CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""
+"29","STORING","REACH TRUCK","REACH TRUCK DOUBLE DEEP K02
+CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
+
     const GOOGLE_SHEETS_SPAREPART_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=SPAREPART";
+    const GOOGLE_SHEETS_DRIVER_MHE_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=DRIVER%20MHE";
 
     /* ========================================================
        APPLICATION STATE
@@ -2988,11 +3250,14 @@
     let filteredDowntimeDataset = [];
     let rawSparepartDataset = [];
     let filteredSparepartDataset = [];
+    let rawDriverMHEDataset = [];
+    let filteredDriverMHEDataset = [];
 
     let currentSort = { column: 'idx', direction: 'asc' };
     let currentAssetSort = { column: 'idx', direction: 'asc' };
     let currentDowntimeSort = { column: 'no', direction: 'asc' };
     let currentSparepartSort = { column: 'no', direction: 'asc' };
+    let currentDriverSort = { column: 'no', direction: 'asc' };
     let currentPage = 1;
     let pageSize = 30;
 
@@ -3013,6 +3278,8 @@
     // Chart instances for Spare Part View
     let sparepartStatusChartInstance = null;
     let sparepartRusakChartInstance = null;
+    let driverDeptChartInstance = null;
+    let driverStatusChartInstance = null;
 
     /* ========================================================
        UTILITY FUNCTIONS
@@ -3522,6 +3789,7 @@
         let summaryAssetDataText = DEFAULT_SUMMARY_ASSET_DATA;
         let downtimeDataText = DEFAULT_DOWNTIME_DATA;
         let sparepartDataText = DEFAULT_SPAREPART_DATA;
+        let driverMHEDataText = DEFAULT_DRIVER_MHE_DATA;
 
         // Fetch Main Log Sheet
         try {
@@ -3587,10 +3855,27 @@
           // fallback default sparepart
         }
 
+        // Fetch Driver MHE Sheet
+        try {
+          const controller5 = new AbortController();
+          const timeoutId5 = setTimeout(() => controller5.abort(), 4000);
+          const resp5 = await fetch(GOOGLE_SHEETS_DRIVER_MHE_URL, { signal: controller5.signal });
+          clearTimeout(timeoutId5);
+          if (resp5.ok) {
+            const csv5 = await resp5.text();
+            if (csv5 && csv5.length > 20 && !csv5.includes('<html')) {
+              driverMHEDataText = csv5;
+            }
+          }
+        } catch (e) {
+          // fallback default driver mhe
+        }
+
         rawDataset = parseCSVOrTSV(logDataText);
         rawSummaryAssetDataset = parseSummaryAssetCSV(summaryAssetDataText);
         rawDowntimeDataset = parseDowntimeCSV(downtimeDataText);
         rawSparepartDataset = parseSparepartCSV(sparepartDataText);
+        rawDriverMHEDataset = parseDriverMHECSV(driverMHEDataText);
 
         populateDropdownOptions();
         applyFilters();
@@ -3755,19 +4040,21 @@
       const tabDetailBtn = document.getElementById('tabBtnDetail');
       const tabDowntimeBtn = document.getElementById('tabBtnDowntime');
       const tabSparepartBtn = document.getElementById('tabBtnSparepart');
+      const tabDriverBtn = document.getElementById('tabBtnDriver');
       const viewSummary = document.getElementById('viewSummaryAsset');
       const viewDetail = document.getElementById('viewDetailLog');
       const viewDowntime = document.getElementById('viewDowntime');
       const viewSparePart = document.getElementById('viewSparePart');
+      const viewDriver = document.getElementById('viewDriverMHE');
       const activeIndicator = document.getElementById('activeViewIndicator');
 
-      [tabSummaryBtn, tabDetailBtn, tabDowntimeBtn, tabSparepartBtn].forEach(btn => {
+      [tabSummaryBtn, tabDetailBtn, tabDowntimeBtn, tabSparepartBtn, tabDriverBtn].forEach(btn => {
         if (btn) {
           btn.classList.remove('active');
           btn.setAttribute('aria-selected', 'false');
         }
       });
-      [viewSummary, viewDetail, viewDowntime, viewSparePart].forEach(view => {
+      [viewSummary, viewDetail, viewDowntime, viewSparePart, viewDriver].forEach(view => {
         if (view) view.classList.remove('active');
       });
 
@@ -3835,6 +4122,20 @@
 
         updateSparepartView();
         renderSparepartCharts();
+      } else if (viewName === 'driver') {
+        if (tabDriverBtn) {
+          tabDriverBtn.classList.add('active');
+          tabDriverBtn.setAttribute('aria-selected', 'true');
+        }
+        if (viewDriver) viewDriver.classList.add('active');
+        if (activeIndicator) {
+          activeIndicator.innerHTML = '📍 Menu Aktif: <b>Driver MHE</b>';
+          activeIndicator.style.background = '#f0f9ff';
+          activeIndicator.style.color = '#0284c7';
+          activeIndicator.style.borderColor = '#bae6fd';
+        }
+        updateDriverMHEView();
+        renderDriverMHECharts();
       }
     }
 
@@ -3848,6 +4149,8 @@
         exportDowntimeToCSV();
       } else if (currentActiveView === 'sparepart') {
         exportSparepartToCSV();
+      } else if (currentActiveView === 'driver') {
+        exportDriverMHEToCSV();
       } else {
         exportAssetSummaryToCSV();
       }
@@ -3921,6 +4224,19 @@
       if (spKondisiEl) spKondisiEl.value = 'ALL';
       const spSearch = document.getElementById('sparepartSearchInput');
       if (spSearch) spSearch.value = '';
+
+      const drvDeptEl = document.getElementById('driverFilterDept');
+      if (drvDeptEl) drvDeptEl.value = 'ALL';
+      const drvTypeEl = document.getElementById('driverFilterType');
+      if (drvTypeEl) drvTypeEl.value = 'ALL';
+      const drvMerkEl = document.getElementById('driverFilterMerk');
+      if (drvMerkEl) drvMerkEl.value = 'ALL';
+      const drvAreaEl = document.getElementById('driverFilterArea');
+      if (drvAreaEl) drvAreaEl.value = 'ALL';
+      const drvStatusEl = document.getElementById('driverFilterStatus');
+      if (drvStatusEl) drvStatusEl.value = 'ALL';
+      const drvSearch = document.getElementById('driverSearchInput');
+      if (drvSearch) drvSearch.value = '';
       
       populateUnitNameOptions();
       applyFilters();
@@ -4017,11 +4333,43 @@
         return true;
       });
 
+      // 5. Filter Sheet DRIVER MHE
+      const drvDept = document.getElementById('driverFilterDept')?.value || 'ALL';
+      const drvType = document.getElementById('driverFilterType')?.value || 'ALL';
+      const drvMerk = document.getElementById('driverFilterMerk')?.value || 'ALL';
+      const drvArea = document.getElementById('driverFilterArea')?.value || 'ALL';
+      const drvStatus = document.getElementById('driverFilterStatus')?.value || 'ALL';
+      const drvSearch = (document.getElementById('driverSearchInput')?.value || '').toLowerCase().trim();
+
+      filteredDriverMHEDataset = rawDriverMHEDataset.filter(item => {
+        if (drvDept !== 'ALL' && (item.departement || '').toUpperCase() !== drvDept) return false;
+        if (drvType !== 'ALL' && (item.type || '').toUpperCase() !== drvType) return false;
+        if (drvMerk !== 'ALL' && (item.merk || '').toUpperCase() !== drvMerk) return false;
+        if (drvArea !== 'ALL') {
+          const areaNorm = (item.area || '').toUpperCase().trim();
+          if (drvArea === 'INBOUND' && areaNorm !== 'INBOUND' && item.departement !== 'INBOUND') return false;
+          else if (drvArea === 'OUTBOUND' && areaNorm !== 'OUTBOUND' && item.departement !== 'OUTBOUND') return false;
+          else if (['1', '2', '3'].includes(drvArea) && areaNorm !== drvArea) return false;
+        }
+        if (drvStatus !== 'ALL') {
+          if (drvStatus === 'LENGKAP' && item.status !== 'LENGKAP') return false;
+          if (drvStatus === 'SEBAGIAN' && item.status !== 'SEBAGIAN') return false;
+          if (drvStatus === 'KOSONG' && item.status !== 'KOSONG') return false;
+          if (drvStatus === 'TERISI' && item.driverCount === 0) return false;
+        }
+        if (drvSearch) {
+          const matchStr = `${item.no} ${item.departement} ${item.jenisMhe} ${item.assetName} ${item.type} ${item.merk} ${item.area} ${item.pic} ${item.driver1} ${item.driver2} ${item.driver3} ${item.status}`.toLowerCase();
+          if (!matchStr.includes(drvSearch)) return false;
+        }
+        return true;
+      });
+
       currentPage = 1;
       updateKPIs();
       updateAssetSummary();
       updateDowntimeView();
       updateSparepartView();
+      updateDriverMHEView();
       renderCharts();
       renderTable();
     }
@@ -5637,7 +5985,7 @@
       const batterySvg = document.getElementById('batterySvg');
 
       let currentPercent = 0;
-      const targetDurationMs = 7000; // 7 seconds duration
+      const targetDurationMs = 2000; // Snappy 2-second charging animation
       const startTime = performance.now();
 
       function updateFrame(now) {
@@ -5649,34 +5997,36 @@
         currentPercent = Math.round(easeProgress * 100);
 
         // Update UI
-        percentEl.textContent = `${currentPercent}%`;
-        bottomBar.style.width = `${currentPercent}%`;
-        fillRect.setAttribute('width', (currentPercent / 100) * maxFillWidth);
+        if (percentEl) percentEl.textContent = `${currentPercent}%`;
+        if (bottomBar) bottomBar.style.width = `${currentPercent}%`;
+        if (fillRect) fillRect.setAttribute('width', (currentPercent / 100) * maxFillWidth);
 
         // Dynamic Color Gradient Transition based on level (Red -> Amber -> Green)
         if (currentPercent < 30) {
-          stop1.setAttribute('stop-color', '#ef4444');
-          stop2.setAttribute('stop-color', '#f87171');
-          batterySvg.style.filter = 'drop-shadow(0 0 16px rgba(239, 68, 68, 0.45))';
+          if (stop1) stop1.setAttribute('stop-color', '#ef4444');
+          if (stop2) stop2.setAttribute('stop-color', '#f87171');
+          if (batterySvg) batterySvg.style.filter = 'drop-shadow(0 0 16px rgba(239, 68, 68, 0.45))';
         } else if (currentPercent < 65) {
-          stop1.setAttribute('stop-color', '#f59e0b');
-          stop2.setAttribute('stop-color', '#fbbf24');
-          batterySvg.style.filter = 'drop-shadow(0 0 16px rgba(245, 158, 11, 0.45))';
+          if (stop1) stop1.setAttribute('stop-color', '#f59e0b');
+          if (stop2) stop2.setAttribute('stop-color', '#fbbf24');
+          if (batterySvg) batterySvg.style.filter = 'drop-shadow(0 0 16px rgba(245, 158, 11, 0.45))';
         } else {
-          stop1.setAttribute('stop-color', '#10b981');
-          stop2.setAttribute('stop-color', '#34d399');
-          batterySvg.style.filter = 'drop-shadow(0 0 18px rgba(16, 185, 129, 0.55))';
+          if (stop1) stop1.setAttribute('stop-color', '#10b981');
+          if (stop2) stop2.setAttribute('stop-color', '#34d399');
+          if (batterySvg) batterySvg.style.filter = 'drop-shadow(0 0 18px rgba(16, 185, 129, 0.55))';
         }
 
         // Subtitle message cycling
-        if (currentPercent < 30) {
-          statusEl.textContent = loadingStatusMessages[0];
-        } else if (currentPercent < 60) {
-          statusEl.textContent = loadingStatusMessages[1];
-        } else if (currentPercent < 90) {
-          statusEl.textContent = loadingStatusMessages[2];
-        } else {
-          statusEl.textContent = loadingStatusMessages[3];
+        if (statusEl) {
+          if (currentPercent < 30) {
+            statusEl.textContent = loadingStatusMessages[0];
+          } else if (currentPercent < 60) {
+            statusEl.textContent = loadingStatusMessages[1];
+          } else if (currentPercent < 90) {
+            statusEl.textContent = loadingStatusMessages[2];
+          } else {
+            statusEl.textContent = loadingStatusMessages[3];
+          }
         }
 
         if (progress < 1) {
@@ -5685,20 +6035,489 @@
           // Finished loading progress
           setTimeout(() => {
             if (onComplete) onComplete();
-          }, 200);
+          }, 150);
         }
       }
 
       requestAnimationFrame(updateFrame);
     }
 
+    let loadingScreenDismissed = false;
     function dismissLoadingScreen() {
+      if (loadingScreenDismissed) return;
+      loadingScreenDismissed = true;
       const screen = document.getElementById('loadingScreen');
       if (!screen) return;
       screen.classList.add('fade-out');
       setTimeout(() => {
         screen.style.display = 'none';
       }, 550);
+    }
+
+
+    /* ========================================================
+       DRIVER MHE CSV PARSER & COMPONENT FUNCTIONS
+       ======================================================== */
+    function parseDriverMHECSV(text) {
+      if (!text || typeof text !== 'string') return [];
+      
+      const rows = [];
+      let currentRow = [];
+      let currentField = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            currentField += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === ',' && !inQuotes) {
+          currentRow.push(currentField);
+          currentField = '';
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          currentRow.push(currentField);
+          if (currentRow.length > 1 || (currentRow[0] && currentRow[0].trim() !== '')) {
+            rows.push(currentRow);
+          }
+          currentRow = [];
+          currentField = '';
+        } else {
+          currentField += char;
+        }
+      }
+      if (currentField || currentRow.length > 0) {
+        currentRow.push(currentField);
+        if (currentRow.length > 1 || (currentRow[0] && currentRow[0].trim() !== '')) {
+          rows.push(currentRow);
+        }
+      }
+
+      const result = [];
+      for (let i = 0; i < rows.length; i++) {
+        const cols = rows[i];
+        const getCol = (idx) => {
+          if (cols[idx] === undefined) return '';
+          let s = String(cols[idx]).replace(/^"|"$/g, '').trim();
+          if (s === '-' || s === 'null' || s === 'undefined') return '';
+          return s;
+        };
+
+        const col0 = getCol(0); // NO
+        const col1 = getCol(1); // DEPARTEMENT
+        const col2 = getCol(2); // JENIS MHE
+        const col3 = getCol(3); // ASSET NAME
+        const col4 = getCol(4); // TYPE
+        const col5 = getCol(5); // MERK
+        const col6 = getCol(6); // AREA
+        const col7 = getCol(7); // PIC
+        const col8 = getCol(8); // DRIVER 1
+        const col9 = getCol(9); // DRIVER 2
+        const col10 = getCol(10); // DRIVER 3
+
+        const lineUpper = `${col0} ${col1} ${col2} ${col3}`.toUpperCase();
+        if (lineUpper.includes('ASSET NAME') || lineUpper.includes('JENIS MHE') || col0.toUpperCase() === 'NO' || col0.toUpperCase() === 'NO.') {
+          continue;
+        }
+        if (!col3 && !col0) continue;
+
+        const drivers = [col8, col9, col10].filter(d => d && d.trim() !== '');
+        const driverCount = drivers.length;
+        let status = 'KOSONG';
+        if (driverCount === 3) status = 'LENGKAP';
+        else if (driverCount > 0) status = 'SEBAGIAN';
+
+        const assetNameClean = col3.replace(/\r?\n|\r/g, ' ').replace(/\s+/g, ' ').trim();
+
+        result.push({
+          idx: result.length + 1,
+          no: parseInt(col0, 10) || (result.length + 1),
+          departement: col1 || 'STORING',
+          jenisMhe: col2 || (col4.includes('REACH TRUCK') ? 'REACH TRUCK' : 'PALLET MOVER'),
+          assetName: assetNameClean,
+          type: col4 || '-',
+          merk: col5 || 'KRISBOW',
+          area: col6 || (col1 === 'INBOUND' ? 'INBOUND' : col1 === 'OUTBOUND' ? 'OUTBOUND' : '-'),
+          pic: col7 || '',
+          driver1: col8 || '',
+          driver2: col9 || '',
+          driver3: col10 || '',
+          driverCount,
+          status
+        });
+      }
+      return result;
+    }
+
+    function isDriverFiltered() {
+      const drvDept = document.getElementById('driverFilterDept')?.value || 'ALL';
+      const drvType = document.getElementById('driverFilterType')?.value || 'ALL';
+      const drvMerk = document.getElementById('driverFilterMerk')?.value || 'ALL';
+      const drvArea = document.getElementById('driverFilterArea')?.value || 'ALL';
+      const drvStatus = document.getElementById('driverFilterStatus')?.value || 'ALL';
+      const drvSearch = (document.getElementById('driverSearchInput')?.value || '').trim();
+      return drvDept !== 'ALL' || drvType !== 'ALL' || drvMerk !== 'ALL' || drvArea !== 'ALL' || drvStatus !== 'ALL' || drvSearch !== '';
+    }
+
+    function updateDriverMHEView() {
+      const data = isDriverFiltered() ? filteredDriverMHEDataset : rawDriverMHEDataset;
+
+      const totalUnits = data.length;
+      const unitsWithDriver = data.filter(d => d.driverCount > 0).length;
+      const totalDriversAssigned = data.reduce((sum, d) => sum + d.driverCount, 0);
+      const uniquePics = new Set(data.map(d => d.pic).filter(Boolean)).size;
+      const unitsWithoutDriver = data.filter(d => d.driverCount === 0).length;
+
+      const kpiUnits = document.getElementById('kpiTotalDriverUnits');
+      if (kpiUnits) kpiUnits.textContent = `${totalUnits} Unit`;
+
+      const kpiWithDriver = document.getElementById('kpiUnitsWithDriver');
+      if (kpiWithDriver) {
+        const pct = totalUnits > 0 ? ((unitsWithDriver / totalUnits) * 100).toFixed(0) : 0;
+        kpiWithDriver.textContent = `${unitsWithDriver} Unit (${pct}%)`;
+      }
+
+      const kpiTotalAssigned = document.getElementById('kpiTotalDriversAssigned');
+      if (kpiTotalAssigned) kpiTotalAssigned.textContent = `${totalDriversAssigned} Driver`;
+
+      const kpiPics = document.getElementById('kpiTotalPics');
+      if (kpiPics) kpiPics.textContent = `${uniquePics} PIC`;
+
+      const kpiWithoutDriver = document.getElementById('kpiUnitsWithoutDriver');
+      if (kpiWithoutDriver) kpiWithoutDriver.textContent = `${unitsWithoutDriver} Unit`;
+
+      const badge = document.getElementById('tabDriverBadge');
+      if (badge) badge.textContent = `${rawDriverMHEDataset.length} Unit`;
+
+      renderDriverTable();
+    }
+
+    function renderDriverMHECharts() {
+      const ctxDept = document.getElementById('driverDeptChart')?.getContext('2d');
+      const ctxStatus = document.getElementById('driverStatusChart')?.getContext('2d');
+      if (!ctxDept || !ctxStatus) return;
+
+      const data = isDriverFiltered() ? filteredDriverMHEDataset : rawDriverMHEDataset;
+
+      // 1. Bar Chart: Distribusi Driver per Departemen & Area
+      const groupCounts = {
+        'INBOUND': 0,
+        'OUTBOUND': 0,
+        'STORING (Area 1)': 0,
+        'STORING (Area 2)': 0,
+        'STORING (Area 3)': 0,
+        'STORING (RT)': 0
+      };
+
+      data.forEach(d => {
+        const dept = (d.departement || '').toUpperCase().trim();
+        const area = (d.area || '').toUpperCase().trim();
+        if (dept === 'INBOUND') groupCounts['INBOUND'] += d.driverCount;
+        else if (dept === 'OUTBOUND') groupCounts['OUTBOUND'] += d.driverCount;
+        else if (dept === 'STORING') {
+          if (area === '1') groupCounts['STORING (Area 1)'] += d.driverCount;
+          else if (area === '2') groupCounts['STORING (Area 2)'] += d.driverCount;
+          else if (area === '3') groupCounts['STORING (Area 3)'] += d.driverCount;
+          else groupCounts['STORING (RT)'] += d.driverCount;
+        }
+      });
+
+      if (driverDeptChartInstance) driverDeptChartInstance.destroy();
+      driverDeptChartInstance = new Chart(ctxDept, {
+        type: 'bar',
+        data: {
+          labels: Object.keys(groupCounts),
+          datasets: [{
+            label: 'Jumlah Driver Terdedikasi',
+            data: Object.values(groupCounts),
+            backgroundColor: [
+              '#3b82f6', // Inbound Blue
+              '#10b981', // Outbound Green
+              '#f59e0b', // Storing Area 1 Amber
+              '#8b5cf6', // Storing Area 2 Purple
+              '#06b6d4', // Storing Area 3 Cyan
+              '#94a3b8'  // Storing RT Slate
+            ],
+            borderRadius: 6,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.raw} Dedicated Driver`
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { precision: 0 }
+            }
+          }
+        }
+      });
+
+      // 2. Doughnut Chart: Komposisi Kelengkapan Driver
+      const count3 = data.filter(d => d.driverCount === 3).length;
+      const count2 = data.filter(d => d.driverCount === 2).length;
+      const count1 = data.filter(d => d.driverCount === 1).length;
+      const count0 = data.filter(d => d.driverCount === 0).length;
+
+      if (driverStatusChartInstance) driverStatusChartInstance.destroy();
+      driverStatusChartInstance = new Chart(ctxStatus, {
+        type: 'doughnut',
+        data: {
+          labels: [
+            `Lengkap 3 Driver (${count3} Unit)`,
+            `Terisi 2 Driver (${count2} Unit)`,
+            `Terisi 1 Driver (${count1} Unit)`,
+            `Belum Ada Driver (${count0} Unit)`
+          ],
+          datasets: [{
+            data: [count3, count2, count1, count0],
+            backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'],
+            borderWidth: 2,
+            borderColor: '#ffffff'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { boxWidth: 12, padding: 12 }
+            }
+          },
+          cutout: '65%'
+        }
+      });
+    }
+
+    function sortDriverTable(column) {
+      if (currentDriverSort.column === column) {
+        currentDriverSort.direction = currentDriverSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentDriverSort.column = column;
+        currentDriverSort.direction = 'asc';
+      }
+      renderDriverTable();
+    }
+
+    function renderDriverTable() {
+      const tbody = document.getElementById('driverTableBody');
+      const tfoot = document.getElementById('driverTableFoot');
+      const infoEl = document.getElementById('driverInfo');
+      if (!tbody) return;
+
+      const searchInput = (document.getElementById('driverSearchInput')?.value || '').toLowerCase().trim();
+      let displayData = isDriverFiltered() ? [...filteredDriverMHEDataset] : [...rawDriverMHEDataset];
+
+      if (searchInput) {
+        displayData = displayData.filter(d => {
+          const matchStr = `${d.no} ${d.departement} ${d.jenisMhe} ${d.assetName} ${d.type} ${d.merk} ${d.area} ${d.pic} ${d.driver1} ${d.driver2} ${d.driver3} ${d.status}`.toLowerCase();
+          return matchStr.includes(searchInput);
+        });
+      }
+
+      // Sort
+      const col = currentDriverSort.column;
+      const dir = currentDriverSort.direction === 'asc' ? 1 : -1;
+      displayData.sort((a, b) => {
+        let valA = a[col];
+        let valB = b[col];
+        if (typeof valA === 'number' && typeof valB === 'number') {
+          return (valA - valB) * dir;
+        }
+        valA = String(valA || '').toUpperCase();
+        valB = String(valB || '').toUpperCase();
+        return valA.localeCompare(valB) * dir;
+      });
+
+      if (displayData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="11" style="text-align: center; padding: 48px 16px; color: var(--text-muted);">
+              <div style="font-size: 36px; margin-bottom: 8px;">🪪</div>
+              <div style="font-weight: 700; font-size: 15px; color: var(--text-main); margin-bottom: 4px;">Tidak ada data Driver MHE yang sesuai</div>
+              <div style="font-size: 13px;">Coba atur ulang filter atau kata kunci pencarian Anda.</div>
+            </td>
+          </tr>
+        `;
+        if (tfoot) tfoot.innerHTML = '';
+        if (infoEl) infoEl.textContent = 'Menampilkan 0 unit MHE';
+        return;
+      }
+
+      function formatPerson(val, badgeColor) {
+        if (!val || val.trim() === '') {
+          return '<span style="color: #94a3b8; font-style: italic; font-size: 12px;">- Kosong -</span>';
+        }
+        const trimmed = val.trim();
+        const firstSpace = trimmed.indexOf(' ');
+        if (firstSpace > 0 && /^\d+$/.test(trimmed.substring(0, firstSpace))) {
+          const nik = trimmed.substring(0, firstSpace);
+          const name = trimmed.substring(firstSpace + 1);
+          return `
+            <div style="display: flex; flex-direction: column; gap: 1px; min-width: 130px;">
+              <span style="font-size: 10.5px; font-weight: 700; color: ${badgeColor}; font-family: monospace;">${nik}</span>
+              <span style="font-weight: 600; font-size: 12.5px; color: #0f172a; line-height: 1.25;">${name}</span>
+            </div>
+          `;
+        }
+        return `<span style="font-weight: 600; font-size: 12.5px; color: #0f172a;">${trimmed}</span>`;
+      }
+
+      function formatArea(areaVal, deptVal) {
+        const a = (areaVal || '').trim();
+        if (a === '1' || a === '2' || a === '3') {
+          return `<span style="background: #e0e7ff; color: #3730a3; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 11.5px;">Area ${a}</span>`;
+        }
+        if (deptVal === 'INBOUND') {
+          return `<span style="background: #e0f2fe; color: #0369a1; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 11.5px;">Inbound</span>`;
+        }
+        if (deptVal === 'OUTBOUND') {
+          return `<span style="background: #dcfce7; color: #166534; font-weight: 700; padding: 2px 8px; border-radius: 4px; font-size: 11.5px;">Outbound</span>`;
+        }
+        if (a && a !== '-') {
+          return `<span style="background: #f1f5f9; color: #475569; font-weight: 600; padding: 2px 6px; border-radius: 4px; font-size: 11.5px;">${a}</span>`;
+        }
+        return `<span style="color: #94a3b8; font-size: 12px;">-</span>`;
+      }
+
+      tbody.innerHTML = displayData.map((row, idx) => {
+        let deptStyle = 'background: #f1f5f9; color: #475569;';
+        if (row.departement === 'INBOUND') deptStyle = 'background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;';
+        else if (row.departement === 'OUTBOUND') deptStyle = 'background: #dcfce7; color: #166534; border: 1px solid #bbf7d0;';
+        else if (row.departement === 'STORING') deptStyle = 'background: #fef3c7; color: #92400e; border: 1px solid #fde68a;';
+
+        let merkStyle = 'background: #f8fafc; color: #334155; border: 1px solid #e2e8f0;';
+        if (row.merk === 'KRISBOW') merkStyle = 'background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe;';
+        else if (row.merk === 'CROWN') merkStyle = 'background: #faf5ff; color: #7e22ce; border: 1px solid #e9d5ff;';
+
+        let statusBadge = '';
+        if (row.status === 'LENGKAP') {
+          statusBadge = `<span style="background: #dcfce7; color: #166534; font-weight: 700; padding: 3px 8px; border-radius: 9999px; font-size: 11px; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px;">✅ 3 Driver</span>`;
+        } else if (row.driverCount === 2) {
+          statusBadge = `<span style="background: #e0f2fe; color: #0369a1; font-weight: 700; padding: 3px 8px; border-radius: 9999px; font-size: 11px; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px;">🔹 2 Driver</span>`;
+        } else if (row.driverCount === 1) {
+          statusBadge = `<span style="background: #fef3c7; color: #92400e; font-weight: 700; padding: 3px 8px; border-radius: 9999px; font-size: 11px; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px;">🔸 1 Driver</span>`;
+        } else {
+          statusBadge = `<span style="background: #fee2e2; color: #991b1b; font-weight: 700; padding: 3px 8px; border-radius: 9999px; font-size: 11px; white-space: nowrap; display: inline-flex; align-items: center; gap: 3px;">⚠️ Kosong</span>`;
+        }
+
+        return `
+          <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='transparent'">
+            <td style="text-align: center; color: var(--text-light); font-weight: 600; font-size: 12px; width: 45px;">${row.no}</td>
+            <td style="white-space: nowrap;">
+              <span style="font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 4px; ${deptStyle}">${row.departement}</span>
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #0f172a; font-size: 13px; line-height: 1.35;">${row.assetName}</div>
+              <div style="font-size: 11px; color: var(--text-muted);">${row.jenisMhe}</div>
+            </td>
+            <td>
+              <span style="font-weight: 600; color: #475569; font-size: 12px;">${row.type}</span>
+            </td>
+            <td>
+              <span style="font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 4px; ${merkStyle}">${row.merk}</span>
+            </td>
+            <td style="text-align: center;">
+              ${formatArea(row.area, row.departement)}
+            </td>
+            <td>
+              ${formatPerson(row.pic, '#7c3aed')}
+            </td>
+            <td style="border-left: 1px solid #e2e8f0; background: #fafcff;">
+              ${formatPerson(row.driver1, '#0284c7')}
+            </td>
+            <td style="border-left: 1px solid #e2e8f0; background: #fafcff;">
+              ${formatPerson(row.driver2, '#0284c7')}
+            </td>
+            <td style="border-left: 1px solid #e2e8f0; background: #fafcff;">
+              ${formatPerson(row.driver3, '#0284c7')}
+            </td>
+            <td style="text-align: center;">
+              ${statusBadge}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Foot Summary
+      const totalUnits = displayData.length;
+      const totalDrivers = displayData.reduce((sum, d) => sum + d.driverCount, 0);
+      const unitsWithDriver = displayData.filter(d => d.driverCount > 0).length;
+
+      if (tfoot) {
+        tfoot.innerHTML = `
+          <tr style="background: #f8fafc; font-weight: 700;">
+            <td colspan="2" style="text-align: right; padding: 12px 14px; font-size: 12px; color: var(--text-muted);">TOTAL RINGKASAN:</td>
+            <td colspan="5" style="padding: 12px 14px; font-size: 12.5px; color: var(--text-main);">
+              <b>${totalUnits}</b> Unit MHE &bull; <b>${unitsWithDriver}</b> Terpasang Driver
+            </td>
+            <td colspan="3" style="text-align: center; border-left: 1px solid #e2e8f0; padding: 12px 14px; background: #f0f9ff; color: #0369a1; font-size: 13px;">
+              <b>${totalDrivers}</b> Dedicated Driver Aktif
+            </td>
+            <td style="text-align: center; padding: 12px 14px; font-size: 11.5px; color: #166534;">
+              ${((unitsWithDriver / (totalUnits || 1)) * 100).toFixed(0)}% Terisi
+            </td>
+          </tr>
+        `;
+      }
+
+      if (infoEl) {
+        infoEl.textContent = `Menampilkan ${displayData.length} dari ${rawDriverMHEDataset.length} unit MHE dari tab sheet DRIVER MHE`;
+      }
+    }
+
+    function exportDriverMHEToCSV() {
+      const dataset = isDriverFiltered() ? filteredDriverMHEDataset : rawDriverMHEDataset;
+      if (dataset.length === 0) {
+        showToast('⚠️ Tidak ada data Driver MHE untuk diekspor!');
+        return;
+      }
+
+      const headers = ['NO', 'DEPARTEMENT', 'JENIS MHE', 'ASSET NAME', 'TYPE', 'MERK', 'AREA', 'PIC', 'DRIVER 1', 'DRIVER 2', 'DRIVER 3', 'STATUS DEDICATE', 'JUMLAH DRIVER'];
+      const rows = dataset.map(d => [
+        d.no,
+        `"${(d.departement || '').replace(/"/g, '""')}"`,
+        `"${(d.jenisMhe || '').replace(/"/g, '""')}"`,
+        `"${(d.assetName || '').replace(/"/g, '""')}"`,
+        `"${(d.type || '').replace(/"/g, '""')}"`,
+        `"${(d.merk || '').replace(/"/g, '""')}"`,
+        `"${(d.area || '').replace(/"/g, '""')}"`,
+        `"${(d.pic || '').replace(/"/g, '""')}"`,
+        `"${(d.driver1 || '').replace(/"/g, '""')}"`,
+        `"${(d.driver2 || '').replace(/"/g, '""')}"`,
+        `"${(d.driver3 || '').replace(/"/g, '""')}"`,
+        `"${d.status}"`,
+        d.driverCount
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `DRIVER_MHE_${dateStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast(`📥 Berhasil mengekspor ${dataset.length} data Driver MHE ke CSV`);
     }
 
     /* Attempt Live Google Sheets Fetch for Log, Summary Asset, Downtime, & Sparepart sheets with Graceful Fallback */
@@ -5777,44 +6596,78 @@
         console.info('Using default sparepart dataset:', err.message);
       }
 
-      return { logDataText, summaryAssetDataText, downtimeDataText, sparepartDataText };
+      // 5. Fetch Driver MHE sheet
+      try {
+        const controller5 = new AbortController();
+        const timeoutId5 = setTimeout(() => controller5.abort(), 2500);
+        const resp5 = await fetch(GOOGLE_SHEETS_DRIVER_MHE_URL, { signal: controller5.signal });
+        clearTimeout(timeoutId5);
+        if (resp5.ok) {
+          const csvText5 = await resp5.text();
+          if (csvText5 && csvText5.length > 20 && !csvText5.includes('<html')) {
+            driverMHEDataText = csvText5;
+          }
+        }
+      } catch (err) {
+        console.info('Using default driver MHE dataset:', err.message);
+      }
+
+      return { logDataText, summaryAssetDataText, downtimeDataText, sparepartDataText, driverMHEDataText };
     }
 
     /* ========================================================
        APPLICATION INITIALIZATION
        ======================================================== */
     window.addEventListener('DOMContentLoaded', () => {
-      // Start battery charging animation and data fetch concurrently with minimum display timer
+      // Safety watchdog: ensure loading screen is dismissed within 4.5s no matter what
+      const watchdogTimer = setTimeout(() => {
+        console.warn('Watchdog timer triggered: dismissing loading screen');
+        dismissLoadingScreen();
+      }, 4500);
+
+      // Start battery charging animation and data fetch concurrently
       const fetchPromise = fetchDataFromSource();
       const animationPromise = new Promise((resolve) => {
         runLoadingAnimation(resolve);
       });
 
       Promise.all([fetchPromise, animationPromise]).then(([dataResult]) => {
-        rawDataset = parseCSVOrTSV(dataResult.logDataText);
-        rawSummaryAssetDataset = parseSummaryAssetCSV(dataResult.summaryAssetDataText);
-        rawDowntimeDataset = parseDowntimeCSV(dataResult.downtimeDataText);
-        rawSparepartDataset = parseSparepartCSV(dataResult.sparepartDataText);
-        
-        populateDropdownOptions();
-        applyFilters();
+        try {
+          rawDataset = parseCSVOrTSV(dataResult.logDataText);
+          rawSummaryAssetDataset = parseSummaryAssetCSV(dataResult.summaryAssetDataText);
+          rawDowntimeDataset = parseDowntimeCSV(dataResult.downtimeDataText);
+          rawSparepartDataset = parseSparepartCSV(dataResult.sparepartDataText);
+          rawDriverMHEDataset = parseDriverMHECSV(dataResult.driverMHEDataText);
+          
+          populateDropdownOptions();
+          applyFilters();
 
-        // Default to Summary Asset view on launch as requested
-        switchView('summary');
-
-        // Dismiss loading screen with smooth fade-out
-        dismissLoadingScreen();
+          // Default to Summary Asset view on launch as requested
+          switchView('summary');
+        } catch (innerErr) {
+          console.error('Error during data processing in then block:', innerErr);
+        } finally {
+          clearTimeout(watchdogTimer);
+          dismissLoadingScreen();
+        }
       }).catch((err) => {
         console.error('Initialization error:', err);
-        rawDataset = parseCSVOrTSV(DEFAULT_SPREADSHEET_DATA);
-        rawSummaryAssetDataset = parseSummaryAssetCSV(DEFAULT_SUMMARY_ASSET_DATA);
-        rawDowntimeDataset = parseDowntimeCSV(DEFAULT_DOWNTIME_DATA);
-        rawSparepartDataset = parseSparepartCSV(DEFAULT_SPAREPART_DATA);
-        
-        populateDropdownOptions();
-        applyFilters();
-        switchView('summary');
-        dismissLoadingScreen();
+        try {
+          rawDataset = parseCSVOrTSV(DEFAULT_SPREADSHEET_DATA);
+          rawSummaryAssetDataset = parseSummaryAssetCSV(DEFAULT_SUMMARY_ASSET_DATA);
+          rawDowntimeDataset = parseDowntimeCSV(DEFAULT_DOWNTIME_DATA);
+          rawSparepartDataset = parseSparepartCSV(DEFAULT_SPAREPART_DATA);
+          rawDriverMHEDataset = parseDriverMHECSV(DEFAULT_DRIVER_MHE_DATA);
+          
+          populateDropdownOptions();
+          applyFilters();
+          switchView('summary');
+        } catch (innerErr2) {
+          console.error('Fallback error:', innerErr2);
+        } finally {
+          clearTimeout(watchdogTimer);
+          dismissLoadingScreen();
+        }
       });
     });
   </script>
