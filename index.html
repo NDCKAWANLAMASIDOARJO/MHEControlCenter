@@ -4,9 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Operasional MHE</title>
-  <meta name="description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, spare part, dan driver MHE." />
+  <meta name="description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, spare part, driver MHE, dan monitoring in - out alat." />
   <meta property="og:title" content="Dashboard Operasional MHE" />
-  <meta property="og:description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, spare part, dan driver MHE." />
+  <meta property="og:description" content="Dashboard Operasional MHE — Pemantauan armada, summary asset, logbook baterai, downtime, spare part, driver MHE, dan monitoring in - out alat." />
   <meta property="og:type" content="website" />
   
   <!-- Chart.js via CDN -->
@@ -2124,6 +2124,22 @@
           </div>
           <span class="sidebar-counter-badge" id="tabDriverBadge" style="background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd;">0 Unit</span>
         </button>
+
+        <!-- 6. IN - OUT ALAT (DATA SHEET IN-0UT ALAT) -->
+        <button
+          class="sidebar-nav-item"
+          id="tabBtnInOut"
+          role="tab"
+          aria-selected="false"
+          onclick="switchView('inout')"
+        >
+          <div class="nav-item-icon-box" style="background: #fef3c7; color: #d97706;">🔄</div>
+          <div class="nav-item-text-wrap">
+            <div class="nav-item-label">In - Out Alat</div>
+            <div class="nav-item-caption">Check in, out, jam & operator</div>
+          </div>
+          <span class="sidebar-counter-badge" id="tabInOutBadge" style="background: #fef3c7; color: #b45309; border: 1px solid #fde68a;">0 Log</span>
+        </button>
       </nav>
 
       <!-- Sidebar Bottom Info & Quick Refresh -->
@@ -2133,7 +2149,7 @@
             <span class="sync-live-dot"></span>
             <span>Live Sheets Connected</span>
           </div>
-          <div class="sync-desc">SUMMARY ASSET, LOGBOOK, DOWNTIME, SPAREPART, DRIVER MHE</div>
+          <div class="sync-desc">SUMMARY ASSET, LOGBOOK, DOWNTIME, SPAREPART, DRIVER MHE, IN-OUT ALAT</div>
         </div>
         <button class="btn btn-primary btn-sm" onclick="refreshDashboardData(true)" style="width: 100%; justify-content: center;">
           <span>🔄</span> Refresh Semua Data
@@ -3097,6 +3113,204 @@
         </div>
       </section>
     </div>
+
+    <!-- ========================================================
+         VIEW 6: IN - OUT ALAT (DATA DARI SHEET "IN-0UT ALAT")
+         ======================================================== -->
+    <div id="viewInOutAlat" class="view-container">
+      <!-- Filter Bar for In - Out Alat -->
+      <section class="summary-filter-bar">
+        <div class="summary-filter-inputs">
+          <div class="summary-filter-item">
+            <label for="inoutFilterDateStart" style="font-weight: 700;">📅 Tanggal Mulai:</label>
+            <input type="date" id="inoutFilterDateStart" class="form-control" onchange="applyInOutFilters()" />
+          </div>
+
+          <div class="summary-filter-item">
+            <label for="inoutFilterDateEnd" style="font-weight: 700;">📅 Sampai:</label>
+            <input type="date" id="inoutFilterDateEnd" class="form-control" onchange="applyInOutFilters()" />
+          </div>
+
+          <div class="summary-filter-item">
+            <label for="inoutFilterDept">🏢 Departemen:</label>
+            <select id="inoutFilterDept" class="form-control" onchange="applyInOutFilters()">
+              <option value="ALL">Semua Departemen</option>
+              <option value="INBOUND">INBOUND</option>
+              <option value="OUTBOUND">OUTBOUND</option>
+              <option value="STORING">STORING</option>
+            </select>
+          </div>
+
+          <div class="summary-filter-item">
+            <label for="inoutFilterShift">⏰ Shift:</label>
+            <select id="inoutFilterShift" class="form-control" onchange="applyInOutFilters()">
+              <option value="ALL">Semua Shift</option>
+              <option value="1">Shift 1</option>
+              <option value="2">Shift 2</option>
+            </select>
+          </div>
+
+          <div class="summary-filter-item">
+            <label for="inoutFilterStatus">⚡ Status Operasional:</label>
+            <select id="inoutFilterStatus" class="form-control" onchange="applyInOutFilters()">
+              <option value="ALL">Semua Status</option>
+              <option value="IN">⚡ Sedang Digunakan (IN)</option>
+              <option value="OUT">✅ Sudah Kembali (OUT)</option>
+              <option value="RUSAK">⚠️ Kondisi Rusak</option>
+              <option value="STANDBY">💤 Standby (Baik)</option>
+            </select>
+          </div>
+
+          <button class="btn btn-secondary btn-sm" onclick="resetInOutFilters()">
+            <span>↺</span> Reset Filter
+          </button>
+        </div>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <span class="asset-period-badge" style="background: #fef3c7; color: #b45309; border-color: #fde68a;">🔄 Tab Sheet: IN-OUT ALAT</span>
+          <button class="btn btn-primary btn-sm" onclick="exportInOutAlatToCSV()">
+            <span>📥</span> Ekspor CSV In - Out
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Cards for In - Out Alat -->
+      <section class="summary-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total Log Transaksi</span>
+            <div class="summary-icon icon-blue">📋</div>
+          </div>
+          <div class="summary-value" id="kpiTotalInOutLog">0 Log</div>
+          <div class="summary-subtext">Total catatan pergerakan alat</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Sedang Digunakan (IN)</span>
+            <div class="summary-icon" style="background: #fef3c7; color: #d97706;">⚡</div>
+          </div>
+          <div class="summary-value" id="kpiTotalInOutActive" style="color: #d97706;">0 Unit</div>
+          <div class="summary-subtext">Unit sedang beroperasi / belum OUT</div>
+        </div>
+
+        <div class="summary-card success">
+          <div class="summary-top">
+            <span class="summary-label">Sudah Selesai (OUT)</span>
+            <div class="summary-icon icon-green">✅</div>
+          </div>
+          <div class="summary-value" id="kpiTotalInOutReturned" style="color: #15803d;">0 Unit</div>
+          <div class="summary-subtext">Unit selesai digunakan & dikembalikan</div>
+        </div>
+
+        <div class="summary-card danger">
+          <div class="summary-top">
+            <span class="summary-label">Unit Kendala / Rusak</span>
+            <div class="summary-icon icon-red">⚠️</div>
+          </div>
+          <div class="summary-value" id="kpiTotalInOutDamaged" style="color: #dc2626;">0 Unit</div>
+          <div class="summary-subtext">Laporan kondisi rusak saat pemakaian</div>
+        </div>
+
+        <div class="summary-card">
+          <div class="summary-top">
+            <span class="summary-label">Total Operator / Driver</span>
+            <div class="summary-icon" style="background: #e0f2fe; color: #0284c7;">👷</div>
+          </div>
+          <div class="summary-value" id="kpiTotalInOutOperators" style="color: #0284c7;">0 Orang</div>
+          <div class="summary-subtext">Driver terdaftar pada log transaksi</div>
+        </div>
+      </section>
+
+      <!-- Charts for In - Out Alat -->
+      <section class="charts-grid">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>📊</span> Aktivitas In - Out Unit per Departemen
+            </div>
+          </div>
+          <div class="chart-container" style="position: relative; height: 290px;">
+            <canvas id="inoutDeptChart"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title">
+              <span>🍩</span> Distribusi Status &amp; Kondisi Unit
+            </div>
+          </div>
+          <div class="chart-container" style="position: relative; height: 290px;">
+            <canvas id="inoutShiftChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- In - Out Alat Table Section -->
+      <section class="table-section">
+        <div class="table-header">
+          <div class="table-header-left">
+            <div class="table-icon-wrap" style="background: #fef3c7; color: #b45309;">🔄</div>
+            <div>
+              <div class="table-title">Log Pergerakan Check In &amp; Check Out Alat MHE</div>
+              <div class="table-subtitle">
+                Monitoring real-time waktu ambil (IN), waktu pengembalian (OUT), operator bertugas, kondisi unit, dan shift
+              </div>
+            </div>
+          </div>
+          <div class="table-actions">
+            <div class="search-wrap">
+              <span class="search-icon">🔎</span>
+              <input
+                type="text"
+                id="inoutSearchInput"
+                class="search-input"
+                placeholder="Cari asset, operator, NIK, tipe..."
+                oninput="renderInOutTable()"
+              />
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="exportInOutAlatToCSV()" title="Ekspor Data In - Out CSV">
+              <span>📥</span> Ekspor CSV
+            </button>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table id="inoutTable">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--border-color);">
+                <th onclick="sortInOutTable('idx')" style="vertical-align: middle; cursor: pointer; text-align: center; width: 45px;">NO ⬍</th>
+                <th onclick="sortInOutTable('tanggal')" style="vertical-align: middle; cursor: pointer;">TANGGAL ⬍</th>
+                <th onclick="sortInOutTable('departement')" style="vertical-align: middle; cursor: pointer;">DEPARTEMENT ⬍</th>
+                <th onclick="sortInOutTable('assetName')" style="vertical-align: middle; cursor: pointer;">ASSET NAME ⬍</th>
+                <th onclick="sortInOutTable('type')" style="vertical-align: middle; cursor: pointer;">TYPE ⬍</th>
+                <th onclick="sortInOutTable('merk')" style="vertical-align: middle; cursor: pointer;">MERK ⬍</th>
+                <th onclick="sortInOutTable('shift')" style="vertical-align: middle; cursor: pointer; text-align: center;">SHIFT ⬍</th>
+                <th onclick="sortInOutTable('kondisi')" style="vertical-align: middle; cursor: pointer; text-align: center;">KONDISI ⬍</th>
+                <th onclick="sortInOutTable('nik')" style="vertical-align: middle; cursor: pointer;">NIK ⬍</th>
+                <th onclick="sortInOutTable('nama')" style="vertical-align: middle; cursor: pointer;">OPERATOR / DRIVER ⬍</th>
+                <th onclick="sortInOutTable('jamIn')" style="vertical-align: middle; cursor: pointer; text-align: center;">CHECK IN ⬍</th>
+                <th onclick="sortInOutTable('jamOut')" style="vertical-align: middle; cursor: pointer; text-align: center;">CHECK OUT ⬍</th>
+                <th onclick="sortInOutTable('status')" style="vertical-align: middle; cursor: pointer; text-align: center;">STATUS ⬍</th>
+              </tr>
+            </thead>
+            <tbody id="inoutTableBody">
+              <!-- Rendered dynamically by JavaScript from Sheet IN-0UT ALAT -->
+            </tbody>
+            <tfoot id="inoutTableFoot" style="background: #f8fafc; font-weight: 700; border-top: 2px solid var(--border-color);">
+              <!-- Dynamic totals row -->
+            </tfoot>
+          </table>
+        </div>
+
+        <div class="table-footer" style="background: #fafafa; border-top: 1px solid var(--border-color);">
+          <div id="inoutInfo">Menampilkan 0 log transaksi</div>
+          <div style="font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px;">
+            <span>💡 <i>Data bersumber langsung dari tab sheet <b>IN-0UT ALAT</b> pada Google Spreadsheet.</i></span>
+          </div>
+        </div>
+      </section>
+    </div>
     </main>
   </div>
 
@@ -3234,13 +3448,46 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""
 "29","STORING","REACH TRUCK","REACH TRUCK DOUBLE DEEP K02
 CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
 
+    const DEFAULT_INOUT_ALAT_DATA = `"TANGGAL","DEPARTEMENT","ASSET NAME","TYPE","MERK","SHIFT","KONDISI","NIK","NAMA","CHECK IN","JAM","CHECK OUT","JAM"
+"09/01/2026","INBOUND","PALLET MOVER SHORT S01","PALLET MOVER","KRISBOW","1","RUSAK","","-","","","",""
+"09/01/2026","INBOUND","PALLET MOVER SHORT S02","PALLET MOVER","KRISBOW","1","BAIK","160964","ALFIDO FICKI DIAN PRATAMA","IN","8:00","",""
+"09/01/2026","OUTBOUND","PALLET MOVER SHORT S03","PALLET MOVER","KRISBOW","1","BAIK","194737","CHOIRUL BILLAL RAMADHAN","IN","8:00","",""
+"09/01/2026","OUTBOUND","PALLET MOVER SHORT S04","PALLET MOVER","KRISBOW","1","BAIK","189240","ACHMAD ROISSUDIN","IN","8:00","",""
+"09/01/2026","OUTBOUND","PALLET MOVER SHORT S05","PALLET MOVER","KRISBOW","1","BAIK","194612","AGIL RAHMAD IMANNUDIN","IN","8:00","",""
+"09/01/2026","OUTBOUND","PALLET MOVER SHORT S06","PALLET MOVER","KRISBOW","1","RUSAK","","-","","","",""
+"09/01/2026","OUTBOUND","PALLET MOVER SHORT S07","PALLET MOVER","KRISBOW","1","BAIK","191719","MUCHAMAD DANANG YULIANTO PUTRA","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S10","PALLET MOVER","KRISBOW","1","BAIK","192969","MOCHAMMAD SYAHRIL ANAM","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S12","PALLET MOVER","KRISBOW","1","BAIK","191471","NICO PUTRA WIJAYA","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S13","PALLET MOVER","KRISBOW","1","BAIK","181896","FIKI ADI WIJAYA","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S14","PALLET MOVER","KRISBOW","1","BAIK","193458","EKO BAGUS SETYAWAN","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S15","PALLET MOVER","KRISBOW","1","","","-","","","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S16","PALLET MOVER","KRISBOW","1","BAIK","191753","MOHAMMAD BAGUS FIRLIANSYAH ALFIN","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S17","PALLET MOVER","KRISBOW","1","BAIK","195751","-","","","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S18","PALLET MOVER","KRISBOW","1","BAIK","181937","HANAFI ALFIAN SYAH","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER SHORT S19","PALLET MOVER","KRISBOW","1","BAIK","196933","-","","","",""
+"09/01/2026","INBOUND","PALLET MOVER LONG L04","PALLET MOVER","KRISBOW","1","BAIK","181519","M. RYAN KHABILAH PRATAMA","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER LONG L10","PALLET MOVER","KRISBOW","1","BAIK","181786","HADYAN ADI NUGRAHA","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER LONG L19","PALLET MOVER","KRISBOW","1","BAIK","192375","AFFI FIRMANSYAH","IN","8:00","",""
+"09/01/2026","STORING","PALLET MOVER LONG L21","PALLET MOVER","KRISBOW","1","RUSAK","","-","","","",""
+"09/01/2026","STORING","PALLET MOVER LONG L22","PALLET MOVER","KRISBOW","1","BAIK","194617","MOCH IRCHAM FADLI","IN","8:00","",""
+"09/01/2026","STORING","REACH TRUCK SINGLE DEEP C02 RR-5725S - 45 (9 METER)","REACH TRUCK 9 M SD","CROWN","1","BAIK","147395","RIO AFANDI","IN","8:00","",""
+"09/01/2026","STORING","REACH TRUCK SINGLE DEEP C03 RM-5725S - 45 (12 METER)","REACH TRUCK 12 M SD","CROWN","1","RUSAK","","-","","","",""
+"09/01/2026","STORING","REACH TRUCK DOUBLE DEEP C04 RMD-6095S-32 (12 METER)","REACH TRUCK 12 M DD","CROWN","1","BAIK","176738","KRISNA ARFIAN SYAH","IN","8:00","",""
+"09/01/2026","STORING","REACH TRUCK DOUBLE DEEP C06 RD-5725 - 32 (9 METER)","REACH TRUCK 9 M DD","CROWN","1","RUSAK","","-","","","",""
+"09/01/2026","STORING","REACH TRUCK DOUBLE DEEP C07 RD-5725 - 32 (9 METER)","REACH TRUCK 9 M DD","CROWN","1","","","-","","","",""
+"09/01/2026","STORING","REACH TRUCK DOUBLE DEEP C08  RD-5725S - 32 (9 METER)","REACH TRUCK 9 M DD","CROWN","1","RUSAK","","-","","","",""
+"09/01/2026","STORING","REACH TRUCK DOUBLE DEEP K01 CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","1","RUSAK","","-","","","",""
+"09/01/2026","STORING","REACH TRUCK DOUBLE DEEP K02 CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","1","BAIK","186161","FAJAR FEBRIYOGI FIRMANSYAH","IN","8:00","",""`;
+
     const GOOGLE_SHEETS_SPAREPART_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=SPAREPART";
     const GOOGLE_SHEETS_DRIVER_MHE_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=DRIVER%20MHE";
+    const GOOGLE_SHEETS_INOUT_ALAT_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent("IN-0UT ALAT");
+    const GOOGLE_SHEETS_INOUT_ALAT_FALLBACK_URL = "https://docs.google.com/spreadsheets/d/1wKm48Wo6xXNJ8hoDZ8fHpwP4HsW0Fl7onUBaCYekC7I/gviz/tq?tqx=out:csv&sheet=" + encodeURIComponent("IN-OUT ALAT");
 
     /* ========================================================
        APPLICATION STATE
        ======================================================== */
-    let currentActiveView = 'summary'; // 'summary', 'detail', 'downtime', or 'sparepart'
+    let currentActiveView = 'summary'; // 'summary', 'detail', 'downtime', 'sparepart', 'driver', or 'inout'
     let currentGlobalBU = 'ALL'; // 'ALL', 'AHI', 'HCI'
     let rawDataset = [];
     let filteredDataset = [];
@@ -3252,14 +3499,21 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
     let filteredSparepartDataset = [];
     let rawDriverMHEDataset = [];
     let filteredDriverMHEDataset = [];
+    let rawInOutAlatDataset = [];
+    let filteredInOutAlatDataset = [];
 
     let currentSort = { column: 'idx', direction: 'asc' };
     let currentAssetSort = { column: 'idx', direction: 'asc' };
     let currentDowntimeSort = { column: 'no', direction: 'asc' };
     let currentSparepartSort = { column: 'no', direction: 'asc' };
     let currentDriverSort = { column: 'no', direction: 'asc' };
+    let currentInOutSort = { column: 'idx', direction: 'asc' };
     let currentPage = 1;
     let pageSize = 30;
+
+    // Chart instances for In - Out Alat View
+    let inoutDeptChartInstance = null;
+    let inoutShiftChartInstance = null;
 
     // Chart instances for Detail View
     let trendChartInstance = null;
@@ -3871,15 +4125,41 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
           // fallback default driver mhe
         }
 
+        // Fetch In - Out Alat Sheet (IN-0UT ALAT or IN-OUT ALAT)
+        let inoutAlatDataText = DEFAULT_INOUT_ALAT_DATA;
+        try {
+          const controller6 = new AbortController();
+          const timeoutId6 = setTimeout(() => controller6.abort(), 4000);
+          let resp6 = await fetch(GOOGLE_SHEETS_INOUT_ALAT_URL, { signal: controller6.signal });
+          clearTimeout(timeoutId6);
+          if (resp6.ok) {
+            const csv6 = await resp6.text();
+            if (csv6 && csv6.length > 50 && !csv6.includes('<html') && !csv6.startsWith('"NO","NIK","NAMA"')) {
+              inoutAlatDataText = csv6;
+            } else {
+              const resp6b = await fetch(GOOGLE_SHEETS_INOUT_ALAT_FALLBACK_URL);
+              if (resp6b.ok) {
+                const csv6b = await resp6b.text();
+                if (csv6b && csv6b.length > 50 && !csv6b.includes('<html') && !csv6b.startsWith('"NO","NIK","NAMA"')) {
+                  inoutAlatDataText = csv6b;
+                }
+              }
+            }
+          }
+        } catch (e) {
+          // fallback default in-out
+        }
+
         rawDataset = parseCSVOrTSV(logDataText);
         rawSummaryAssetDataset = parseSummaryAssetCSV(summaryAssetDataText);
         rawDowntimeDataset = parseDowntimeCSV(downtimeDataText);
         rawSparepartDataset = parseSparepartCSV(sparepartDataText);
         rawDriverMHEDataset = parseDriverMHECSV(driverMHEDataText);
+        rawInOutAlatDataset = parseInOutAlatCSV(inoutAlatDataText);
 
         populateDropdownOptions();
         applyFilters();
-        if (showNotice) showToast(`✅ Data diperbarui: ${rawDataset.length} log, ${rawSummaryAssetDataset.length} summary aset, ${rawDowntimeDataset.length} downtime, ${rawSparepartDataset.length} spare part`);
+        if (showNotice) showToast(`✅ Data diperbarui: ${rawDataset.length} log, ${rawSummaryAssetDataset.length} summary aset, ${rawDowntimeDataset.length} downtime, ${rawSparepartDataset.length} spare part, ${rawInOutAlatDataset.length} in-out alat`);
       } catch (err) {
         if (showNotice) showToast('⚠️ Gagal menyegarkan data.');
       }
@@ -4012,19 +4292,20 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
       const allDatesISO = [
         ...rawDataset.map(d => d.tanggalISO),
         ...rawSummaryAssetDataset.map(d => d.tanggalISO),
-        ...rawDowntimeDataset.map(d => d.tanggalStartISO)
+        ...rawDowntimeDataset.map(d => d.tanggalStartISO),
+        ...rawInOutAlatDataset.map(d => d.tanggalISO)
       ].filter(Boolean).sort();
 
       if (allDatesISO.length > 0) {
         const minDate = allDatesISO[0];
         const maxDate = allDatesISO[allDatesISO.length - 1];
         
-        ['filterDateStart', 'summaryFilterDateStart', 'downtimeFilterDateStart'].forEach(id => {
+        ['filterDateStart', 'summaryFilterDateStart', 'downtimeFilterDateStart', 'inoutFilterDateStart'].forEach(id => {
           const el = document.getElementById(id);
           if (el) { el.min = minDate; el.max = maxDate; }
         });
         
-        ['filterDateEnd', 'summaryFilterDateEnd', 'downtimeFilterDateEnd'].forEach(id => {
+        ['filterDateEnd', 'summaryFilterDateEnd', 'downtimeFilterDateEnd', 'inoutFilterDateEnd'].forEach(id => {
           const el = document.getElementById(id);
           if (el) { el.min = minDate; el.max = maxDate; }
         });
@@ -4041,20 +4322,22 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
       const tabDowntimeBtn = document.getElementById('tabBtnDowntime');
       const tabSparepartBtn = document.getElementById('tabBtnSparepart');
       const tabDriverBtn = document.getElementById('tabBtnDriver');
+      const tabInOutBtn = document.getElementById('tabBtnInOut');
       const viewSummary = document.getElementById('viewSummaryAsset');
       const viewDetail = document.getElementById('viewDetailLog');
       const viewDowntime = document.getElementById('viewDowntime');
       const viewSparePart = document.getElementById('viewSparePart');
       const viewDriver = document.getElementById('viewDriverMHE');
+      const viewInOut = document.getElementById('viewInOutAlat');
       const activeIndicator = document.getElementById('activeViewIndicator');
 
-      [tabSummaryBtn, tabDetailBtn, tabDowntimeBtn, tabSparepartBtn, tabDriverBtn].forEach(btn => {
+      [tabSummaryBtn, tabDetailBtn, tabDowntimeBtn, tabSparepartBtn, tabDriverBtn, tabInOutBtn].forEach(btn => {
         if (btn) {
           btn.classList.remove('active');
           btn.setAttribute('aria-selected', 'false');
         }
       });
-      [viewSummary, viewDetail, viewDowntime, viewSparePart, viewDriver].forEach(view => {
+      [viewSummary, viewDetail, viewDowntime, viewSparePart, viewDriver, viewInOut].forEach(view => {
         if (view) view.classList.remove('active');
       });
 
@@ -4136,6 +4419,20 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
         }
         updateDriverMHEView();
         renderDriverMHECharts();
+      } else if (viewName === 'inout') {
+        if (tabInOutBtn) {
+          tabInOutBtn.classList.add('active');
+          tabInOutBtn.setAttribute('aria-selected', 'true');
+        }
+        if (viewInOut) viewInOut.classList.add('active');
+        if (activeIndicator) {
+          activeIndicator.innerHTML = '📍 Menu Aktif: <b>In - Out Alat</b>';
+          activeIndicator.style.background = '#fef3c7';
+          activeIndicator.style.color = '#b45309';
+          activeIndicator.style.borderColor = '#fde68a';
+        }
+        updateInOutAlatView();
+        renderInOutAlatCharts();
       }
     }
 
@@ -4151,6 +4448,8 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
         exportSparepartToCSV();
       } else if (currentActiveView === 'driver') {
         exportDriverMHEToCSV();
+      } else if (currentActiveView === 'inout') {
+        exportInOutAlatToCSV();
       } else {
         exportAssetSummaryToCSV();
       }
@@ -4237,6 +4536,19 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
       if (drvStatusEl) drvStatusEl.value = 'ALL';
       const drvSearch = document.getElementById('driverSearchInput');
       if (drvSearch) drvSearch.value = '';
+
+      const ioStartEl = document.getElementById('inoutFilterDateStart');
+      if (ioStartEl) ioStartEl.value = '';
+      const ioEndEl = document.getElementById('inoutFilterDateEnd');
+      if (ioEndEl) ioEndEl.value = '';
+      const ioDeptEl = document.getElementById('inoutFilterDept');
+      if (ioDeptEl) ioDeptEl.value = 'ALL';
+      const ioShiftEl = document.getElementById('inoutFilterShift');
+      if (ioShiftEl) ioShiftEl.value = 'ALL';
+      const ioStatusEl = document.getElementById('inoutFilterStatus');
+      if (ioStatusEl) ioStatusEl.value = 'ALL';
+      const ioSearchEl = document.getElementById('inoutSearchInput');
+      if (ioSearchEl) ioSearchEl.value = '';
       
       populateUnitNameOptions();
       applyFilters();
@@ -4364,12 +4676,20 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
         return true;
       });
 
+      // 6. Filter Sheet IN - OUT ALAT
+      if (typeof applyInOutFiltersInternal === 'function') {
+        applyInOutFiltersInternal();
+      }
+
       currentPage = 1;
       updateKPIs();
       updateAssetSummary();
       updateDowntimeView();
       updateSparepartView();
       updateDriverMHEView();
+      if (typeof updateInOutAlatView === 'function') {
+        updateInOutAlatView();
+      }
       renderCharts();
       renderTable();
     }
@@ -4388,6 +4708,9 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
 
       const detailBadge = document.getElementById('tabDetailBadge');
       if (detailBadge) detailBadge.textContent = `${totalRecords} Log`;
+
+      const inoutBadge = document.getElementById('tabInOutBadge');
+      if (inoutBadge) inoutBadge.textContent = `${rawInOutAlatDataset.length} Log`;
 
       const uniqueUnits = new Set(filteredDataset.map(d => d.kodeAlat).filter(k => k && k !== '-'));
       const kpiTotalUnits = document.getElementById('kpiTotalUnits');
@@ -6520,12 +6843,534 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
       showToast(`📥 Berhasil mengekspor ${dataset.length} data Driver MHE ke CSV`);
     }
 
-    /* Attempt Live Google Sheets Fetch for Log, Summary Asset, Downtime, & Sparepart sheets with Graceful Fallback */
+    /* ========================================================
+       IN - OUT ALAT DATA PROCESSING & RENDERING
+       ======================================================== */
+    function parseInOutAlatCSV(text) {
+      if (!text || typeof text !== 'string') return [];
+      const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      if (lines.length < 2) return [];
+
+      const result = [];
+      let rowNumber = 1;
+
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
+        if (!line) continue;
+
+        const row = [];
+        let inQuote = false;
+        let cell = '';
+        for (let c = 0; c < line.length; c++) {
+          const char = line[c];
+          if (char === '"') {
+            inQuote = !inQuote;
+          } else if (char === ',' && !inQuote) {
+            row.push(cell.trim().replace(/^"|"$/g, '').trim());
+            cell = '';
+          } else {
+            cell += char;
+          }
+        }
+        row.push(cell.trim().replace(/^"|"$/g, '').trim());
+
+        if (row.length < 3) continue;
+
+        const col0 = (row[0] || '').toUpperCase().trim();
+        const col2 = (row[2] || '').toUpperCase().trim();
+
+        // Skip header lines
+        if (col0.includes('TANGGAL') || col2.includes('ASSET NAME') || (col0.includes('NO') && col2.includes('JENIS'))) {
+          continue;
+        }
+
+        const rawTanggal = row[0] || '';
+        const departement = (row[1] || '').toUpperCase().trim();
+        const assetName = row[2] || '';
+        const type = row[3] || '';
+        const merk = (row[4] || '').toUpperCase().trim();
+        const shift = row[5] || '';
+        const kondisi = (row[6] || '').toUpperCase().trim();
+        const nik = row[7] || '';
+        const nama = row[8] || '';
+        const checkIn = (row[9] || '').toUpperCase().trim();
+        const jamIn = row[10] || '';
+        const checkOut = (row[11] || '').toUpperCase().trim();
+        const jamOut = row[12] || '';
+
+        // Must have at least assetName or tanggal to be valid
+        if (!assetName && !rawTanggal) continue;
+
+        // Calculate Status
+        let status = 'TIDAK DIGUNAKAN';
+        const hasIn = checkIn.includes('IN') || Boolean(jamIn);
+        const hasOut = checkOut.includes('OUT') || Boolean(jamOut);
+
+        if (kondisi === 'RUSAK') {
+          status = 'RUSAK';
+        } else if (hasOut) {
+          status = 'OUT';
+        } else if (hasIn) {
+          status = 'IN';
+        } else if (kondisi === 'BAIK') {
+          status = 'STANDBY';
+        }
+
+        result.push({
+          no: rowNumber++,
+          tanggal: rawTanggal,
+          tanggalISO: parseDateToISO(rawTanggal),
+          departement: departement || '-',
+          assetName: assetName || '-',
+          type: type || '-',
+          merk: merk || '-',
+          shift: shift || '-',
+          kondisi: kondisi || 'BAIK',
+          nik: nik || '-',
+          nama: (nama && nama !== '-') ? nama : '-',
+          checkIn: checkIn || '-',
+          jamIn: jamIn || '-',
+          checkOut: checkOut || '-',
+          jamOut: jamOut || '-',
+          status: status
+        });
+      }
+
+      return result.length > 0 ? result : [];
+    }
+
+    function isInOutFiltered() {
+      const dateStart = document.getElementById('inoutFilterDateStart')?.value || '';
+      const dateEnd = document.getElementById('inoutFilterDateEnd')?.value || '';
+      const dept = document.getElementById('inoutFilterDept')?.value || 'ALL';
+      const shift = document.getElementById('inoutFilterShift')?.value || 'ALL';
+      const status = document.getElementById('inoutFilterStatus')?.value || 'ALL';
+      const search = (document.getElementById('inoutSearchInput')?.value || '').trim();
+      return Boolean(dateStart || dateEnd || dept !== 'ALL' || shift !== 'ALL' || status !== 'ALL' || search);
+    }
+
+    function applyInOutFiltersInternal() {
+      const dateStart = document.getElementById('inoutFilterDateStart')?.value || '';
+      const dateEnd = document.getElementById('inoutFilterDateEnd')?.value || '';
+      const dept = document.getElementById('inoutFilterDept')?.value || 'ALL';
+      const shift = document.getElementById('inoutFilterShift')?.value || 'ALL';
+      const status = document.getElementById('inoutFilterStatus')?.value || 'ALL';
+      const search = (document.getElementById('inoutSearchInput')?.value || '').toLowerCase().trim();
+
+      filteredInOutAlatDataset = rawInOutAlatDataset.filter(item => {
+        if (dateStart && item.tanggalISO && item.tanggalISO < dateStart) return false;
+        if (dateEnd && item.tanggalISO && item.tanggalISO > dateEnd) return false;
+        if (dept !== 'ALL' && item.departement !== dept) return false;
+        if (shift !== 'ALL' && String(item.shift) !== String(shift)) return false;
+        if (status !== 'ALL') {
+          if (status === 'IN' && item.status !== 'IN') return false;
+          if (status === 'OUT' && item.status !== 'OUT') return false;
+          if (status === 'RUSAK' && item.status !== 'RUSAK' && item.kondisi !== 'RUSAK') return false;
+          if (status === 'STANDBY' && item.status !== 'STANDBY') return false;
+        }
+        if (search) {
+          const matchStr = `${item.tanggal} ${item.departement} ${item.assetName} ${item.type} ${item.merk} ${item.shift} ${item.kondisi} ${item.nik} ${item.nama} ${item.checkIn} ${item.jamIn} ${item.checkOut} ${item.jamOut} ${item.status}`.toLowerCase();
+          if (!matchStr.includes(search)) return false;
+        }
+        return true;
+      });
+    }
+
+    function applyInOutFilters() {
+      applyInOutFiltersInternal();
+      updateInOutAlatView();
+      renderInOutAlatCharts();
+    }
+
+    function resetInOutFilters() {
+      const ioStartEl = document.getElementById('inoutFilterDateStart');
+      if (ioStartEl) ioStartEl.value = '';
+      const ioEndEl = document.getElementById('inoutFilterDateEnd');
+      if (ioEndEl) ioEndEl.value = '';
+      const ioDeptEl = document.getElementById('inoutFilterDept');
+      if (ioDeptEl) ioDeptEl.value = 'ALL';
+      const ioShiftEl = document.getElementById('inoutFilterShift');
+      if (ioShiftEl) ioShiftEl.value = 'ALL';
+      const ioStatusEl = document.getElementById('inoutFilterStatus');
+      if (ioStatusEl) ioStatusEl.value = 'ALL';
+      const ioSearchEl = document.getElementById('inoutSearchInput');
+      if (ioSearchEl) ioSearchEl.value = '';
+
+      applyInOutFilters();
+      showToast('↺ Filter In - Out Alat telah di-reset');
+    }
+
+    function updateInOutAlatView() {
+      const isFiltered = isInOutFiltered();
+      const displayData = isFiltered ? filteredInOutAlatDataset : rawInOutAlatDataset;
+
+      const totalLog = displayData.length;
+      const activeIn = displayData.filter(d => d.status === 'IN').length;
+      const returnedOut = displayData.filter(d => d.status === 'OUT').length;
+      const damaged = displayData.filter(d => d.status === 'RUSAK' || d.kondisi === 'RUSAK').length;
+      const uniqueDrivers = new Set(displayData.map(d => d.nama).filter(n => n && n !== '-')).size;
+
+      const kpiLog = document.getElementById('kpiTotalInOutLog');
+      if (kpiLog) kpiLog.textContent = `${totalLog} Log`;
+
+      const kpiActive = document.getElementById('kpiTotalInOutActive');
+      if (kpiActive) kpiActive.textContent = `${activeIn} Unit`;
+
+      const kpiReturned = document.getElementById('kpiTotalInOutReturned');
+      if (kpiReturned) kpiReturned.textContent = `${returnedOut} Unit`;
+
+      const kpiDamaged = document.getElementById('kpiTotalInOutDamaged');
+      if (kpiDamaged) kpiDamaged.textContent = `${damaged} Unit`;
+
+      const kpiDrivers = document.getElementById('kpiTotalInOutOperators');
+      if (kpiDrivers) kpiDrivers.textContent = `${uniqueDrivers} Driver`;
+
+      const inoutBadge = document.getElementById('tabInOutBadge');
+      if (inoutBadge) inoutBadge.textContent = `${rawInOutAlatDataset.length} Log`;
+
+      renderInOutTable();
+    }
+
+    function renderInOutAlatCharts() {
+      if (typeof Chart === 'undefined') return;
+
+      const isFiltered = isInOutFiltered();
+      const data = isFiltered ? filteredInOutAlatDataset : rawInOutAlatDataset;
+
+      // 1. Departemen In-Out Chart
+      const ctxDept = document.getElementById('inoutDeptChart')?.getContext('2d');
+      if (ctxDept) {
+        if (inoutDeptChartInstance) {
+          inoutDeptChartInstance.destroy();
+        }
+
+        const depts = ['INBOUND', 'OUTBOUND', 'STORING'];
+        const inCounts = depts.map(dept => data.filter(d => d.departement === dept && d.status === 'IN').length);
+        const outCounts = depts.map(dept => data.filter(d => d.departement === dept && d.status === 'OUT').length);
+        const standbyCounts = depts.map(dept => data.filter(d => d.departement === dept && d.status === 'STANDBY').length);
+        const rusakCounts = depts.map(dept => data.filter(d => d.departement === dept && (d.status === 'RUSAK' || d.kondisi === 'RUSAK')).length);
+
+        inoutDeptChartInstance = new Chart(ctxDept, {
+          type: 'bar',
+          data: {
+            labels: depts,
+            datasets: [
+              {
+                label: 'Sedang Digunakan (IN)',
+                data: inCounts,
+                backgroundColor: '#f59e0b',
+                borderRadius: 4
+              },
+              {
+                label: 'Sudah Selesai (OUT)',
+                data: outCounts,
+                backgroundColor: '#10b981',
+                borderRadius: 4
+              },
+              {
+                label: 'Standby Baik',
+                data: standbyCounts,
+                backgroundColor: '#3b82f6',
+                borderRadius: 4
+              },
+              {
+                label: 'Kondisi Rusak',
+                data: rusakCounts,
+                backgroundColor: '#ef4444',
+                borderRadius: 4
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` ${ctx.dataset.label}: ${ctx.parsed.y} alat`
+                }
+              }
+            },
+            scales: {
+              x: { grid: { display: false } },
+              y: { beginAtZero: true, ticks: { precision: 0 } }
+            }
+          }
+        });
+      }
+
+      // 2. Status & Shift Doughnut Chart
+      const ctxShift = document.getElementById('inoutShiftChart')?.getContext('2d');
+      if (ctxShift) {
+        if (inoutShiftChartInstance) {
+          inoutShiftChartInstance.destroy();
+        }
+
+        const countIn = data.filter(d => d.status === 'IN').length;
+        const countOut = data.filter(d => d.status === 'OUT').length;
+        const countStandby = data.filter(d => d.status === 'STANDBY').length;
+        const countRusak = data.filter(d => d.status === 'RUSAK' || d.kondisi === 'RUSAK').length;
+
+        inoutShiftChartInstance = new Chart(ctxShift, {
+          type: 'doughnut',
+          data: {
+            labels: ['Sedang Digunakan (IN)', 'Sudah Selesai (OUT)', 'Standby Baik', 'Kondisi Rusak'],
+            datasets: [
+              {
+                data: [countIn, countOut, countStandby, countRusak],
+                backgroundColor: ['#f59e0b', '#10b981', '#3b82f6', '#ef4444'],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '62%',
+            plugins: {
+              legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` ${ctx.label}: ${ctx.raw} log (${data.length > 0 ? ((ctx.raw / data.length) * 100).toFixed(1) : 0}%)`
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function sortInOutTable(column) {
+      if (currentInOutSort.column === column) {
+        currentInOutSort.direction = currentInOutSort.direction === 'asc' ? 'desc' : 'asc';
+      } else {
+        currentInOutSort.column = column;
+        currentInOutSort.direction = 'asc';
+      }
+      renderInOutTable();
+    }
+
+    function renderInOutTable() {
+      const tbody = document.getElementById('inoutTableBody');
+      const tfoot = document.getElementById('inoutTableFoot');
+      const infoEl = document.getElementById('inoutTableInfo');
+      if (!tbody) return;
+
+      const isFiltered = isInOutFiltered();
+      let displayData = [...(isFiltered ? filteredInOutAlatDataset : rawInOutAlatDataset)];
+
+      // Sorting
+      if (currentInOutSort.column) {
+        displayData.sort((a, b) => {
+          let valA = a[currentInOutSort.column] || '';
+          let valB = b[currentInOutSort.column] || '';
+
+          if (currentInOutSort.column === 'no') {
+            return currentInOutSort.direction === 'asc' ? (a.no - b.no) : (b.no - a.no);
+          }
+
+          valA = String(valA).toLowerCase();
+          valB = String(valB).toLowerCase();
+
+          if (valA < valB) return currentInOutSort.direction === 'asc' ? -1 : 1;
+          if (valA > valB) return currentInOutSort.direction === 'asc' ? 1 : -1;
+          return 0;
+        });
+      }
+
+      if (displayData.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="13" style="text-align: center; padding: 48px 16px; color: var(--text-muted);">
+              <div style="font-size: 32px; margin-bottom: 8px;">🔍</div>
+              <div style="font-weight: 600; font-size: 15px; color: var(--text-main);">Tidak ada data In - Out Alat yang cocok</div>
+              <div style="font-size: 13px; margin-top: 4px;">Coba ubah kriteria filter tanggal, departemen, shift, atau kata kunci pencarian.</div>
+            </td>
+          </tr>
+        `;
+        if (tfoot) tfoot.innerHTML = '';
+        if (infoEl) infoEl.textContent = 'Menampilkan 0 data dari 0 log';
+        return;
+      }
+
+      const getDeptBadge = (dept) => {
+        const d = (dept || '').toUpperCase();
+        if (d === 'INBOUND') return `<span style="background: #f0fdf4; color: #166534; font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid #bbf7d0;">INBOUND</span>`;
+        if (d === 'OUTBOUND') return `<span style="background: #eff6ff; color: #1d4ed8; font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid #bfdbfe;">OUTBOUND</span>`;
+        if (d === 'STORING') return `<span style="background: #faf5ff; color: #7e22ce; font-weight: 700; font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid #e9d5ff;">STORING</span>`;
+        return `<span style="background: #f8fafc; color: #475569; font-weight: 600; font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid #e2e8f0;">${dept || '-'}</span>`;
+      };
+
+      const getMerkBadge = (merk) => {
+        const m = (merk || '').toUpperCase();
+        if (m.includes('KRISBOW')) return `<span style="background: #fef3c7; color: #b45309; font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 4px; border: 1px solid #fde68a;">KRISBOW</span>`;
+        if (m.includes('CROWN')) return `<span style="background: #ede9fe; color: #6d28d9; font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 4px; border: 1px solid #ddd6fe;">CROWN</span>`;
+        return `<span style="background: #f1f5f9; color: #475569; font-weight: 600; font-size: 11px; padding: 2px 7px; border-radius: 4px;">${merk || '-'}</span>`;
+      };
+
+      const getKondisiBadge = (kondisi) => {
+        const k = (kondisi || '').toUpperCase();
+        if (k === 'BAIK') return `<span style="background: #dcfce7; color: #166534; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 9999px; border: 1px solid #bbf7d0; display: inline-flex; align-items: center; gap: 4px;">🟢 BAIK</span>`;
+        if (k === 'RUSAK') return `<span style="background: #fee2e2; color: #991b1b; font-weight: 700; font-size: 11px; padding: 2px 8px; border-radius: 9999px; border: 1px solid #fecaca; display: inline-flex; align-items: center; gap: 4px;">🔴 RUSAK</span>`;
+        return `<span style="color: #94a3b8;">-</span>`;
+      };
+
+      const getStatusBadge = (status) => {
+        if (status === 'IN') {
+          return `<span style="background: #fef3c7; color: #b45309; font-weight: 700; padding: 3px 9px; border-radius: 9999px; font-size: 11px; white-space: nowrap; border: 1px solid #fde68a; display: inline-flex; align-items: center; gap: 4px;">⚡ Digunakan (IN)</span>`;
+        }
+        if (status === 'OUT') {
+          return `<span style="background: #dcfce7; color: #15803d; font-weight: 700; padding: 3px 9px; border-radius: 9999px; font-size: 11px; white-space: nowrap; border: 1px solid #bbf7d0; display: inline-flex; align-items: center; gap: 4px;">✅ Selesai (OUT)</span>`;
+        }
+        if (status === 'RUSAK') {
+          return `<span style="background: #fee2e2; color: #991b1b; font-weight: 700; padding: 3px 9px; border-radius: 9999px; font-size: 11px; white-space: nowrap; border: 1px solid #fecaca; display: inline-flex; align-items: center; gap: 4px;">⚠️ Rusak</span>`;
+        }
+        if (status === 'STANDBY') {
+          return `<span style="background: #f1f5f9; color: #475569; font-weight: 600; padding: 3px 9px; border-radius: 9999px; font-size: 11px; white-space: nowrap; border: 1px solid #e2e8f0; display: inline-flex; align-items: center; gap: 4px;">💤 Standby</span>`;
+        }
+        return `<span style="color: #94a3b8; font-size: 11px;">-</span>`;
+      };
+
+      tbody.innerHTML = displayData.map((row, idx) => {
+        const bgStriped = idx % 2 === 1 ? 'background: #fafcff;' : 'background: #ffffff;';
+        const shiftBadge = row.shift === '1' 
+          ? `<span style="background: #e0f2fe; color: #0369a1; font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 9999px; border: 1px solid #bae6fd;">Shift 1</span>`
+          : row.shift === '2'
+            ? `<span style="background: #fef3c7; color: #b45309; font-weight: 700; font-size: 11px; padding: 2px 7px; border-radius: 9999px; border: 1px solid #fde68a;">Shift 2</span>`
+            : `<span style="color: #64748b; font-size: 11px;">${row.shift || '-'}</span>`;
+
+        const checkInFormatted = row.jamIn && row.jamIn !== '-'
+          ? `<div style="display: flex; align-items: center; justify-content: center; gap: 4px;"><span style="font-weight: 700; color: #b45309; font-size: 10.5px; background: #fef3c7; padding: 1px 5px; border-radius: 3px;">IN</span> <span style="font-weight: 600; color: #0f172a; font-size: 12px; font-family: monospace;">${row.jamIn}</span></div>`
+          : `<span style="color: #94a3b8; font-size: 12px;">-</span>`;
+
+        const checkOutFormatted = row.jamOut && row.jamOut !== '-'
+          ? `<div style="display: flex; align-items: center; justify-content: center; gap: 4px;"><span style="font-weight: 700; color: #15803d; font-size: 10.5px; background: #dcfce7; padding: 1px 5px; border-radius: 3px;">OUT</span> <span style="font-weight: 600; color: #0f172a; font-size: 12px; font-family: monospace;">${row.jamOut}</span></div>`
+          : `<span style="color: #94a3b8; font-size: 12px;">-</span>`;
+
+        return `
+          <tr style="${bgStriped}">
+            <td style="text-align: center; font-family: monospace; font-size: 11.5px; color: var(--text-muted); font-weight: 600;">
+              ${idx + 1}
+            </td>
+            <td>
+              <span style="font-weight: 600; color: #0f172a; font-size: 12px; font-family: monospace; background: #f1f5f9; padding: 2px 6px; border-radius: 4px;">${row.tanggal}</span>
+            </td>
+            <td>
+              ${getDeptBadge(row.departement)}
+            </td>
+            <td>
+              <div style="font-weight: 700; color: #0f172a; font-size: 13px; line-height: 1.35;">${row.assetName}</div>
+            </td>
+            <td>
+              <span style="font-weight: 600; color: #475569; font-size: 12px;">${row.type}</span>
+            </td>
+            <td>
+              ${getMerkBadge(row.merk)}
+            </td>
+            <td style="text-align: center;">
+              ${shiftBadge}
+            </td>
+            <td style="text-align: center;">
+              ${getKondisiBadge(row.kondisi)}
+            </td>
+            <td style="text-align: center;">
+              <span style="font-family: monospace; font-size: 11px; color: #64748b;">${row.nik}</span>
+            </td>
+            <td>
+              <span style="font-weight: 600; font-size: 12px; color: ${row.nama && row.nama !== '-' ? '#0f172a' : '#94a3b8'};">${row.nama}</span>
+            </td>
+            <td style="text-align: center; border-left: 1px solid #f1f5f9; background: #fffdfa;">
+              ${checkInFormatted}
+            </td>
+            <td style="text-align: center; border-left: 1px solid #f1f5f9; background: #fafffb;">
+              ${checkOutFormatted}
+            </td>
+            <td style="text-align: center;">
+              ${getStatusBadge(row.status)}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Foot Summary
+      const totalCount = displayData.length;
+      const countIn = displayData.filter(d => d.status === 'IN').length;
+      const countOut = displayData.filter(d => d.status === 'OUT').length;
+      const countRusak = displayData.filter(d => d.status === 'RUSAK' || d.kondisi === 'RUSAK').length;
+
+      if (tfoot) {
+        tfoot.innerHTML = `
+          <tr style="background: #f8fafc; font-weight: 700;">
+            <td colspan="3" style="text-align: right; padding: 12px 14px; font-size: 12px; color: var(--text-muted);">TOTAL RINGKASAN:</td>
+            <td colspan="4" style="padding: 12px 14px; font-size: 12.5px; color: var(--text-main);">
+              <b>${totalCount}</b> Log In - Out &bull; <b>${countIn}</b> Sedang Digunakan (IN)
+            </td>
+            <td colspan="3" style="text-align: center; border-left: 1px solid #e2e8f0; padding: 12px 14px; background: #f0fdf4; color: #166534; font-size: 12.5px;">
+              <b>${countOut}</b> Sudah Selesai (OUT)
+            </td>
+            <td colspan="3" style="text-align: center; padding: 12px 14px; font-size: 12px; color: ${countRusak > 0 ? '#991b1b' : '#166534'};">
+              ${countRusak > 0 ? `⚠️ <b>${countRusak}</b> Unit Rusak` : '🟢 0 Rusak'}
+            </td>
+          </tr>
+        `;
+      }
+
+      if (infoEl) {
+        infoEl.textContent = `Menampilkan ${displayData.length} dari ${rawInOutAlatDataset.length} log dari tab sheet IN-0UT ALAT`;
+      }
+    }
+
+    function exportInOutAlatToCSV() {
+      const dataset = isInOutFiltered() ? filteredInOutAlatDataset : rawInOutAlatDataset;
+      if (dataset.length === 0) {
+        showToast('⚠️ Tidak ada data In - Out Alat untuk diekspor!');
+        return;
+      }
+
+      const headers = ['NO', 'TANGGAL', 'DEPARTEMENT', 'ASSET NAME', 'TYPE', 'MERK', 'SHIFT', 'KONDISI', 'NIK', 'NAMA', 'CHECK IN', 'JAM CHECK IN', 'CHECK OUT', 'JAM CHECK OUT', 'STATUS'];
+      const rows = dataset.map((d, idx) => [
+        idx + 1,
+        `"${(d.tanggal || '').replace(/"/g, '""')}"`,
+        `"${(d.departement || '').replace(/"/g, '""')}"`,
+        `"${(d.assetName || '').replace(/"/g, '""')}"`,
+        `"${(d.type || '').replace(/"/g, '""')}"`,
+        `"${(d.merk || '').replace(/"/g, '""')}"`,
+        `"${(d.shift || '').replace(/"/g, '""')}"`,
+        `"${(d.kondisi || '').replace(/"/g, '""')}"`,
+        `"${(d.nik || '').replace(/"/g, '""')}"`,
+        `"${(d.nama || '').replace(/"/g, '""')}"`,
+        `"${(d.checkIn || '').replace(/"/g, '""')}"`,
+        `"${(d.jamIn || '').replace(/"/g, '""')}"`,
+        `"${(d.checkOut || '').replace(/"/g, '""')}"`,
+        `"${(d.jamOut || '').replace(/"/g, '""')}"`,
+        `"${d.status}"`
+      ]);
+
+      const csvContent = [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      const now = new Date();
+      const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '');
+      link.setAttribute('href', url);
+      link.setAttribute('download', `IN_OUT_ALAT_${dateStr}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+      showToast(`📥 Berhasil mengekspor ${dataset.length} data In - Out Alat ke CSV`);
+    }
+
+    /* Attempt Live Google Sheets Fetch for Log, Summary Asset, Downtime, Sparepart, Driver, & In-Out Alat sheets with Graceful Fallback */
     async function fetchDataFromSource() {
       let logDataText = DEFAULT_SPREADSHEET_DATA;
       let summaryAssetDataText = DEFAULT_SUMMARY_ASSET_DATA;
       let downtimeDataText = DEFAULT_DOWNTIME_DATA;
       let sparepartDataText = DEFAULT_SPAREPART_DATA;
+      let driverMHEDataText = DEFAULT_DRIVER_MHE_DATA;
+      let inoutAlatDataText = DEFAULT_INOUT_ALAT_DATA;
 
       // 1. Check if user had localStorage override for logs
       const savedData = localStorage.getItem('forklift_battery_data');
@@ -6612,7 +7457,31 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
         console.info('Using default driver MHE dataset:', err.message);
       }
 
-      return { logDataText, summaryAssetDataText, downtimeDataText, sparepartDataText, driverMHEDataText };
+      // 6. Fetch In - Out Alat sheet
+      try {
+        const controller6 = new AbortController();
+        const timeoutId6 = setTimeout(() => controller6.abort(), 2500);
+        let resp6 = await fetch(GOOGLE_SHEETS_INOUT_ALAT_URL, { signal: controller6.signal });
+        clearTimeout(timeoutId6);
+        if (resp6.ok) {
+          const csvText6 = await resp6.text();
+          if (csvText6 && csvText6.length > 50 && !csvText6.includes('<html') && !csvText6.startsWith('"NO","NIK","NAMA"')) {
+            inoutAlatDataText = csvText6;
+          } else {
+            const resp6b = await fetch(GOOGLE_SHEETS_INOUT_ALAT_FALLBACK_URL);
+            if (resp6b.ok) {
+              const csvText6b = await resp6b.text();
+              if (csvText6b && csvText6b.length > 50 && !csvText6b.includes('<html') && !csvText6b.startsWith('"NO","NIK","NAMA"')) {
+                inoutAlatDataText = csvText6b;
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.info('Using default in-out alat dataset:', err.message);
+      }
+
+      return { logDataText, summaryAssetDataText, downtimeDataText, sparepartDataText, driverMHEDataText, inoutAlatDataText };
     }
 
     /* ========================================================
@@ -6638,6 +7507,7 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
           rawDowntimeDataset = parseDowntimeCSV(dataResult.downtimeDataText);
           rawSparepartDataset = parseSparepartCSV(dataResult.sparepartDataText);
           rawDriverMHEDataset = parseDriverMHECSV(dataResult.driverMHEDataText);
+          rawInOutAlatDataset = parseInOutAlatCSV(dataResult.inoutAlatDataText);
           
           populateDropdownOptions();
           applyFilters();
@@ -6658,6 +7528,7 @@ CQD 15 SD (12 METER)","REACH TRUCK 12 M DD","KRISBOW","","","","",""`;
           rawDowntimeDataset = parseDowntimeCSV(DEFAULT_DOWNTIME_DATA);
           rawSparepartDataset = parseSparepartCSV(DEFAULT_SPAREPART_DATA);
           rawDriverMHEDataset = parseDriverMHECSV(DEFAULT_DRIVER_MHE_DATA);
+          rawInOutAlatDataset = parseInOutAlatCSV(DEFAULT_INOUT_ALAT_DATA);
           
           populateDropdownOptions();
           applyFilters();
